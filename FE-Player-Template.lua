@@ -5,6 +5,7 @@ local project = rbxmSuite.launch("FE-Player-Template.rbxm", {
     deferred = true,
     nocache = false,
     nocirculardeps = true,
+    -- TODO: Remove unused packages 
     debug = true,
     verbose = false
 })
