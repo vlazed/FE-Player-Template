@@ -22,8 +22,8 @@ This framework is strictly not plug-and-play: animation modules exist and are in
 * "Z" - Dodge
 * "Ctrl" - Descend / Crouch
 * "Space" - Ascend
-* "Double tap space" - Toggle flight
-* "Double tap shift" - Sprint
+* Double tap "Space" - Toggle flight
+* Double tap "LeftShift" - Sprint
 
 
 ## Usage
