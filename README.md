@@ -18,13 +18,30 @@ Installing and running animation modules are also simple:
 3. Observe the modules tab in this script's UI and see if they show up.
 4. Click on the animation module and observe the animation change on your character.
 If an animation change does not occur, it may be due to a typo in the script itself. 
+To facilitate this, I've included the fe-player-template folder on this repository. This folder also includes dances for R6 and R15. The method of installing new dance animations has a similar process
 
 ## For Developers
 There are two ways to modify the source code and provide your own animation modules: the Rojo method and the Roblox Studio method. I recommend the former, as the template was developed in Rojo, and the source code can be directly used in your own Rojo projects. If you use Roblox Studio, you will need to download the rbxm file in order to import the script directory and edit its contents. 
 
 Animation modules are defined as a folder with a lua file and an animation folder, which also contains a set of lua files.
+module-name/
+├── module-name.lua
+├── Animations
+    ├── Walk.lua
+    ├── Run.lua
+    ├── Sprint.lua
+    └── Jump.lua (etc.)
+Module source code must exist directly under the module folder. 
 
-Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module. I provided an example staff wielder module that interfaces with the controllers
+### Animations
+This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
+- Obtain or make an animation using Moon Animator 2 or Roblox Animation Editor
+- Export the animation as a keyframe sequence in **Roblox Animation Editor**. The addon will have trouble exporting from a direct-from-Moon-Animator-2 sequence.
+- Use the modified Animation Converter to convert the keyframe sequence to an animation module script.
+- Copy and paste the module script contents into a .lua folder under the Animations directory above
+Generally, animations should have a lot of complete keyframes (a keyframe with animation data on all player parts). Moon Animator 2 has a way of generating many intermediary keyframes. In addition, if there are too many keyframes, the modified Animation Converter prints the source into the command bar. Make sure to paste it in a Roblox module script to ensure that there are no issues with the animation data. 
+
+Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module. I provided an example Staff Wielder module that interfaces with the controllers, with an internal and external example. Developers should use the framework to test their animation modules before distribution.
 
 # Acknowledgements
 - A friend who introduced me to their FE Bike script. This would not exist if not for them
