@@ -1,12 +1,14 @@
+local Thread = require(script.Parent.Util.Thread)
+local PlayerAnimations = require(script.Parent.Controllers.PlayerAnimations)
+
 local Player = {}
 
 Player.States = {
 	["Idling"] = false,
 	["Walking"] = false,
-	["Sprinting"] = false,
 	["Jumping"] = false,
 	["Falling"] = false,
-	["Respawning"] = false
+	["Respawning"] = false,
 }
 
 --[[
@@ -16,9 +18,24 @@ Player.Blocking = false
 Player.Attacking = false
 Player.FightMode = false
 Player.Following = false
+Player.Transitioning = false
+Player.Flying = false
+Player.Crouching = false
+Player.Dodging = false
+Player.Running = false
+Player.Sprinting = false
+Player.Dancing = false
+
+Player.AnimationModule = PlayerAnimations
+Player.InAir = false
 
 function Player.getPlayer()
 	return game.Players.LocalPlayer
+end
+
+
+function Player.getMouse()
+	return Player.getPlayer():GetMouse()
 end
 
 
@@ -29,6 +46,54 @@ end
 
 function Player.getNexoCharacter()
 	return workspace.Camera.CameraSubject.Parent
+end
+
+
+function Player:GetAnimation(animation)
+	if self.AnimationModule[animation] then
+		return self.AnimationModule[animation]
+	else
+		return PlayerAnimations[animation]
+	end
+end
+
+
+function Player.Transition(delayTime)
+	if Player.Transitioning then return end
+	delayTime = delayTime or 0.25
+
+	Player.Transitioning = true
+	Thread.Delay(delayTime, function()
+		Player.Transitioning = false
+	end)
+end
+
+function Player:InAir()
+	local hrp = self.getNexoHumanoidRootPart()
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = {hrp.Parent}
+	params.FilterType = Enum.RaycastFilterType.Blacklist
+	params.IgnoreWater = false
+	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-1000,0), params)
+	if raycastResult then
+		return ((raycastResult.Position - hrp.Position).Magnitude > 5)
+	else
+		return true
+	end	
+end
+
+function Player:ResetAnimationModule()
+	self.AnimationModule = PlayerAnimations
+end
+
+
+function Player:ApplyImpulse(direction)
+	self.getNexoHumanoidRootPart():ApplyImpulse(self.getHumanoidRootPart().Position + direction)
+end
+
+
+function Player:CFrameLerpToPosition(pos, alpha)
+	self.getNexoHumanoidRootPart().CFrame:Lerp(CFrame.new(pos), alpha)
 end
 
 
@@ -49,6 +114,22 @@ end
 
 function Player.getNexoHumanoidRootPart()
 	return Player.getNexoCharacter():FindFirstChild("HumanoidRootPart")
+end
+
+
+function Player.getCharacterRootAttachment()
+	local hrp = Player.getHumanoidRootPart()
+	if not hrp then return nil end
+
+	return hrp:FindFirstChild("RootAttachment") or hrp:FindFirstChild("RootRigAttachment")
+end
+
+
+function Player.getNexoCharacterRootAttachment()
+	local hrp = Player.getNexoHumanoidRootPart()
+	if not hrp then return nil end
+
+	return hrp:FindFirstChild("RootAttachment") or hrp:FindFirstChild("RootRigAttachment")
 end
 
 

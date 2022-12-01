@@ -3,10 +3,12 @@ local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local Player = require(Project.Player)
 
 local ContextActionService = game:GetService("ContextActionService")
+local UserInputService = game:GetService("UserInputService")
 local prevSettings = {}
 
 local ActionHandler = {}
 
+ActionHandler.Keybinds = {}
 
 function table_eq(table1, table2)
     local avoid_loops = {}
@@ -58,6 +60,21 @@ function table_eq(table1, table2)
 end
 
 
+local function bool_to_number(val)
+    return val and 1 or 0
+end
+
+
+function ActionHandler.IsKeyDownBool(keycode)
+    return UserInputService:IsKeyDown(keycode)
+end
+
+
+function ActionHandler.IsKeyDown(keycode)
+    return bool_to_number(ActionHandler.IsKeyDownBool(keycode))
+end
+
+
 function ActionHandler:Update()
     
     local Settings = ControllerSettings.GetSettings()
@@ -70,7 +87,30 @@ function ActionHandler:Update()
     prevSettings = Settings
     
     ContextActionService:UnbindAction("Listen")
-    ContextActionService:BindAction("Listen", ActionHandler.Listen, false, Settings.respawnButton, Settings.sprintButton)
+    ContextActionService:BindAction(
+        "Listen", 
+        ActionHandler.Listen, 
+        false, 
+        Settings.respawnButton, 
+        Settings.sprintButton, 
+        Settings.flightButton, 
+        Settings.crouchButton,
+        Settings.dodgeButton,
+        table.unpack(ActionHandler.Keybinds)
+    )
+end
+
+
+function ActionHandler.DelayListen(an, is, io)
+    if is == Enum.UserInputState.Begin then    
+        if io.KeyCode == prevSettings.sprintButton then
+            print("Sprinting")
+            Player.Running = false
+            Player.Sprinting = true
+        elseif io.KeyCode == Enum.KeyCode.Space then
+            Player.Flying = not Player.Flying
+        end
+    end
 end
 
 
@@ -81,13 +121,47 @@ function ActionHandler.Listen(an, is, io)
             Player.SetState("Respawning", true)
         elseif io.KeyCode == prevSettings.sprintButton then
             print("Sprinting")
-            Player.SetState("Sprinting", true)
+            Player.Running = true
+        elseif io.KeyCode == Enum.KeyCode.Space then
+            print("Jumping")
+            Player.SetState("Jumping", true)
+            task.delay(0.5, function()
+                Player.SetState("Jumping", false)
+            end)
+        elseif io.KeyCode == prevSettings.crouchButton then
+            print("Crouching")
+        elseif io.KeyCode == prevSettings.dodgeButton then
+            local contraction = (Player.Sprinting or Player.GetState("Walking") or Player.Running) and 0.7 or 0
+            Player.Dodging = true
+            if Player:InAir() then
+                task.delay(1, function()
+                    Player.Dodging = false
+                end)
+            else
+                local kf = Player.AnimationModule.Roll.Keyframes
+                task.delay(kf[#kf]["Time"] - contraction, function()
+                    Player.Dodging = false
+                end)
+            end
         end
     elseif is == Enum.UserInputState.End then
         if io.KeyCode == prevSettings.sprintButton then
             print("Not sprinting")
-            Player.SetState("Sprinting", false)
+            Player.Running = false
+            Player.Sprinting = false
+        elseif io.KeyCode == prevSettings.crouchButton then
+            print("Crouching")
         end
+        ContextActionService:BindAction(
+            "DelayListen", 
+            ActionHandler.DelayListen, 
+            false, 
+            prevSettings.sprintButton, 
+            Enum.KeyCode.Space
+        )
+        task.delay(0.25, function()
+            ContextActionService:UnbindAction("DelayListen")
+        end)
     end
 end
 
@@ -101,7 +175,18 @@ function ActionHandler:Init()
     local Settings = ControllerSettings.GetSettings()
     prevSettings = Settings
 
-    ContextActionService:BindAction("Listen", ActionHandler.Listen, false, Settings.respawnButton, Settings.sprintButton)
+    ContextActionService:BindAction(
+        "Listen", 
+        ActionHandler.Listen, 
+        false, 
+        Settings.respawnButton, 
+        Settings.sprintButton, 
+        Settings.flightButton, 
+        Settings.crouchButton,
+        Settings.dodgeButton,
+        Enum.KeyCode.Space,
+        table.unpack(ActionHandler.Keybinds)
+    )
 end
 
 return ActionHandler
