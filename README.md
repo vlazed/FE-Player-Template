@@ -6,7 +6,7 @@ This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 a
 ## Note
 This framework is currently in alpha. Thus, the information provided below and the source code may change at any given point. 
 
-This framework is strictly not plug-and-play: animation modules exist within the roblox model binary. External animation modules are not supported currently, although I have included a directory here for external modules as an outline.
+This framework is strictly not plug-and-play: animation modules exist and are installed within the roblox model binary. External animation modules are not supported currently, although I have included a directory here for external modules as an outline. Hopefully, I can define a streamlined, plug-and-play approach for this framework that does not involve messing with the binary.
 
 ## Features
 * Player movement enhancements: leaning, looking around, dodging, flying, running, and sprinting
@@ -34,6 +34,17 @@ This framework isn't necessarily plug and play. This framework requires a few st
 4. Execute the script. If successful, a notification should pop up on the bottom right.
 Results may vary depending on the Roblox experience. You should test this in a place that lacks anti-cheats.
 
+
+### Installing Internal Animation Modules
+The easiest way for one to install animation modules is by cloning this repository into your machine and using Rojo to synchronize needed changes. The steps to install an animation module into the framework source code is the following:;
+1. Locate the "Modules" folder. This should be located directly under the source code. In Roblox Studio, its one of the root folders under the local script.
+2. Place the animation module inside R6 or R15, depending on the rig it supports
+3. Compile the binary: run Roblox Studio with the Rojo plugin and synchronize your Rojo environment with the Roblox Studio environment. Save the resultant local script that appears in your StarterPlayer/StarterCharacterScripts folder into an rbxm file.
+4. Run the framework and see if the module appears in the "Modules" tab of the gui.
+
+
+### Installing External Animation Modules
+Note: The information below may apply when there is support for external animation modules
 Installing and running animation modules are also simple:
 1. Ensure the directory "fe-player-template/modules/R6" or "fe-player-template/modules/R15" is located in your executor workspace. The gui will try to locate your animation modules in this directory.
 2. Place your animation module inside the R6 or R15 folder, depending on your animation module's character type
@@ -45,6 +56,7 @@ To facilitate this, I've included the fe-player-template folder on this reposito
 ## For Developers
 There are two ways to modify the source code and provide your own animation modules: the Rojo method and the Roblox Studio method. I recommend the former, as the template was developed in Rojo, and the source code can be directly used in your own Rojo projects. If you use Roblox Studio, you will need to download the rbxm file in order to import the script directory and edit its contents. 
 
+### Animation Modules
 Animation modules are defined as a folder with a lua file and an animation folder, which also contains a set of lua files. The following is an example seen in a Rojo project. In Roblox Studio, these would be module scripts.
 ```
 module-name/
@@ -55,7 +67,7 @@ module-name/
 |     ├── Sprint.lua
 └──   └── Jump.lua (etc.)
 ```
-Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers. Developers should use the framework to test their animation modules before distribution. 
+Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers. Developers should use the framework to test their animation modules before distribution. Generally, one should distribute their modules through a Github release.
 
 ### Animations
 This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
@@ -68,7 +80,9 @@ Generally, animations should have a lot of complete keyframes (a keyframe with a
 Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module.
 
 # Acknowledgements
-- A friend who introduced me to their FE Bike script. This would not exist if not for them
-- Dance+emote Animations from Club Boates, Midnight Horrors, R6 Dances, Royal Hillcrest, Midnight Horrors
-- richie0866 for rbxm-suite and Rostruct and MidiPlayer. Their method of loading models allowed me to design the UI without having to touch code. The framework here is inspired by Rostruct and MidiPlayer. 
+- A friend who introduced me to their cool FE Bike script. This would not exist if not for them.
+- Nexo for their implementation of filtering enabled reanimation. I do not have the animator itself, but I have seen how the script works, and that propagated the development of this framework.
+- kuraga for the R15 reanimation. I'm glad that they released the source code for their reanimation, as I was able to achieve R6 and R15 support for this template
+- R6 Dance+emote Animations from Club Boates, Midnight Horrors, R6 Dances, Royal Hillcrest, Midnight Horrors. I've only hand-selected a few animations from there for testing purposes.
+- richie0866 for rbxm-suite and Rostruct and MidiPlayer. Their method of loading models allowed me to design the UI without having to touch code. The framework here is inspired by Rostruct and MidiPlayer (I made the UI just by looking at MidiPlayer). 
 - Many existing reanimations. They help alot with inspiration!
