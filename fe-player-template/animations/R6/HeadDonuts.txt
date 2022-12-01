@@ -1,0 +1,1390 @@
+return {
+	Properties = {
+		Looping = true,
+		Priority = Enum.AnimationPriority.Movement
+	},
+	Keyframes = {
+		{
+			["Time"] = 0,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, 0),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, 0),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.572), math.rad(-14.897), math.rad(-79.24)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-58.27), 0, 0),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.38, 0.246, -1.413) * CFrame.Angles(0, 0, math.rad(-19.423)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.017,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(0.458)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-0.516)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.17), math.rad(-15.527), math.rad(-80.157)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-57.238), math.rad(0.917), math.rad(6.417)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.192, -0.249, -1.413) * CFrame.Angles(0, 0, math.rad(-6.303)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.033,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(0.917)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-0.974)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.769), math.rad(-16.215), math.rad(-81.016)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-56.264), math.rad(2.005), math.rad(12.777)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.003, -0.744, -1.413) * CFrame.Angles(0, 0, math.rad(6.761)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.05,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(1.432)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-1.49)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.426), math.rad(-16.902), math.rad(-81.876)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-55.462), math.rad(3.151), math.rad(19.194)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.815, -1.238, -1.413) * CFrame.Angles(0, 0, math.rad(19.882)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.067,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(1.891)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-1.948)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.025), math.rad(-17.59), math.rad(-82.735)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.775), math.rad(4.354), math.rad(25.554)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.627, -1.733, -1.413) * CFrame.Angles(0, 0, math.rad(32.945)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.083,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(2.349)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-2.464)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-51.681), math.rad(-18.277), math.rad(-83.595)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.259), math.rad(5.672), math.rad(31.914)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.439, -2.227, -1.413) * CFrame.Angles(0, 0, math.rad(46.066)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.1,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.009, -0.001) * CFrame.Angles(math.rad(-0.516), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(2.807)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-2.922)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-51.337), math.rad(-18.965), math.rad(-84.454)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.858), math.rad(7.047), math.rad(38.331)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.046, -2.438, -1.413) * CFrame.Angles(0, 0, math.rad(56.264)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.117,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.017, -0.002) * CFrame.Angles(math.rad(-1.031), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(3.266)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-3.438)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.993), math.rad(-19.652), math.rad(-85.313)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.629), math.rad(8.422), math.rad(44.691)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-1.653, -2.648, -1.413) * CFrame.Angles(0, 0, math.rad(66.463)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.133,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.034, -0.004) * CFrame.Angles(math.rad(-2.063), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(3.724)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-3.896)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.707), math.rad(-20.34), math.rad(-86.23)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.514), math.rad(9.798), math.rad(51.108)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-1.056, -2.574, -1.413) * CFrame.Angles(0, 0, math.rad(73.797)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.15,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.051, -0.006) * CFrame.Angles(math.rad(-3.094), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(4.24)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-4.412)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.363), math.rad(-21.085), math.rad(-87.09)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.629), math.rad(11.23), math.rad(57.525)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-0.459, -2.501, -1.413) * CFrame.Angles(0, 0, math.rad(81.074)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.167,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.069, -0.007) * CFrame.Angles(math.rad(-4.125), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(4.698)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-4.927)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.077), math.rad(-21.772), math.rad(-87.949)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.858), math.rad(12.605), math.rad(63.999)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(0.139, -2.427, -1.413) * CFrame.Angles(0, 0, math.rad(88.407)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.183,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.086, -0.009) * CFrame.Angles(math.rad(-5.157), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(5.157)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-5.386)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-49.79), math.rad(-22.517), math.rad(-88.808)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.259), math.rad(13.98), math.rad(70.531)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(0.736, -2.353, -1.413) * CFrame.Angles(0, 0, math.rad(95.741)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.2,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.103, -0.011) * CFrame.Angles(math.rad(-6.188), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(5.615)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-5.901)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-49.504), math.rad(-23.205), math.rad(-89.668)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(77.063)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.333, -2.28, -1.413) * CFrame.Angles(0, 0, math.rad(103.075)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.217,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.094, -0.01) * CFrame.Angles(math.rad(-5.672), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(5.157)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-5.329)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-49.332), math.rad(-16.558), math.rad(-82.678)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(70.818)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.476, -2.049, -1.349) * CFrame.Angles(0, 0, math.rad(108.518)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.233,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.086, -0.009) * CFrame.Angles(math.rad(-5.157), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(4.641)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-4.813)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-49.962), math.rad(-9.855), math.rad(-75.917)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(64.572)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.619, -1.818, -1.285) * CFrame.Angles(0, 0, math.rad(114.019)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.25,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.077, -0.008) * CFrame.Angles(math.rad(-4.641), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(4.125)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-4.297)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-51.394), math.rad(-3.323), math.rad(-69.156)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(58.327)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.761, -1.588, -1.22) * CFrame.Angles(0, 0, math.rad(119.462)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.267,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.069, -0.007) * CFrame.Angles(math.rad(-4.125), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(3.667)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-3.724)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.572), math.rad(2.979), math.rad(-62.223)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(52.139)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.904, -1.357, -1.156) * CFrame.Angles(0, 0, math.rad(124.905)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.283,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.06, -0.006) * CFrame.Angles(math.rad(-3.61), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(3.151)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-3.209)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-56.494), math.rad(8.995), math.rad(-55.004)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(45.894)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.046, -1.126, -1.092) * CFrame.Angles(0, 0, math.rad(130.405)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.3,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.051, -0.006) * CFrame.Angles(math.rad(-3.094), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(2.693)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-2.693)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-60.275), math.rad(14.61), math.rad(-47.269)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(39.649)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.189, -0.896, -1.027) * CFrame.Angles(0, 0, math.rad(135.848)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.317,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.043, -0.005) * CFrame.Angles(math.rad(-2.578), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(2.177)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-2.12)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-64.916), math.rad(19.595), math.rad(-38.961)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(33.403)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.331, -0.665, -0.963) * CFrame.Angles(0, 0, math.rad(141.291)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.333,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.034, -0.004) * CFrame.Angles(math.rad(-2.063), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(1.719)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-1.604)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.417), math.rad(23.892), math.rad(-30.023)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(27.158)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.474, -0.434, -0.899) * CFrame.Angles(0, 0, math.rad(146.792)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.35,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.026, -0.003) * CFrame.Angles(math.rad(-1.547), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(1.203)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-1.089)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-76.834), math.rad(27.33), math.rad(-20.34)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(20.913)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.617, -0.204, -0.834) * CFrame.Angles(0, 0, math.rad(152.235)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.367,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.017, -0.002) * CFrame.Angles(math.rad(-1.031), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(0.745)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(-0.516)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-83.996), math.rad(29.679), math.rad(-9.969)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(14.668)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.759, 0.027, -0.77) * CFrame.Angles(0, 0, math.rad(157.678)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.383,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.009, -0.001) * CFrame.Angles(math.rad(-0.516), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(0.229)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, 0),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-91.616), math.rad(30.825), math.rad(0.802)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(15.241), math.rad(8.422)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.902, 0.258, -0.706) * CFrame.Angles(0, 0, math.rad(163.178)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.4,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.new(0, 0.004, 0) * CFrame.Angles(math.rad(-0.229), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-0.229)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(0.573)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-95.856), math.rad(30.023), math.rad(9.454)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.374), math.rad(14.381), math.rad(2.349)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.914, 0.444, -0.684) * CFrame.Angles(math.rad(-0.63), math.rad(0.516), math.rad(168.965)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.417,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-0.745)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(1.089)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-99.867), math.rad(28.648), math.rad(17.934)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.03), math.rad(13.465), math.rad(-3.667)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.926, 0.63, -0.661) * CFrame.Angles(math.rad(-1.318), math.rad(1.031), math.rad(174.809)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.433,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-1.261)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(1.604)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-100.038), math.rad(26.585), math.rad(24.064)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.457), math.rad(11.631), math.rad(-9.454)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.808, 0.771, -0.681) * CFrame.Angles(math.rad(-2.807), math.rad(1.833), math.rad(-179.049)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.45,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-1.719)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(2.177)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-99.981), math.rad(24.465), math.rad(30.023)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.113), math.rad(9.74), math.rad(-15.183)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.691, 0.913, -0.701) * CFrame.Angles(math.rad(-4.297), math.rad(2.521), math.rad(-172.804)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.467,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-2.235)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(2.693)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-99.695), math.rad(22.403), math.rad(35.924)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.941), math.rad(7.792), math.rad(-20.913)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.573, 1.054, -0.721) * CFrame.Angles(math.rad(-5.901), math.rad(3.094), math.rad(-166.616)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.483,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-2.693)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(3.209)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-99.179), math.rad(20.34), math.rad(41.769)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.941), math.rad(5.901), math.rad(-26.585)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.455, 1.196, -0.741) * CFrame.Angles(math.rad(-7.563), math.rad(3.438), math.rad(-160.371)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.5,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-3.209)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(3.782)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-98.491), math.rad(18.392), math.rad(47.555)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.113), math.rad(3.953), math.rad(-32.2)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.337, 1.337, -0.761) * CFrame.Angles(math.rad(-9.225), math.rad(3.61), math.rad(-154.126)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.517,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-3.667)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(4.297)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-97.575), math.rad(16.501), math.rad(53.285)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.514), math.rad(2.063), math.rad(-37.873)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.219, 1.478, -0.781) * CFrame.Angles(math.rad(-10.886), math.rad(3.552), math.rad(-147.88)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.533,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-4.183)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(4.813)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-96.429), math.rad(14.668), math.rad(59.015)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.087), math.rad(0.229), math.rad(-43.545)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(2.101, 1.62, -0.801) * CFrame.Angles(math.rad(-12.548), math.rad(3.38), math.rad(-141.635)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.55,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-4.641)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(5.386)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-95.168), math.rad(13.006), math.rad(64.744)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.889), math.rad(-1.547), math.rad(-49.217)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.983, 1.761, -0.821) * CFrame.Angles(math.rad(-14.209), math.rad(2.979), math.rad(-135.39)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.567,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-5.157)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(5.901)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-93.736), math.rad(11.402), math.rad(70.474)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-55.806), math.rad(-3.266), math.rad(-54.947)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.865, 1.903, -0.841) * CFrame.Angles(math.rad(-15.756), math.rad(2.464), math.rad(-129.145)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.583,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-5.615)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(6.417)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-92.189), math.rad(10.027), math.rad(76.203)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-56.895), math.rad(-4.813), math.rad(-60.676)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.747, 2.044, -0.861) * CFrame.Angles(math.rad(-17.303), math.rad(1.719), math.rad(-122.957)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.6,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-6.131)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(6.99)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-91.387), math.rad(9.339), math.rad(81.245)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-59.817), math.rad(-6.417), math.rad(-65.317)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.64, 2.11, -0.868) * CFrame.Angles(math.rad(-17.991), math.rad(1.318), math.rad(-119.863)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.617,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-6.646)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(7.506)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-90.47), math.rad(8.766), math.rad(86.287)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-62.796), math.rad(-7.735), math.rad(-70.015)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.532, 2.175, -0.876) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-116.769)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.633,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-7.105)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(8.021)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-90.47), math.rad(8.766), math.rad(90.642)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-67.552), math.rad(-8.881), math.rad(-73.682)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.435, 2.164, -0.87) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-116.769)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.65,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(0.63), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-7.62)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(8.594)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-89.21), math.rad(8.709), math.rad(91.788)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-69.844), math.rad(-9.454), math.rad(-75.115)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(1.203, 2.161, -0.885) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-113.56)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.667,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(1.318), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-8.079)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(9.11)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-88.006), math.rad(8.709), math.rad(92.934)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-72.193), math.rad(-9.912), math.rad(-76.49)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(0.971, 2.158, -0.9) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-110.294)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.683,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(2.636), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-8.594)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(9.626)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-85.485), math.rad(8.537), math.rad(90.871)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-71.906), math.rad(-10.084), math.rad(-75.573)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(0.603, 2.163, -0.934) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-103.82)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.7,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(3.953), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-9.053)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(10.199)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-83.022), math.rad(8.308), math.rad(88.866)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-71.677), math.rad(-10.256), math.rad(-74.599)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(0.235, 2.167, -0.968) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-97.403)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.717,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(5.271), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-9.568)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(10.714)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-80.501), math.rad(7.964), math.rad(86.803)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-71.391), math.rad(-10.428), math.rad(-73.625)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-0.133, 2.172, -1.003) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-90.928)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.733,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(6.589), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-10.027)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(11.23)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-78.037), math.rad(7.563), math.rad(84.798)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-71.104), math.rad(-10.6), math.rad(-72.651)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-0.501, 2.176, -1.037) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-84.454)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.75,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(7.907), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-10.542)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(11.803)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-75.63), math.rad(7.047), math.rad(82.85)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.875), math.rad(-10.772), math.rad(-71.677)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-0.869, 2.18, -1.072) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-77.98)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.767,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(9.167), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-11.001)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(12.319)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-73.167), math.rad(6.474), math.rad(80.844)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.588), math.rad(-10.943), math.rad(-70.703)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-1.237, 2.185, -1.106) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-71.562)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.783,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(10.485), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-11.516)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(12.892)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.818), math.rad(5.844), math.rad(78.954)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.302), math.rad(-11.058), math.rad(-69.729)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-1.605, 2.189, -1.14) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-65.088)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.8,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(11.803), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-12.032)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(13.407)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-68.411), math.rad(5.099), math.rad(77.006)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-70.015), math.rad(-11.23), math.rad(-68.755)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-1.973, 2.194, -1.175) * CFrame.Angles(math.rad(-18.678), math.rad(0.859), math.rad(-58.614)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.817,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(10.829), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-11.001)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(12.261)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-65.661), math.rad(6.016), math.rad(63.885)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-68.583), math.rad(-10.943), math.rad(-62.911)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.09, 2.031, -1.195) * CFrame.Angles(math.rad(-17.189), math.rad(0.286), math.rad(-55.405)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.833,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(9.855), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-10.027)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(11.173)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-62.796), math.rad(6.245), math.rad(50.764)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-67.208), math.rad(-10.485), math.rad(-57.009)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.208, 1.869, -1.214) * CFrame.Angles(math.rad(-15.699), math.rad(-0.172), math.rad(-52.139)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.85,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(8.881), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-8.995)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(10.027)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-59.931), math.rad(5.844), math.rad(37.586)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-65.89), math.rad(-9.912), math.rad(-51.222)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.325, 1.707, -1.234) * CFrame.Angles(math.rad(-14.152), math.rad(-0.573), math.rad(-48.873)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.867,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(7.907), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-8.021)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(8.938)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-57.238), math.rad(4.813), math.rad(24.465)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-64.63), math.rad(-9.167), math.rad(-45.378)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.442, 1.544, -1.254) * CFrame.Angles(math.rad(-12.605), math.rad(-0.859), math.rad(-45.607)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.883,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(6.875), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-6.99)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(7.792)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-54.832), math.rad(3.209), math.rad(11.459)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-63.484), math.rad(-8.365), math.rad(-39.649)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.559, 1.382, -1.274) * CFrame.Angles(math.rad(-11.001), math.rad(-1.089), math.rad(-42.342)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.9,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(5.901), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-6.016)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(6.704)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-52.884), math.rad(1.089), math.rad(-1.49)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-62.395), math.rad(-7.391), math.rad(-33.862)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.677, 1.22, -1.294) * CFrame.Angles(math.rad(-9.454), math.rad(-1.203), math.rad(-39.018)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.917,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(4.927), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-4.985)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(5.558)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-51.452), math.rad(-1.375), math.rad(-14.324)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-61.364), math.rad(-6.36), math.rad(-28.19)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.794, 1.057, -1.314) * CFrame.Angles(math.rad(-7.85), math.rad(-1.203), math.rad(-35.753)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.933,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(3.953), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-4.011)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(4.469)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.592), math.rad(-4.125), math.rad(-27.158)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-60.504), math.rad(-5.214), math.rad(-22.517)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-2.911, 0.895, -1.334) * CFrame.Angles(math.rad(-6.245), math.rad(-1.146), math.rad(-32.487)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.95,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(2.979), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-2.979)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(3.323)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.363), math.rad(-6.99), math.rad(-39.992)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-59.759), math.rad(-4.011), math.rad(-16.845)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.028, 0.733, -1.354) * CFrame.Angles(math.rad(-4.641), math.rad(-1.031), math.rad(-29.221)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.967,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(1.948), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-2.005)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(2.235)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-50.821), math.rad(-9.855), math.rad(-52.941)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-59.129), math.rad(-2.75), math.rad(-11.23)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.145, 0.57, -1.373) * CFrame.Angles(math.rad(-3.094), math.rad(-0.745), math.rad(-25.898)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 0.983,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					CFrame = CFrame.Angles(math.rad(0.974), 0, 0),
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, math.rad(-0.974)),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, math.rad(1.089)),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-51.853), math.rad(-12.49), math.rad(-66.005)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-58.614), math.rad(-1.375), math.rad(-5.615)),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.263, 0.408, -1.393) * CFrame.Angles(math.rad(-1.547), math.rad(-0.401), math.rad(-22.632)),
+					},
+				},
+			},
+		},
+		{
+			["Time"] = 1,
+			["HumanoidRootPart"] = {
+				["Torso"] = {
+					["Left Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-7.105), 0, 0),
+					},
+					["Right Leg"] = {
+						CFrame = CFrame.Angles(math.rad(-8.995), 0, 0),
+					},
+					["Left Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-53.572), math.rad(-14.897), math.rad(-79.24)),
+					},
+					["Right Arm"] = {
+						CFrame = CFrame.Angles(math.rad(-58.27), 0, 0),
+					},
+					["Head"] = {
+						CFrame = CFrame.new(-3.38, 0.246, -1.413) * CFrame.Angles(0, 0, math.rad(-19.423)),
+					},
+				},
+			},
+		},
+	}
+}

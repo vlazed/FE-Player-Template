@@ -116,19 +116,22 @@ end
 function Sidebar:Update()
     --print("Checking for new files")
     local animfiles 
-    local modfiles
+    local internalmodfiles
+    local externalmodfiles
 
     if listfiles then
         if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
-            animfiles = listfiles("fe-dance-anims/anims/R15")
-            modfiles = Project.Modules.R15:GetChildren()
+            animfiles = listfiles("fe-player-template/animations/R15")
+            internalmodfiles = Project.Modules.R15:GetChildren()
+            --externalmodfiles = listfiles("fe-player-template/modules/R15")
         else
-            animfiles = listfiles("fe-dance-anims/anims/R6")
-            modfiles = Project.Modules.R6:GetChildren()
+            animfiles = listfiles("fe-player-template/animations/R6")
+            internalmodfiles = Project.Modules.R6:GetChildren()
+            --externalmodfiles = listfiles("fe-player-template/modules/R6")
         end    
     else
         animfiles = game:GetService("ReplicatedStorage").Anims:GetChildren()
-        modfiles = game:GetService("ReplicatedStorage").Anims:GetChildren()
+        internalmodfiles = game:GetService("ReplicatedStorage").Anims:GetChildren()
     end
 
     for _,element in ipairs(animbar:GetChildren()) do
@@ -138,10 +141,17 @@ function Sidebar:Update()
     end
 
     for _,element in ipairs(modbar:GetChildren()) do
-        if element:IsA("Frame") and not table.find(modfiles, element.Name) then
+        if element:IsA("Frame") and not table.find(internalmodfiles, element.Name) then
             element:Destroy()
         end
     end
+    --[[
+    for _,element in ipairs(modbar:GetChildren()) do
+        if element:IsA("Frame") and not table.find(externalmodfiles, element.Name) then
+            element:Destroy()
+        end
+    end
+    ]]
 
     for _,filePath in ipairs(animfiles) do
         if not animbar:FindFirstChild(filePath) then
@@ -149,7 +159,7 @@ function Sidebar:Update()
         end
     end
 
-    for _,folder in ipairs(modfiles) do
+    for _,folder in ipairs(internalmodfiles) do
         if not modbar:FindFirstChild(folder) then
             local file = folder:FindFirstChildOfClass("ModuleScript")
             if file then
@@ -158,6 +168,17 @@ function Sidebar:Update()
         end
     end
 
+    -- TODO: Figure out how to support external animation modules
+    --[[
+    for _,filePath in ipairs(externalmodfiles) do
+        if not modbar:FindFirstChild(filePath) then
+            local file = filePath
+            if file then
+                self:CreateModuleElement(file)
+            end
+        end
+    end
+    ]]
 end
 
 
