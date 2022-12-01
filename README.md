@@ -1,8 +1,30 @@
 # FE-Player-Template
-An open-source rbxm-suite package that provides a framework for experienced scripters or animators of any level or both to reanimate a character or their accessories and a system to switch between different reanimations nonintrusively.
+An open-source, code-based, rbxm-suite package that provides a framework for experienced scripters or animators of any level or both to reanimate a character or their accessories and a system to switch between different reanimations nonintrusively.
+
+This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15.
 
 ## Note
 This framework is currently in alpha. Thus, the information provided below and the source code may change at any given point. 
+
+This framework is strictly not plug-and-play: animation modules exist within the roblox model binary. External animation modules are not supported currently, although I have included a directory here for external modules as an outline.
+
+## Features
+* Player movement enhancements: leaning, looking around, dodging, flying, running, and sprinting
+* A CFrame animation controller that can load any animation 
+* A dance/emote player 
+* Nonintrusive switching between different reanimation modules
+* An example staff wielding module 
+
+## Keybinds
+* "-" - Respawn
+* "=" - Toggle Fling at torso
+* "LeftShift" - Run
+* "Z" - Dodge
+* "Ctrl" - Descend / Crouch
+* "Space" - Ascend
+* "Double tap space" - Toggle flight
+* "Double tap shift" - Sprint
+
 
 ## Usage
 This framework isn't necessarily plug and play. This framework requires a few steps, which aren't hard to follow. 
@@ -23,7 +45,7 @@ To facilitate this, I've included the fe-player-template folder on this reposito
 ## For Developers
 There are two ways to modify the source code and provide your own animation modules: the Rojo method and the Roblox Studio method. I recommend the former, as the template was developed in Rojo, and the source code can be directly used in your own Rojo projects. If you use Roblox Studio, you will need to download the rbxm file in order to import the script directory and edit its contents. 
 
-Animation modules are defined as a folder with a lua file and an animation folder, which also contains a set of lua files.
+Animation modules are defined as a folder with a lua file and an animation folder, which also contains a set of lua files. The following is an example seen in a Rojo project. In Roblox Studio, these would be module scripts.
 ```
 module-name/
 ├── module-name.lua
@@ -33,7 +55,7 @@ module-name/
 |     ├── Sprint.lua
 └──   └── Jump.lua (etc.)
 ```
-Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers, with an internal and external example. Developers should use the framework to test their animation modules before distribution.
+Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers. Developers should use the framework to test their animation modules before distribution. 
 
 ### Animations
 This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
@@ -43,7 +65,7 @@ This process involves using Roblox Studio. To make your own animation files, you
 - Copy and paste the module script contents into a .lua folder under the Animations directory above
 Generally, animations should have a lot of complete keyframes (a keyframe with animation data on all player parts). Moon Animator 2 has a way of generating many intermediary keyframes. In addition, if there are too many keyframes, the modified Animation Converter prints the source into the command bar. Make sure to paste it in a Roblox module script to ensure that there are no issues with the animation data. 
 
-Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module. 
+Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module.
 
 # Acknowledgements
 - A friend who introduced me to their FE Bike script. This would not exist if not for them
