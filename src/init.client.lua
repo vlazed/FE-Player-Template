@@ -1,4 +1,4 @@
-print("FE Player Template v0.5")
+print("FE Player Template v1.0")
 task.wait(0.1)
 
 local RunService = game:GetService("RunService")
@@ -20,13 +20,7 @@ local Settings = {
     ascentSpeed = 10,
 }
 
-local Player = require(script.Player)
 local PlayerController = require(script.Controllers.PlayerController)
-
-local R6Modules = script.Modules.R6
-local R15Modules = script.Modules.R15
-
-local SelectedModule
 
 local ControllerSettings = require(script.Controllers.ControllerSettings)
 ControllerSettings.SetSettings(Settings)
