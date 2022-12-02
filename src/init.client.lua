@@ -16,6 +16,7 @@ local Settings = {
     sprintSpeed = 1000,
     walkSpeed = 16,
     jumpPower = 50,
+    runJump = 125,
     sprintJump = 300,
     ascentSpeed = 10,
 }

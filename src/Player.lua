@@ -1,5 +1,6 @@
 local Thread = require(script.Parent.Util.Thread)
 local PlayerAnimations = require(script.Parent.Controllers.PlayerAnimations)
+local ControllerSettings = require(script.Parent.Controllers.ControllerSettings)
 
 local Player = {}
 
@@ -67,6 +68,12 @@ function Player.Transition(delayTime)
 		Player.Transitioning = false
 	end)
 end
+
+
+function Player:GetAnimationSpeed()
+	return ControllerSettings.GetSettings().DT * 100
+end
+
 
 function Player:InAir()
 	local hrp = self.getNexoHumanoidRootPart()

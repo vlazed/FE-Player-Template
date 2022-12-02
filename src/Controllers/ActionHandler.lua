@@ -113,23 +113,28 @@ function ActionHandler.DelayListen(an, is, io)
     end
 end
 
+-- TODO: Implement function to prevent keybinds when the player is typing
+function ActionHandler:IsTyping()
+    return
+end
+
 
 function ActionHandler.Listen(an, is, io)
     if is == Enum.UserInputState.Begin then
         if io.KeyCode == prevSettings.respawnButton then
-            print("Respawning")
+            --print("Respawning")
             Player.SetState("Respawning", true)
         elseif io.KeyCode == prevSettings.sprintButton then
-            print("Sprinting")
+            --print("Sprinting")
             Player.Running = true
         elseif io.KeyCode == Enum.KeyCode.Space then
-            print("Jumping")
+            --print("Jumping")
             Player.SetState("Jumping", true)
             task.delay(0.5, function()
                 Player.SetState("Jumping", false)
             end)
         elseif io.KeyCode == prevSettings.crouchButton then
-            print("Crouching")
+            --print("Crouching")
         elseif io.KeyCode == prevSettings.dodgeButton then
             local contraction = (Player.Sprinting or Player.GetState("Walking") or Player.Running) and 0.7 or 0
             Player.Dodging = true
@@ -146,11 +151,11 @@ function ActionHandler.Listen(an, is, io)
         end
     elseif is == Enum.UserInputState.End then
         if io.KeyCode == prevSettings.sprintButton then
-            print("Not sprinting")
+            --print("Not sprinting")
             Player.Running = false
             Player.Sprinting = false
         elseif io.KeyCode == prevSettings.crouchButton then
-            print("Crouching")
+            --print("Crouching")
         end
         ContextActionService:BindAction(
             "DelayListen", 

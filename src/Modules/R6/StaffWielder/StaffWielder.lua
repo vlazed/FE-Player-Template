@@ -134,12 +134,17 @@ end
 function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Sitting then
         Player.Transition(3)
-        self.PlayerAnimator:Animate(self.Sit.Keyframes, true, 30, filterTable)
+        self.PlayerAnimator:Animate(
+            self.Sit.Keyframes, 
+            true, 
+            30 * Player:GetAnimationSpeed(), 
+            filterTable
+        )
     end
 
     if self.Equipping then
         print("Equipping")
-        self.PlayerAnimator:Animate(self.Equipp.Keyframes, true, 30, filterTable)
+        self.PlayerAnimator:Animate(self.Equipp.Keyframes, true, 30 * Player:GetAnimationSpeed(), filterTable)
         task.delay(25/30, function() self:Equip() end)
         task.delay(
             self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
@@ -151,7 +156,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
 
     if self.Unequipping then
         print("Unequipping")
-        self.PlayerAnimator:Animate(self.Unequipp.Keyframes, true, 30, filterTable)
+        self.PlayerAnimator:Animate(self.Unequipp.Keyframes, true, 30 * Player:GetAnimationSpeed(), filterTable)
         task.delay(25/30, function() self:Unequip() end)
         task.delay(
             self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
@@ -177,7 +182,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
             end)
         end
         if Player.Attacking then
-            self.PlayerAnimator:Animate(attack, true, 24, filterTable)
+            self.PlayerAnimator:Animate(attack, true, 24 * Player:GetAnimationSpeed(), filterTable)
         end
         
         AccessoryStaff.Handle.CFrame = 

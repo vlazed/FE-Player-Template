@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Project = script:FindFirstAncestor("FE-Player-Template")
 
 local Thread = require(Project.Util.Thread)
@@ -267,8 +268,10 @@ function Sidebar:Init(frame)
     modtemplate = modbar.Module
     modtemplate.Parent = nil
 
-    connection = Thread.DelayRepeat(1, self.Update, self)
-    self:Update()
+    if not RunService:IsStudio() then
+        connection = Thread.DelayRepeat(1, self.Update, self)
+        self:Update()
+    end
 end
 
 function Sidebar:Remove()

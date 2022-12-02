@@ -14,87 +14,6 @@ AnimationController.LookVector = Vector3.new(0,0,-1)
 
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
 
-local lastFilterTable = {}
-
-local restTableR6 = {
-	{
-		["Time"] = 0,
-		["HumanoidRootPart"] = {
-			["Torso"] = {
-				CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				["Left Leg"] = {
-					CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				},
-				["Right Arm"] = {
-					CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				},
-				["Head"] = {
-					CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				},
-				["Right Leg"] = {
-					CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				},
-				["Left Arm"] = {
-					CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-				},
-		    },
-	    },
-    }
-}
-
-
-local restTableR15 = {
-    {
-        ["Time"] = 0,
-        ["HumanoidRootPart"] = {
-            ["LowerTorso"] = {
-                CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                ["UpperTorso"] = {
-                    CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                    ["LeftUpperArm"] = {
-                        CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        ["LeftLowerArm"] = {
-                            CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                            ["LeftHand"] = {
-                                CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                            },
-                        },
-                    },
-                    ["RightUpperArm"] = {
-                        CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        ["RightLowerArm"] = {
-                            CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                            ["RightHand"] = {
-                                CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                            },
-                        },
-                    },
-                    ["Head"] = {
-                        CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                    },
-                },
-                ["RightUpperLeg"] = {
-                    CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                    ["RightLowerLeg"] = {
-                        CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        ["RightFoot"] = {
-                            CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        },
-                    },
-                },
-                ["LeftUpperLeg"] = {
-                    CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                    ["LeftLowerLeg"] = {
-                        CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        ["LeftFoot"] = {
-                            CFrame = CFrame.new(0, 0, 0) * CFrame.Angles(0, 0, 0),
-                        },
-                    },
-                },
-            },
-        },
-    },
-}
 
 
 local function playerIKControl(R6Legs)
@@ -149,7 +68,7 @@ end
 
 local function lookAtMouse(torso, neck)
     local Settings = ControllerSettings:GetSettings()
-
+    local camera = workspace.CurrentCamera
 
 	local mouse = Player.getMouse()
 	
@@ -161,7 +80,7 @@ local function lookAtMouse(torso, neck)
     local root = hrp:FindFirstChild("RootJoint") or torso:FindFirstChild("Waist")
 
     local angleY = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.UpVector)*torso.CFrame.UpVector.Unit, torso.CFrame.LookVector, torso.CFrame.UpVector)
-    local angleX = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.RightVector)*torso.CFrame.RightVector.Unit, torso.CFrame.LookVector, torso.CFrame.RightVector)
+    local angleX = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.RightVector)*torso.CFrame.RightVector.Unit, camera.CFrame.LookVector * Vector3.new(1,0,1), torso.CFrame.RightVector)
     --print(-math.deg(angleY))
     --print(math.deg(angleX))
     lookSpring.f = 8
@@ -172,7 +91,7 @@ local function lookAtMouse(torso, neck)
             math.clamp(-angleY, -math.pi/64, math.pi/64)
         )
         head.CFrame = torso.CFrame * (neck.C0 * CFrame.fromOrientation(
-            math.clamp(angleX, -math.pi/4, math.pi/4), 
+            math.clamp(angleX, -math.pi/16, math.pi/4), 
             math.clamp(-angleY, -math.pi/16, math.pi/16),
             math.clamp(-angleY, -math.pi/2, math.pi/2)
         ) * neck.C1:Inverse())
@@ -285,7 +204,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
 	local kfB = self.lastKF["HumanoidRootPart"] and self.lastKF["HumanoidRootPart"]["LowerTorso"] or self.lastKF["LowerTorso"]
     local kfA = keyframe["HumanoidRootPart"] and keyframe["HumanoidRootPart"]["LowerTorso"] or keyframe["LowerTorso"]
 
-    print(kfA)
+    --print(kfA)
 
 	if kfA then
 		if kfA.CFrame then
@@ -542,10 +461,18 @@ function AnimationController:_animate(char, keyframeTable, interp, framerate, fi
 
     framerate = framerate or 30
 
-    local current_i = (self.i - 1 + (0 % #keyframeTable) + #keyframeTable) % #keyframeTable + 1
-    local next_i = (self.i - 1 + (1 % #keyframeTable) + #keyframeTable) % #keyframeTable + 1
+    local current_i = (self.i - 1 + self.length) % self.length + 1
+    local offset
 
-    self.timediff = keyframeTable[next_i]["Time"] - keyframeTable[current_i]["Time"]
+    if self.increment >= 1 then
+        offset = (self.increment * self.speed) % self.length
+    elseif self.increment < 0 then
+        offset = -(self.length - (self.increment * self.speed) % self.length)
+    end
+
+    local next_i = (self.i - 1 + math.ceil(offset) + self.length) % self.length + 1 
+
+    self.timediff = math.abs(keyframeTable[next_i]["Time"] - keyframeTable[current_i]["Time"]) / self.speed
 
     if self.lastKFTable ~= keyframeTable then
         self.i = 1
@@ -557,25 +484,34 @@ function AnimationController:_animate(char, keyframeTable, interp, framerate, fi
     end
 
     --print(keyframeTable)
-    
 
     if not Player.Transitioning then
-        self.time += 1/framerate
+        self.time += 1/framerate * self.speed
     else
-        self.time += 1/framerate/2    
+        self.time += 1/framerate/2 * self.speed
+    end
+
+    if current_i > next_i then
+        if self.increment > 0 then
+            self.i = 1
+            self.timediff = 0
+        end
+    else
+        if self.increment < 0 then
+            self.i = self.length
+            self.timediff = 0
+        end
     end
 
     if self.time > self.timediff then
         self.i = next_i
         self.lastKF = self.lastKFTable[current_i]
         self.time = 0
-    elseif self.time <= self.timediff then
-        self.i = current_i
-    elseif self.timediff < 0 then
-        self.i = 1
-        self.time = 0
-        self.timediff = 1
-    elseif self.timediff == 0 then
+    else 
+        self.i =  current_i
+    end
+    
+    if self.timediff == 0 then
         self.timediff = 0.1
     end
 
@@ -594,6 +530,8 @@ end
 
 function AnimationController:Animate(keyframeTable, canInterp, framerate, filterTable)
     if Player.GetState("Respawning") then return end
+
+    self.length = #keyframeTable
 
     local char = Player.getCharacter()
     if keyframeTable then
@@ -619,12 +557,16 @@ function AnimationController.new()
     local self = setmetatable({}, AnimationController)
 
     self.i = 1
+    self.length = 100
     
     self.timediff = 0
     self.time = 0
 
     self.lastKFTable = {}
     self.lastKF = {}
+
+    self.increment = 1
+    self.speed = 1
 
     return self
 end

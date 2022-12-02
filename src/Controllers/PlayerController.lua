@@ -29,6 +29,7 @@ local debounce = false
 
 PlayerController.Animation = {}
 PlayerController.Framerate = 30
+PlayerController.LerpEnabled = false
 
 local connection
 
@@ -43,6 +44,7 @@ PlayerController.Modules = {}
 -- Animation Controller Layers
 PlayerController.LayerA = AnimationController.new()
 PlayerController.LayerB = AnimationController.new()
+PlayerController.DanceLayer = AnimationController.new()
 PlayerController.Initialized = false
 
 local nexoConnections
@@ -778,13 +780,17 @@ function PlayerController:Sprint()
 	if Player.Running then
 		FastTween(humA, runInfo, {WalkSpeed = Settings.runSpeed})
 		FastTween(humB, runInfo, {WalkSpeed = Settings.runSpeed})
+		humA.JumpPower = Settings.runJump
+		humB.JumpPower = Settings.runJump
 	elseif Player.Sprinting then
 		FastTween(humA, sprintInfo, {WalkSpeed = Settings.sprintSpeed})
 		FastTween(humB, sprintInfo, {WalkSpeed = Settings.sprintSpeed})
+		humA.JumpPower = Settings.sprintJump
+		humB.JumpPower = Settings.sprintJump
 	end
 
 	if Player.Flying then
-		tiltSpring.f = 2
+		tiltSpring.f = 2 * Player:GetAnimationSpeed()
 		--print("SprintFlying")
 		if Player.Dancing then return end
 		self.LayerA:Animate(
@@ -794,24 +800,22 @@ function PlayerController:Sprint()
 		)
 		Player.Transition(2)
 	else
-		tiltSpring.f = 4
+		tiltSpring.f = 4 * Player:GetAnimationSpeed()
 
-		humA.JumpPower = Settings.sprintJump
-		humB.JumpPower = Settings.sprintJump
 		if Player.Dancing then return end
 		if Player.Running then
 			--print("Running")
 			self.LayerA:Animate(
 				Player:GetAnimation("Run").Keyframes, 
 				true, 
-				30 / (humA.WalkSpeed/16)
+				30 / (humA.WalkSpeed/16) * Player:GetAnimationSpeed()
 			)
 		elseif Player.Sprinting then
 			--print("Sprinting")
 			self.LayerA:Animate(
 				Player:GetAnimation("Sprint").Keyframes, 
 				true, 
-				30
+				30 * Player:GetAnimationSpeed()
 			)
 		end
 		Player.Transition()
@@ -830,7 +834,7 @@ function PlayerController:Walk()
 	FastTween(humB, tweenInfo, {WalkSpeed = Settings.walkSpeed})
 
 	if Player.Flying then
-		tiltSpring.f = 1
+		tiltSpring.f = 1 * Player:GetAnimationSpeed()
 		--print("WalkFly")
 		if Player.Dancing then return end
 		self.LayerA:Animate(
@@ -840,13 +844,13 @@ function PlayerController:Walk()
 		)
 		Player.Transition(1)
 	else
-		tiltSpring.f = 2
+		tiltSpring.f = 2 * Player:GetAnimationSpeed()
 		--print("Walk")
 		if Player.Dancing then return end
 		self.LayerA:Animate(
 			Player:GetAnimation("Walk").Keyframes, 
 			true, 
-			Player.AnimationModule.Walk.Properties.Framerate / (humA.WalkSpeed/ 8)
+			Player.AnimationModule.Walk.Properties.Framerate / (humA.WalkSpeed/ 8) * Player:GetAnimationSpeed()
 		)
 		Player.Transition()
 	end
@@ -858,14 +862,14 @@ function PlayerController:Fall()
 
 	--print("Fall")
 	if Player.Flying then
-		tiltSpring.f = 1
+		tiltSpring.f = 1 * Player:GetAnimationSpeed()
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("FlyFall").Keyframes, false, 30)
+		self.LayerA:Animate(Player:GetAnimation("FlyFall").Keyframes, false, 30 * Player:GetAnimationSpeed())
 		Player.Transition(1)
 	else
-		tiltSpring.f = 3
+		tiltSpring.f = 3 * Player:GetAnimationSpeed()
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("Fall").Keyframes, false, 30)
+		self.LayerA:Animate(Player:GetAnimation("Fall").Keyframes, false, 30 * Player:GetAnimationSpeed())
 		Player.Transition()
 	end
 end
@@ -876,15 +880,15 @@ function PlayerController:Jump()
 
 	if Player.Flying then
 		--print("FlyingJump")
-		tiltSpring.f = 1
+		tiltSpring.f = 1 * Player:GetAnimationSpeed()
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("FlyJump").Keyframes, true, 30)
+		self.LayerA:Animate(Player:GetAnimation("FlyJump").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(0.5)
 	else
 		--print("Jump")
-		tiltSpring.f = 3
+		tiltSpring.f = 3 * Player:GetAnimationSpeed()
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("Jump").Keyframes, true, 30)
+		self.LayerA:Animate(Player:GetAnimation("Jump").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(0.5)
 	end
 end
@@ -894,7 +898,7 @@ function PlayerController:Idle()
 	local Settings = ControllerSettings:GetSettings()
 	local tweenInfo = {0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 
-	tiltSpring.f = 8
+	tiltSpring.f = 8 * Player:GetAnimationSpeed()
 
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
@@ -906,12 +910,12 @@ function PlayerController:Idle()
 	if Player.Flying then
 		--print("FlyingIdle")
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("FlyIdle").Keyframes, true, 30)
+		self.LayerA:Animate(Player:GetAnimation("FlyIdle").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(2)
 	else
 		--print("Idle")
 		if Player.Dancing then return end
-		self.LayerA:Animate(Player:GetAnimation("Idle").Keyframes, true, 30)
+		self.LayerA:Animate(Player:GetAnimation("Idle").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(1)
 	end
 end
@@ -941,8 +945,8 @@ end
 
 function PlayerController:DodgeGround()
 	if Player.Dancing then return end
-	Player.getNexoHumanoidRootPart().CFrame = Player.getNexoHumanoidRootPart().CFrame + moveVector*0.3
-	self.LayerB:Animate(Player:GetAnimation("Roll").Keyframes, true, 24)
+	Player.getNexoHumanoidRootPart().CFrame = Player.getNexoHumanoidRootPart().CFrame + moveVector * 0.3 / Player:GetAnimationSpeed()
+	self.LayerB:Animate(Player:GetAnimation("Roll").Keyframes, true, 24 * Player:GetAnimationSpeed())
 	--print("Dodging on Ground")
 end
 
@@ -972,6 +976,8 @@ function PlayerController:LeanCharacter(char)
 
 	tiltVector = Vector3.new(0,1,0) + char.Humanoid.MoveDirection * flyConstant * walkConstant * sprintConstant * jumpConstant * runConstant
 
+	moveSpring.f = 2 * Player:GetAnimationSpeed()
+
 	local tilt = tiltSpring:Update(Settings.DT, tiltVector)
 	local move = moveSpring:Update(Settings.DT, moveVector)
 
@@ -987,7 +993,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 	end
 
 	if Player.Dancing and #self.Animation > 0 then
-		self.LayerA:Animate(self.Animation)
+		self.DanceLayer:Animate(self.Animation, self.LerpEnabled, self.Framerate * Player:GetAnimationSpeed())
 	end
 
 	if Player.GetState("Jumping") then
@@ -1022,10 +1028,17 @@ end
 
 
 function PlayerController:ProcessInputs()
-	if ActionHandler.IsKeyDownBool(Enum.KeyCode.Equals) and not debounce then
-		toggleFling = not toggleFling
-		debounce = true
-		task.delay(0.2, function() debounce = false end)
+	if not debounce then
+		if ActionHandler.IsKeyDownBool(Enum.KeyCode.Equals) then
+			toggleFling = not toggleFling
+			debounce = true
+			task.delay(0.2, function() debounce = false end)
+		elseif ActionHandler.IsKeyDownBool(Enum.KeyCode.BackSlash) then
+			self.LerpEnabled = not self.LerpEnabled
+			debounce = true
+			--print("LerpEnabled:", self.LerpEnabled)
+			task.delay(0.2, function() debounce = false end)
+		end
 	end
 end
 
