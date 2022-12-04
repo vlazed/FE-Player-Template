@@ -43,8 +43,9 @@ StaffWielder.Initialized = false
 --]]
 local Staff = "Giant Sword Catcher"
 
-local Equipped = script.Parent.Animations.Equipped
-local Unequipped = script.Parent.Animations.Unequipped
+local Animations = script.Parent.Animations
+local Equipped = Animations.Equipped
+local Unequipped = Animations.Unequipped
 local filterTable = {}
 
 StaffWielder.PlayerAnimator = AnimationController.new()
@@ -81,7 +82,8 @@ StaffWielder.UnequippedAnimations = {
 	Jump = require(Unequipped.Jump),
 	Fall = require(Unequipped.Fall),
     Idle = require(Equipped.Hold),
-    Roll = require(Unequipped.DodgeGround)
+    Roll = require(Unequipped.DodgeGround),
+    Emotes = {}
 }
 StaffWielder.EquippedAnimations = {
 	Walk = require(Equipped.Walk),
@@ -91,6 +93,7 @@ StaffWielder.EquippedAnimations = {
 	Fall = require(Equipped.Fall),
     Idle = require(Equipped.Hold),
     Roll = require(Equipped.DodgeGround),
+    Emotes = {}
 }
 
 StaffWielder.LightAttacks = {
@@ -106,6 +109,14 @@ StaffWielder.Unequipping = false
 StaffWielder.Equipped = false
 StaffWielder.Attacking = false
 StaffWielder.Sitting = false
+
+for i,emote in ipairs(Unequipped.Emotes:GetChildren()) do
+    Unequipped.Emotes[emote.name] = require(emote)
+end
+
+for i,emote in ipairs(Equipped.Emotes:GetChildren()) do
+    Equipped.Emotes[emote.name] = require(emote)
+end
 
 --[[
     An example of an input processing function. Ideally, one should provide some debounce
@@ -228,7 +239,7 @@ end
 
 function StaffWielder:Init()
     if self.Initialized then return end
-    Player.AnimationModule = self.UnequippedAnimations
+    Player:SetAnimationModule(self.UnequippedAnimations)
     PlayerController.Modules[self] = self
     PlayerController:Init()
     self.Initialized = true

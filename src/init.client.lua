@@ -1,3 +1,8 @@
+if not Drawing then
+    print("Exploit not supported")
+    return
+end
+
 print("FE Player Template v1.0")
 task.wait(0.1)
 

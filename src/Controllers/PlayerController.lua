@@ -3,6 +3,7 @@ local Project = script:FindFirstAncestor("FE-Player-Template")
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
+local EmoteController = require(Project.Controllers.EmoteController)
 
 -- TODO: Determine CFrame-based implementation for R6 IK Foot Placement 
 --local R6IKController = require(Project.Controllers.R6IKController)
@@ -14,6 +15,7 @@ local FastTween = require(Project.Util.FastTween)
 local Thread = require(Project.Util.Thread)
 local Signal = require(Project.Packages.Signal)
 local Spring = require(Project.Util.Spring)
+local EmoteController = require(Project.Controllers.EmoteController)
 
 local RunService = game:GetService("RunService")
 
@@ -796,7 +798,7 @@ function PlayerController:Sprint()
 		self.LayerA:Animate(
 			Player:GetAnimation("FlySprint").Keyframes, 
 			true, 
-			30
+			30 * Player:GetAnimationSpeed()
 		)
 		Player.Transition(2)
 	else
@@ -1076,6 +1078,7 @@ function PlayerController:Update()
 	self:RunUpdateTable()
 	
 	ActionHandler:Update()
+	EmoteController:Update()
 	
 end    
 
@@ -1099,6 +1102,7 @@ function PlayerController:Init(canClickFling)
 
     connection = Thread.DelayRepeat(Settings.DT, self.Update, self)
 	ActionHandler:Init()
+	EmoteController:Init()
 
 	self.Initialized = true
 end
@@ -1113,6 +1117,8 @@ function PlayerController:Respawn()
 	for i, conn in pairs(nexoConnections)do 
 		conn:Disconnect()
 	end 
+
+	table.clear(nexoConnections)
 
 	if char:FindFirstChildOfClass("Humanoid") then
 		char:FindFirstChildOfClass("Humanoid"):ChangeState(15) 
@@ -1129,6 +1135,7 @@ function PlayerController:Respawn()
 	newChar:Destroy()	
 
 	ActionHandler:Stop()
+	EmoteController:Stop()
 
 	task.wait(0.5)
 	Player.SetState("Respawning", false)

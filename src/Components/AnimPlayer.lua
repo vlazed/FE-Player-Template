@@ -167,7 +167,7 @@ end
 
 
 function AnimPlayer:SetSpeed(speedMultiplier)
-    animator.increment = speedMultiplier
+    animator.speed = math.clamp(speedMultiplier, 0, math.huge)
 end
 
 
@@ -295,7 +295,7 @@ function AnimPlayer:Init(playerFrame: Frame)
             local num = string.gsub(speedMultiplier.Text, "x", "")
             num = tonumber(num)
             if num then
-                animator.speed = math.clamp(num, 0, math.huge)
+                self:SetSpeed(num) 
                 speedMultiplier.Text = tostring(num) .. "x"
                 print(animator.speed)
             end

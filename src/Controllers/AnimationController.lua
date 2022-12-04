@@ -3,6 +3,7 @@ local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local Player = require(Project.Player)
 local Spring = require(Project.Util.Spring)
 local VectorUtil = require(Project.Util.VectorUtil)
+local Thread = require(Project.Util.Thread)
 
 local AnimationController = {}
 AnimationController.__index = AnimationController
@@ -13,7 +14,6 @@ AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
-
 
 
 local function playerIKControl(R6Legs)
@@ -79,8 +79,8 @@ local function lookAtMouse(torso, neck)
     local lowerTorso = torso.Parent:FindFirstChild("LowerTorso")
     local root = hrp:FindFirstChild("RootJoint") or torso:FindFirstChild("Waist")
 
-    local angleY = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.UpVector)*torso.CFrame.UpVector.Unit, torso.CFrame.LookVector, torso.CFrame.UpVector)
-    local angleX = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.RightVector)*torso.CFrame.RightVector.Unit, camera.CFrame.LookVector * Vector3.new(1,0,1), torso.CFrame.RightVector)
+    local angleY = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.UpVector)*torso.CFrame.UpVector, torso.CFrame.LookVector, torso.CFrame.UpVector)
+    local angleX = VectorUtil.AngleBetweenSigned(look - look:Dot(camera.CFrame.RightVector)*camera.CFrame.RightVector, camera.CFrame.LookVector * Vector3.new(1,0,1), camera.CFrame.RightVector)
     --print(-math.deg(angleY))
     --print(math.deg(angleX))
     lookSpring.f = 8
@@ -93,7 +93,7 @@ local function lookAtMouse(torso, neck)
         head.CFrame = torso.CFrame * (neck.C0 * CFrame.fromOrientation(
             math.clamp(angleX, -math.pi/16, math.pi/4), 
             math.clamp(-angleY, -math.pi/16, math.pi/16),
-            math.clamp(-angleY, -math.pi/2, math.pi/2)
+            math.clamp(-angleY*0.75, -math.pi/2, math.pi/2)
         ) * neck.C1:Inverse())
     else
             torso.CFrame *= CFrame.fromOrientation(
@@ -457,12 +457,12 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 end
 
 
-function AnimationController:_animate(char, keyframeTable, interp, framerate, filterTable)
+function AnimationController:_animate(char, interp, framerate, filterTable)
 
     framerate = framerate or 30
 
     local current_i = (self.i - 1 + self.length) % self.length + 1
-    local offset
+    local offset = 0
 
     if self.increment >= 1 then
         offset = (self.increment * self.speed) % self.length
@@ -471,10 +471,17 @@ function AnimationController:_animate(char, keyframeTable, interp, framerate, fi
     end
 
     local next_i = (self.i - 1 + math.ceil(offset) + self.length) % self.length + 1 
+--[[
+    print("Next i", next_i)
+    print("Current i", current_i)
+    print("Index", self.i)
+    print(self.speed)
+    print("Offset", offset)
+    print("Length", self.length)
+]]
+    self.timediff = math.abs(self.KFTable[next_i]["Time"] - self.KFTable[current_i]["Time"]) / self.speed
 
-    self.timediff = math.abs(keyframeTable[next_i]["Time"] - keyframeTable[current_i]["Time"]) / self.speed
-
-    if self.lastKFTable ~= keyframeTable then
+    if self.lastKFTable ~= self.KFTable then
         self.i = 1
         self.time = 0
         self.timediff += 2
@@ -482,8 +489,6 @@ function AnimationController:_animate(char, keyframeTable, interp, framerate, fi
             self.timediff += 4
         end
     end
-
-    --print(keyframeTable)
 
     if not Player.Transitioning then
         self.time += 1/framerate * self.speed
@@ -518,12 +523,12 @@ function AnimationController:_animate(char, keyframeTable, interp, framerate, fi
     interp = math.clamp((interp and self.time/self.timediff or 1), 0, 1)
     
     --print(interp)
-    self.lastKFTable = keyframeTable
+    self.lastKFTable = self.KFTable
 
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, keyframeTable[self.i], interp, filterTable)
+        self:_poseR6(char, self.KFTable[self.i], interp, filterTable)
     else 
-        self:_poseR15(char, keyframeTable[self.i], interp, filterTable)
+        self:_poseR15(char, self.KFTable[self.i], interp, filterTable)
     end
 end
 
@@ -531,13 +536,15 @@ end
 function AnimationController:Animate(keyframeTable, canInterp, framerate, filterTable)
     if Player.GetState("Respawning") then return end
 
-    self.length = #keyframeTable
+    self.KFTable = keyframeTable
+    self.length = #self.KFTable
+    self.filterTable = filterTable
 
     local char = Player.getCharacter()
     if keyframeTable then
-        self:_animate(char, keyframeTable, canInterp, framerate, filterTable)
+        self:_animate(char, canInterp, framerate, filterTable)
     else
-        self:_animate(char, self.lastKFTable, canInterp, framerate, filterTable)
+        self:_animate(char, canInterp, framerate, filterTable)
     end
 end
 
@@ -562,11 +569,19 @@ function AnimationController.new()
     self.timediff = 0
     self.time = 0
 
+    self.KFTable = {}
     self.lastKFTable = {}
     self.lastKF = {}
 
     self.increment = 1
     self.speed = 1
+
+    self.upperBound = 1
+    self.lowerBound = self.length
+
+    self.filterTable = {}
+
+    self.connections = {}
 
     return self
 end

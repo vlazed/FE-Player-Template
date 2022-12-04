@@ -1,11 +1,16 @@
+local Project = script:FindFirstAncestor("FE-Player-Template")
+local Dances = Project.Assets.Dances
+
 local PlayerAnimations = {}
 
 local directory = script.Parent.Animations
 
 if game:GetService("Players").LocalPlayer.Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
     directory = directory.R6
+    Dances = Dances.R6
 else
     directory = directory.R15
+    Dances = Dances.R15
 end
 
 PlayerAnimations.Walk = require(directory.Move)
@@ -22,5 +27,17 @@ PlayerAnimations.FlySprint = require(directory.FlySprint)
 PlayerAnimations.FlyFall = require(directory.FlyFall)
 PlayerAnimations.FlyJump = require(directory.FlyJump)
 PlayerAnimations.Flip = require(directory.DodgeAir)
+
+PlayerAnimations.Emotes = {}
+
+PlayerAnimations.Dances = {}
+
+for i,emote in ipairs(directory.Emotes:GetChildren()) do
+    PlayerAnimations.Emotes[emote.name] = require(emote)
+end
+
+for i,dance in ipairs(Dances:GetChildren()) do
+    PlayerAnimations.Dances[dance.name] = dance
+end
 
 return PlayerAnimations

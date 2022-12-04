@@ -51,9 +51,14 @@ end
 
 
 function Player:GetAnimation(animation)
+	print(animation)
 	if self.AnimationModule[animation] then
 		return self.AnimationModule[animation]
-	else
+	elseif self.AnimationModule.Emotes[animation] then
+		return self.AnimationModule.Emotes[animation]
+	elseif PlayerAnimations.Emotes[animation] then
+		return PlayerAnimations.Emotes[animation]
+	elseif PlayerAnimations[animation] then
 		return PlayerAnimations[animation]
 	end
 end
@@ -87,6 +92,10 @@ function Player:InAir()
 	else
 		return true
 	end	
+end
+
+function Player:SetAnimationModule(module)
+	self.AnimationModule = module
 end
 
 function Player:ResetAnimationModule()
@@ -137,6 +146,11 @@ function Player.getNexoCharacterRootAttachment()
 	if not hrp then return nil end
 
 	return hrp:FindFirstChild("RootAttachment") or hrp:FindFirstChild("RootRigAttachment")
+end
+
+
+function Player.getPlayerGui()
+	return Player.getPlayer().PlayerGui
 end
 
 

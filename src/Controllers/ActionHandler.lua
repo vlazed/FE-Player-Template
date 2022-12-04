@@ -164,7 +164,7 @@ function ActionHandler.Listen(an, is, io)
             prevSettings.sprintButton, 
             Enum.KeyCode.Space
         )
-        task.delay(0.25, function()
+        task.delay(0.1, function()
             ContextActionService:UnbindAction("DelayListen")
         end)
     end
