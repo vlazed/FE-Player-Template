@@ -26,6 +26,11 @@ Player.Dodging = false
 Player.Running = false
 Player.Sprinting = false
 Player.Dancing = false
+Player.Looking = true
+
+Player.Emoting = false
+Player.Focusing = false
+Player.ChatEmoting = false
 
 Player.AnimationModule = PlayerAnimations
 Player.InAir = false
@@ -51,13 +56,12 @@ end
 
 
 function Player:GetAnimation(animation)
-	print(animation)
 	if self.AnimationModule[animation] then
 		return self.AnimationModule[animation]
-	elseif self.AnimationModule.Emotes[animation] then
-		return self.AnimationModule.Emotes[animation]
-	elseif PlayerAnimations.Emotes[animation] then
-		return PlayerAnimations.Emotes[animation]
+	elseif self.AnimationModule.Emotes[animation:lower()] then
+		return self.AnimationModule.Emotes[animation:lower()]
+	elseif PlayerAnimations.Emotes[animation:lower()] then
+		return PlayerAnimations.Emotes[animation:lower()]
 	elseif PlayerAnimations[animation] then
 		return PlayerAnimations[animation]
 	end

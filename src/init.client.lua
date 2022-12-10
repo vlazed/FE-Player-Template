@@ -1,6 +1,17 @@
-if not Drawing then
+if game:GetService("RunService"):IsStudio() then
+    print("Running in Roblox Studio")
+elseif not Drawing then
     print("Exploit not supported")
-    return
+    return    
+end
+
+if getgenv then
+    if not getgenv().Running then
+        getgenv().Running = true
+    else
+        print("Already activated")
+        return
+    end
 end
 
 print("FE Player Template v1.0")
@@ -38,5 +49,8 @@ if RunService:IsStudio() then
     end    
 end
 
+local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
+
 PlayerController:Init()
+--SelectedModule:Init()
 App:Init()

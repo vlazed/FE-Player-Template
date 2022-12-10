@@ -2,7 +2,6 @@ local Project = script:FindFirstAncestor("FE-Player-Template")
 local Player = require(Project.Player)
 local AnimationController = require(Project.Controllers.AnimationController)
 
-local Thread = require(Project.Util.Thread)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 
 local EmoteController = {}
@@ -13,12 +12,10 @@ local chatbar
 
 local PlayerGui = Player.getPlayerGui()
 
-EmoteController.Focusing = false
-EmoteController.Emoting = false
-
 local EmoteLayer = AnimationController.new()
 
 local Emote = {}
+local ChatEmote = {}
 
 local function getEmoteName(message)
 	if string.sub(message, 1, 3) == "/e " then
@@ -36,19 +33,23 @@ function EmoteController:NotChatted()
     local startChatDuration = startChattingAnim[#startChattingAnim]["Time"] - 0.1
 
     if startChattingAnim then
-        Emote = startChattingAnim
+        ChatEmote = startChattingAnim
         EmoteLayer.i = EmoteLayer.length
         EmoteLayer.increment = -1
-        self.Emoting = true
+        Player.ChatEmoting = true
     end
 
     task.delay(startChatDuration, function() 
-        self.Emoting = false 
+        Player.ChatEmoting = false
+        Player.Emoting = false
+
         EmoteLayer.i = 1
         EmoteLayer.increment = 1
+
+        EmoteLayer.looking = false
     end)
     
-    self.Focusing = false
+    Player.Focusing = false
 end
 
 
@@ -78,26 +79,40 @@ function EmoteController:Chatted(message)
     local emote = getEmoteName(message)
     local animation
     local duration
+
     if emote then
-        print("Emoting!")
-        animation = Player:GetAnimation(emote).Keyframes
+        animation = Player:GetAnimation(emote)
+        if animation then 
+            animation = animation.Keyframes
+        end
     else
         animation = self:ChooseChatAnim(message)
         print(message)
     end
 
-    if animation then
+    if animation and emote then
         Emote = animation
         duration = animation[#animation]["Time"] - 0.1
         EmoteLayer.i = 1
         EmoteLayer.increment = 1
-        self.Emoting = true
+        EmoteLayer.looking = false
+        
+        Player.Emoting = true
+    elseif animation then
+        ChatEmote = animation
+        duration = animation[#animation]["Time"] - 0.1
+        EmoteLayer.i = 1
+        EmoteLayer.increment = 1
+        Player.ChatEmoting = true
     end
 
-    self.Focusing = false
+    Player.Focusing = false
 
     task.delay(duration, function() 
-        self.Emoting = false 
+        Player.Emoting = false 
+        Player.ChatEmoting = false
+
+        EmoteLayer.looking = false
     end)
 end
 
@@ -107,30 +122,40 @@ function EmoteController:Chatting()
     local startChattingAnim = Player:GetAnimation("StartChatting").Keyframes
     local startChatDuration = startChattingAnim[#startChattingAnim]["Time"] - 0.1
 
-    Emote = startChattingAnim
+    ChatEmote = startChattingAnim
+    EmoteLayer.looking = true
 
     print("Chatting something")
 
     local ChattingAnim = Player:GetAnimation("Chatting").Keyframes
 
-    self.Focusing = true
+    Player.Focusing = true
 
-    if ChattingAnim and self.Focusing then
-        task.delay(startChatDuration, function() Emote = ChattingAnim end)
+    if ChattingAnim and Player.Focusing then
+        task.delay(startChatDuration, function() ChatEmote = ChattingAnim end)
     end
 end
 
 
 function EmoteController:Update()
-    if self.Focusing or self.Emoting then
+    
+    if Player.Emoting then
         --print(#Emote)
         --print("Animating Emote")
         EmoteLayer:Animate(
             Emote,
             true, 
             24 * Player:GetAnimationSpeed()
+        )
+    elseif Player.ChatEmoting or Player.Focusing then
+        --print(#Emote)
+        --print("Animating Emote")
+        EmoteLayer:Animate(
+            ChatEmote,
+            true, 
+            24 * Player:GetAnimationSpeed()
         )     
-    end    
+    end  
 end
 
 

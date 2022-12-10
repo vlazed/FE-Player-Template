@@ -4,6 +4,7 @@ local Player = require(Project.Player)
 local Spring = require(Project.Util.Spring)
 local VectorUtil = require(Project.Util.VectorUtil)
 local Thread = require(Project.Util.Thread)
+local FastTween = require(Project.Util.FastTween)
 
 local AnimationController = {}
 AnimationController.__index = AnimationController
@@ -14,6 +15,8 @@ AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
+local angleSpringY = Spring.new(16, 0)
+local angleSpringX = Spring.new(16, 0)
 
 
 local function playerIKControl(R6Legs)
@@ -66,7 +69,7 @@ local function playerIKControl(R6Legs)
 	end
 end
 
-local function lookAtMouse(torso, neck)
+local function lookAtMouse(torso)
     local Settings = ControllerSettings:GetSettings()
     local camera = workspace.CurrentCamera
 
@@ -75,38 +78,43 @@ local function lookAtMouse(torso, neck)
 	local head = Player.getCharacter():FindFirstChild("Head")
 	local look = lookSpring:Update(Settings.DT, mouse.Hit.Position - head.CFrame.Position)
 
-	local hrp = Player.getNexoHumanoidRootPart()
-    local lowerTorso = torso.Parent:FindFirstChild("LowerTorso")
-    local root = hrp:FindFirstChild("RootJoint") or torso:FindFirstChild("Waist")
-
     local angleY = VectorUtil.AngleBetweenSigned(look - look:Dot(torso.CFrame.UpVector)*torso.CFrame.UpVector, torso.CFrame.LookVector, torso.CFrame.UpVector)
     local angleX = VectorUtil.AngleBetweenSigned(look - look:Dot(camera.CFrame.RightVector)*camera.CFrame.RightVector, camera.CFrame.LookVector * Vector3.new(1,0,1), camera.CFrame.RightVector)
+    
+    angleY = angleSpringY:Update(Settings.DT, angleY)
+    angleX = angleSpringX:Update(Settings.DT, angleX)
+
     --print(-math.deg(angleY))
     --print(math.deg(angleX))
     lookSpring.f = 8
+
+    local torsoCF
+    local headCF
     if torso.Name == "Torso" then
         torso.CFrame *= CFrame.fromOrientation(
             math.clamp(-angleX, -math.pi/32, math.pi/32),
             math.clamp(-angleY, -math.pi/8, math.pi/8), 
             math.clamp(-angleY, -math.pi/64, math.pi/64)
         )
-        head.CFrame = torso.CFrame * (neck.C0 * CFrame.fromOrientation(
+        headCF = CFrame.fromOrientation(
             math.clamp(angleX, -math.pi/16, math.pi/4), 
-            math.clamp(-angleY, -math.pi/16, math.pi/16),
-            math.clamp(-angleY*0.75, -math.pi/2, math.pi/2)
-        ) * neck.C1:Inverse())
+            math.clamp(-angleY, -math.pi/8, math.pi/8),
+            math.clamp(-angleY, -math.pi/2.5, math.pi/2.5)
+        )
     else
-            torso.CFrame *= CFrame.fromOrientation(
-                math.clamp(-angleX, -math.pi/32, math.pi/32), 
-                math.clamp(-angleY, -math.pi/16, math.pi/16), 
-                math.clamp(-angleY, -math.pi/16, math.pi/16) 
-            )
-        head.CFrame = torso.CFrame * (neck.C0 * CFrame.fromOrientation(
+        torsoCF *= CFrame.fromOrientation(
+            math.clamp(-angleX, -math.pi/32, math.pi/32), 
+            math.clamp(-angleY, -math.pi/16, math.pi/16), 
+            math.clamp(-angleY, -math.pi/16, math.pi/16) 
+        )
+        headCF = CFrame.fromOrientation(
             math.clamp(-angleX, -math.pi/2, math.pi/2), 
             math.clamp(-angleY, -math.pi/2, math.pi/2), 
             math.clamp(-angleY, -math.pi/16, math.pi/16) 
-        ) * neck.C1:Inverse())
+        )
     end
+
+    return headCF
 end
 
 function AnimationController:_poseR15(character, keyframe, interp, filterTable)
@@ -136,13 +144,15 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
         end
 	end
 
-	local function animateLimb(limb, parent, motor, cf, lastCF, alpha) -- Local to parent
+	local function animateLimb(limb, parent, motor, cf, lastCF, alpha, lookCF) -- Local to parent
         lastCF = lastCF or CFrame.new()
         cf = cf or lastCF
 		
+        lookCF = lookCF or CFrame.new()
+
         local cfLerp = lastCF:Lerp(cf, alpha)
         motor.Transform = cfLerp
-        limb.CFrame = parent.CFrame * (motor.C0 * cfLerp * motor.C1:inverse())
+        limb.CFrame = parent.CFrame * (motor.C0 * cfLerp * lookCF * motor.C1:inverse())
 	end
 
 	local function animateHats(filterTable)
@@ -206,10 +216,17 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
 
     --print(kfA)
 
+    local headCF, torsoCF
+
 	if kfA then
+        if self.looking then
+            headCF = lookAtMouse(character["UpperTorso"])
+        end
+
 		if kfA.CFrame then
 			animateTorso(kfA.CFrame, kfB.CFrame, interp)
 		end
+
 		if kfA["RightUpperLeg"] then
 			animateLimb(
                 character["RightUpperLeg"], 
@@ -277,7 +294,8 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
                 Player.getNexoCharacter().UpperTorso["Waist"], 
                 kfA["UpperTorso"].CFrame, 
                 kfB["UpperTorso"].CFrame, 
-                interp
+                interp,
+                torsoCF
             )
 		end
         if kfA["UpperTorso"]["Head"] then
@@ -287,10 +305,11 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
                 Player.getNexoCharacter().Head["Neck"], 
                 kfA["UpperTorso"]["Head"].CFrame, 
                 kfB["UpperTorso"]["Head"].CFrame, 
-                interp
+                interp,
+                headCF
             )
-            lookAtMouse(character["UpperTorso"], Player.getNexoCharacter().Head["Neck"])
-			animateHats(filterTable)
+
+            animateHats(filterTable)
 		end
         if kfA["UpperTorso"]["RightUpperArm"] then
 			animateLimb(
@@ -360,6 +379,8 @@ end
 function AnimationController:_poseR6(character, keyframe, interp, filterTable)
     interp = interp or 1
 
+    local nexoCharacter = Player.getNexoCharacter()
+
 	local function animateTorso(cf, lastCF, alpha)
         lastCF = lastCF or CFrame.new()
 		cf = cf or lastCF
@@ -371,14 +392,20 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
         local cfLerp = lastCF:Lerp(cf, alpha)
 
         local angle = VectorUtil.AngleBetweenSigned(self.MoveVector, Vector3.new(0,0,1), Vector3.new(0,1,0))
+        
+        FastTween(hrp["RootJoint"], {0.1}, {Transform = cf})
 
-        hrp["RootJoint"].Transform = cfLerp
-        
         hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
-		character.Torso.CFrame = hrp.CFrame *  (C0 * cfLerp * C1:Inverse())
-        
-        if not (Player.Dancing or Player.Attacking or Player.Dodging) then
+		character.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
+        nexoCharacter.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
+
+        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.Emoting) then
             character.Torso.CFrame = CFrame.fromMatrix(
+                character.Torso.CFrame.Position,
+                self.TiltVector:Cross(-self.MoveVector), 
+                self.TiltVector
+            )
+            nexoCharacter.Torso.CFrame = CFrame.fromMatrix(
                 character.Torso.CFrame.Position,
                 self.TiltVector:Cross(-self.MoveVector), 
                 self.TiltVector
@@ -386,14 +413,18 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
         end
 	end
 
-	local function animateLimb(limb, motor, cf, lastCF, alpha) -- Local to torso
+	local function animateLimb(limb, motor, cf, lastCF, alpha, lookCF) -- Local to torso
         lastCF = lastCF or CFrame.new()
         cf = cf or lastCF
+        lookCF = lookCF or CFrame.new()
 		
         local cfLerp = lastCF:Lerp(cf, alpha)
-        motor.Transform = cfLerp
+
+        local nexoLimb = nexoCharacter:FindFirstChild(limb.Name)
         
-        limb.CFrame = character.Torso.CFrame * (motor.C0 * cfLerp * motor.C1:inverse())
+        FastTween(motor, {0.1}, {Transform = cf * lookCF})
+
+        limb.CFrame = character.Torso.CFrame * (motor.C0 * motor.Transform * motor.C1:inverse())
 	end
 
 	local function animateHats(filterTable)
@@ -411,7 +442,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
                 v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
 			end		
 		end
-
+        
 		for i,v in ipairs(Player.getCharacter():GetChildren()) do
 			if v:IsA("Accessory") and not filterTable[v.Name] then
                 local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
@@ -429,26 +460,30 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 	local kfB = self.lastKF["HumanoidRootPart"] and self.lastKF["HumanoidRootPart"]["Torso"] or self.lastKF["Torso"]
     local kfA = keyframe["HumanoidRootPart"] and keyframe["HumanoidRootPart"]["Torso"] or keyframe["Torso"]
 
+    local headCF
+
 	if kfA then
-		if kfA.CFrame then
+        if kfA.CFrame then
 			animateTorso(kfA.CFrame, kfB.CFrame, interp)
 		end
 		if kfA["Right Leg"] and kfB["Right Leg"] then
-			animateLimb(character["Right Leg"], Player.getNexoCharacter().Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame, interp)
+			animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame, interp)
 		end
 		if kfA["Left Leg"] and kfB["Left Leg"] then
-			animateLimb(character["Left Leg"], Player.getNexoCharacter().Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame, interp)
+			animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame, interp)
 		end
+        if self.looking then
+            headCF = lookAtMouse(character["Torso"]) 
+        end
 		if kfA["Head"] and kfB["Head"] then
-			animateLimb(character["Head"], Player.getNexoCharacter().Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, interp)
-            lookAtMouse(character["Torso"], Player.getNexoCharacter().Torso["Neck"])
+			animateLimb(character["Head"], nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, interp, headCF)
 			animateHats(filterTable)
 		end
         if kfA["Right Arm"] and kfB["Right Arm"] then
-            animateLimb(character["Right Arm"], Player.getNexoCharacter().Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame, interp)
+            animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame, interp)
 		end
 		if kfA["Left Arm"] and kfB["Left Arm"] then
-			animateLimb(character["Left Arm"], Player.getNexoCharacter().Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame, interp)
+			animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame, interp)
 		end
         --playerIKControl(AnimationController.R6Legs)
 	end
@@ -560,7 +595,7 @@ function AnimationController:_InterpolateToRest()
 end
 
 
-function AnimationController.new()
+function AnimationController.new(looking: boolean)
     local self = setmetatable({}, AnimationController)
 
     self.i = 1
@@ -582,6 +617,8 @@ function AnimationController.new()
     self.filterTable = {}
 
     self.connections = {}
+
+    self.looking = looking or false
 
     return self
 end

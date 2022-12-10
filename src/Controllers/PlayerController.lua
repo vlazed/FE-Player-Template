@@ -44,12 +44,32 @@ PlayerController.StoppedJumping = Signal.new()
 PlayerController.Modules = {}
 
 -- Animation Controller Layers
-PlayerController.LayerA = AnimationController.new()
+PlayerController.LayerA = AnimationController.new(Player.Looking)
 PlayerController.LayerB = AnimationController.new()
-PlayerController.DanceLayer = AnimationController.new()
+PlayerController.DanceLayer = AnimationController.new(false)
 PlayerController.Initialized = false
 
 local nexoConnections
+
+-- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
+local function setPhysicsOptimizations()
+	if RunService:IsStudio() then return end
+
+	settings()["Physics"].PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+	settings()["Physics"].AllowSleep = false
+	settings()["Physics"].ForceCSGv2 = false
+	settings()["Physics"].DisableCSGv2 = true
+	settings()["Physics"].UseCSGv2 = false
+	settings()["Physics"].ThrottleAdjustTime = math.huge
+
+	sethiddenproperty(workspace,"PhysicsSteppingMethod",Enum.PhysicsSteppingMethod.Fixed)
+	--sethiddenproperty(workspace,"PhysicsSimulationRate",Enum.PhysicsSimulationRate.Fixed240Hz)
+	sethiddenproperty(workspace, "SignalBehavior", "Immediate")
+
+	workspace.InterpolationThrottling = Enum.InterpolationThrottlingMode.Disabled
+	workspace.Retargeting = "Disabled"
+end
+
 
 --[[
 local R6Legs
@@ -546,7 +566,8 @@ local function _NexoLoad(canClickFling)
 		D.AlignOrientation.Responsiveness=math.huge 
 		D.AlignPosition.RigidityEnabled=false 
 		D.AlignOrientation.MaxTorque=999999999 
-		D.Massless=true 
+		D.Massless=true
+		D.RootPriority = 127
 	end 
 	local function j(D,E,F)
 		Instance.new("Attachment",D)
@@ -563,6 +584,7 @@ local function _NexoLoad(canClickFling)
 		D.AlignPosition.ReactionForceEnabled=false 
 		D.AlignPosition.Responsiveness=math.huge 
 		D.Massless=true 
+		D.RootPriority = 127
 	end 
 	for D,E in next,b:GetDescendants()do 
 		if E:IsA('BasePart')then 
@@ -1090,6 +1112,7 @@ function PlayerController:Init(canClickFling)
     canClickFling = canClickFling or false
 
 	print("Loading Player")
+	setPhysicsOptimizations()
 	if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
 		_R15ReanimLoad()
 	else
@@ -1136,6 +1159,10 @@ function PlayerController:Respawn()
 
 	ActionHandler:Stop()
 	EmoteController:Stop()
+
+	if getgenv then
+		getgenv().Running = false
+	end
 
 	task.wait(0.5)
 	Player.SetState("Respawning", false)
