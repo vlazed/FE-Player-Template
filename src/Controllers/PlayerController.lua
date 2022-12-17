@@ -21,6 +21,8 @@ local RunService = game:GetService("RunService")
 
 local PlayerController = {}
 
+local respawnConnection
+
 local moveVector = Vector3.new(1, 0, 0)
 local tiltVector = Vector3.new(0, 1, 0)
 local tiltSpring = Spring.new(2, tiltVector)
@@ -798,7 +800,7 @@ function PlayerController:Sprint()
 	local Settings = ControllerSettings:GetSettings()
 
 	local runInfo = {1, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
-	local sprintInfo = {5, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local sprintInfo = {10, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
 	if Player.Running then
@@ -832,7 +834,7 @@ function PlayerController:Sprint()
 			self.LayerA:Animate(
 				Player:GetAnimation("Run").Keyframes, 
 				true, 
-				30 / (humA.WalkSpeed/16) * Player:GetAnimationSpeed()
+				30 / (humA.WalkSpeed/32) * Player:GetAnimationSpeed()
 			)
 		elseif Player.Sprinting then
 			--print("Sprinting")
@@ -931,14 +933,15 @@ function PlayerController:Idle()
 	FastTween(humA, tweenInfo, {WalkSpeed = 0})
 	FastTween(humB, tweenInfo, {WalkSpeed = 0})
 
+	if Player.Dancing then return end
+	
 	if Player.Flying then
-		--print("FlyingIdle")
-		if Player.Dancing then return end
 		self.LayerA:Animate(Player:GetAnimation("FlyIdle").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(2)
+	elseif Player.FightMode then
+		self.LayerA:Animate(Player:GetAnimation("FightIdle").Keyframes, true, 30 * Player:GetAnimationSpeed())
+		Player.Transition(2)
 	else
-		--print("Idle")
-		if Player.Dancing then return end
 		self.LayerA:Animate(Player:GetAnimation("Idle").Keyframes, true, 30 * Player:GetAnimationSpeed())
 		Player.Transition(1)
 	end
@@ -1045,6 +1048,8 @@ function PlayerController:ProcessStates(char, nexoChar)
 		end
 	end
 
+	self.LayerA.looking = Player.Looking
+
 	char.Humanoid.AutoRotate = false
 	nexoChar.Humanoid.AutoRotate = false
 
@@ -1133,6 +1138,8 @@ end
 function PlayerController:Respawn()
     local char = game:GetService("Players").LocalPlayer.Character
 
+	local oldCFrame = Player.getCharacter().Torso.CFrame
+
 	SendNotification("Respawning")
 
 	connection:Disconnect()
@@ -1163,6 +1170,12 @@ function PlayerController:Respawn()
 	if getgenv then
 		getgenv().Running = false
 	end
+
+	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function()
+		task.wait()
+		Player.getCharacter().HumanoidRootPart.CFrame = oldCFrame
+		respawnConnection:Disconnect()
+	end)
 
 	task.wait(0.5)
 	Player.SetState("Respawning", false)

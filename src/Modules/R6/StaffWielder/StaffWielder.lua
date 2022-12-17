@@ -83,6 +83,7 @@ StaffWielder.UnequippedAnimations = {
 	Jump = require(Unequipped.Jump),
 	Fall = require(Unequipped.Fall),
     Idle = require(Unequipped.Hold),
+    FightIdle = require(Unequipped.FightIdle),
     Roll = require(Unequipped.DodgeGround),
     Emotes = {}
 }
@@ -93,6 +94,7 @@ StaffWielder.EquippedAnimations = {
 	Jump = require(Equipped.Jump),
 	Fall = require(Equipped.Fall),
     Idle = require(Equipped.Hold),
+    FightIdle = require(Equipped.FightIdle),
     Roll = require(Equipped.DodgeGround),
     Emotes = {}
 }
@@ -171,6 +173,7 @@ function StaffWielder:ProcessInputs()
         self.PlayerAnimator.speed = 1
         attack = self.LightAttacks[self.AttackIndex].Keyframes
         Player.Attacking = true
+        Player:SetStateForDuration("FightMode", true, 4)
         print(attack[#attack]["Time"])
         task.delay(attack[#attack]["Time"]-attack[#attack]["Time"]/2,function()
             Player.Attacking = false
@@ -181,8 +184,8 @@ function StaffWielder:ProcessInputs()
         self.PlayerAnimator.i = 1
         self.PlayerAnimator.speed = 1.175
         attack = self.HeavyAttacks[self.AttackIndex].Keyframes
+        Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking = true
-        --print(attack[#attack]["Time"])
         task.delay((attack[#attack]["Time"]-attack[#attack]["Time"]/3)/self.PlayerAnimator.speed,function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
@@ -263,10 +266,12 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
 
     if Player.Attacking then
         self.PlayerAnimator.looking = false
-        if self.Equipped and AccessoryStaff then
-            char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
-        else
-            char.HumanoidRootPart.Position = char.Torso.Position
+        if char.HumanoidRootPart then
+            if self.Equipped and AccessoryStaff then
+                char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
+            else
+                char.HumanoidRootPart.Position = char.Torso.Position
+            end
         end
         self.PlayerAnimator:Animate(attack, true, 20 * Player:GetAnimationSpeed(), filterTable)
     end

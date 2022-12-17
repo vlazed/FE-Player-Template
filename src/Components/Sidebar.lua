@@ -48,6 +48,7 @@ function Sidebar:CreateAnimationElement(filePath)
                 Player.Dancing = true
                 PlayerController.LayerA.i = 1
                 PlayerController:SetAnimation(keyframes)
+                PlayerController.Framerate = animTable.Properties.Framerate or 30
             else
                 Player.Dancing = false
             end

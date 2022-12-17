@@ -135,7 +135,11 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
         Player.getNexoCharacter().LowerTorso["Root"].Transform = cfLerp
         hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
 		character.LowerTorso.CFrame = hrp.CFrame * (C0 * cfLerp * C1:Inverse())
-        if not (Player.Dancing or Player.Attacking or Player.Dodging) then
+        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.FightMode) 
+            or Player:GetState("Jumping")
+            or Player:GetState("Walking")
+            or Player:GetState("Falling") 
+        then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
                 character.LowerTorso.CFrame.Position,
                 self.TiltVector:Cross(-self.MoveVector), 
@@ -399,7 +403,11 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 		character.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
         nexoCharacter.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
 
-        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.Emoting) then
+        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.Emoting or Player.FightMode)
+            or Player:GetState("Jumping")
+            or Player:GetState("Walking")
+            or Player:GetState("Falling")
+        then
             character.Torso.CFrame = CFrame.fromMatrix(
                 character.Torso.CFrame.Position,
                 self.TiltVector:Cross(-self.MoveVector), 

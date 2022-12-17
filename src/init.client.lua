@@ -51,6 +51,6 @@ end
 
 local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
 
-PlayerController:Init()
---SelectedModule:Init()
+--PlayerController:Init()
+SelectedModule:Init()
 App:Init()

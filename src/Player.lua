@@ -35,6 +35,8 @@ Player.ChatEmoting = false
 Player.AnimationModule = PlayerAnimations
 Player.InAir = false
 
+Player.Locked = false
+
 function Player.getPlayer()
 	return game.Players.LocalPlayer
 end
@@ -177,6 +179,85 @@ function Player.SetState(targetState, value)
 		else
 			Player.States[state] = false
 		end
+	end
+end
+
+
+function Player:_SetStateThroughValue(states, value, duration)
+	if typeof(states) == "string" then
+		local state = states
+
+		if self[state] ~= nil then
+			self.Locked = true
+			self[state] = value
+
+			task.delay(duration, function()
+				self.Locked = false
+				self[state] = not value
+			end)
+		end
+	elseif typeof(states) == "table" then
+		self.Locked = true
+
+		for i,state in pairs(states) do
+			if self[state] ~= nil then
+				self[state] = value
+			end 
+		end
+
+		task.delay(duration, function()
+			self.Locked = false
+			for i,state in pairs(states) do
+				if self[state] ~= nil then
+					self[state] = not value
+				end 
+			end
+		end)
+	end
+end
+
+
+function Player:_SetStateThroughTable(states, values, duration)
+	if typeof(states) == "string" then
+		local state = states[1]
+
+		if self[state] ~= nil then
+			self.Locked = true
+			self[state] = values[1]
+
+			task.delay(duration, function()
+				self.Locked = false
+				self[state] = not values[1]
+			end)
+		end
+	elseif typeof(states) == "table" then
+		self.Locked = true
+
+		for i,state in pairs(states) do
+			if self[state] ~= nil then
+				self[state] = values[i]
+			end 
+		end
+
+		task.delay(duration, function()
+			self.Locked = false
+			for i,state in pairs(states) do
+				if self[state] ~= nil then
+					self[state] = not values[i]
+				end 
+			end
+		end)
+	end	
+end
+
+
+function Player:SetStateForDuration(states: any, value: any, duration: number)
+	if self.Locked then return end
+	
+	if typeof(value) == "boolean" then
+		self:_SetStateThroughValue(states, value, duration)
+	elseif typeof(value) == "table" then
+		self:_SetStateThroughTable(states, value, duration)
 	end
 end
 
