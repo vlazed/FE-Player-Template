@@ -1,0 +1,9 @@
+{
+    "name": "FE-Player-Template",
+    "tree": {
+      "$path": "src",
+      "Packages": {
+        "$path": "Packages"
+      }
+    }
+  }
