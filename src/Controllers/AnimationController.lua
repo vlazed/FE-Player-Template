@@ -21,13 +21,13 @@ AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
 AnimationController.AnimationTable = {
-    [Enum.AnimationPriority.Action4] = {},
-    [Enum.AnimationPriority.Action3] = {},
-    [Enum.AnimationPriority.Action2] = {},
-    [Enum.AnimationPriority.Action] = {},
-    [Enum.AnimationPriority.Movement] = {},
+    [Enum.AnimationPriority.Core] = {},
     [Enum.AnimationPriority.Idle] = {},
-    [Enum.AnimationPriority.Core] = {}
+    [Enum.AnimationPriority.Movement] = {},
+    [Enum.AnimationPriority.Action] = {},
+    [Enum.AnimationPriority.Action2] = {},
+    [Enum.AnimationPriority.Action3] = {},
+    [Enum.AnimationPriority.Action4] = {}
 }
 
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
@@ -522,103 +522,32 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 end
 
 
-function AnimationController:_animate(char, interp, framerate, filterTable)
-
-    framerate = framerate or 30
-    framerate *=  Player:GetAnimationSpeed()
-
-    local current_i = (self.i - 1 + self.length) % self.length + 1
-    local offset = 0
-
-    if self.increment >= 1 then
-        offset = (self.increment * self.speed) % self.length
-    elseif self.increment < 0 then
-        offset = -(self.length - (self.increment * self.speed) % self.length)
-    end
-
-    local next_i = (self.i - 1 + math.ceil(offset) + self.length) % self.length + 1 
---[[
-    print("Next i", next_i)
-    print("Current i", current_i)
-    print("Index", self.i)
-    print(self.speed)
-    print("Offset", offset)
-    print("Length", self.length)
-]]
-    self.timediff = math.abs(self.KFTable[next_i]["Time"] - self.KFTable[current_i]["Time"]) / self.speed
-
-    if self.lastKFTable ~= self.KFTable then
-        self.i = 1
-        self.time = 0
-        self.timediff += 2
-        if Player.Transitioning then 
-            self.timediff += 4
-        end
-    end
-
-    if not Player.Transitioning then
-        self.time += 1/framerate * self.speed
-    else
-        self.time += 1/framerate/2 * self.speed
-    end
-
-    if current_i > next_i then
-        if self.increment > 0 then
-            self.i = 1
-            self.timediff = 0
-        end
-    else
-        if self.increment < 0 then
-            self.i = self.length
-            self.timediff = 0
-        end
-    end
-
-    if self.time > self.timediff then
-        self.i = next_i
-        self.lastKF = self.lastKFTable[current_i]
-        self.time = 0
-    else 
-        self.i =  current_i
-    end
-    
-    if self.timediff == 0 then
-        self.timediff = 0.1
-    end
-
-    interp = math.clamp((interp and self.time/self.timediff or 1), 0, 1)
-    
-    --print(interp)
-    self.lastKFTable = self.KFTable
-
-    if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, self.KFTable[self.i], interp, filterTable)
-    else 
-        self:_poseR15(char, self.KFTable[self.i], interp, filterTable)
-    end
-end
-
-
 function AnimationController:_animateStep(char, animation: Animation)
 
     local framerate = animation.Framerate
     framerate *=  Player:GetAnimationSpeed()
 
-    local current_i = (animation._index - 1 + animation.Length) % animation.Length + 1
+    local current_i = (animation._index - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0
 
-    if animation._index == animation.Length and not animation.Looping then
-        animation:Stop()
-        return
-    end
-
     if animation.Increment >= 1 then
-        offset = (animation.Increment * animation.Speed) % animation.Length
+        offset = (animation.Increment * animation.Speed) % animation.UpperBound
     elseif animation.Increment < 0 then
-        offset = -(animation.Length - (animation.Increment * animation.Speed) % animation.Length)
+        offset = -(animation.UpperBound - (animation.Increment * animation.Speed) % animation.UpperBound)
     end
 
-    local next_i = (animation._index - 1 + math.ceil(offset) + animation.Length) % animation.Length + 1 
+    local next_i = (animation._index - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
+
+    if current_i > next_i then
+        if not animation.Looping then
+            --print("Stop animation")
+            animation:Stop()
+            return
+        else
+            --print("Loop Animation")
+            animation.Looped:Fire()
+        end
+    end
 
     animation.TimeDiff = math.abs(animation.KeyframeSequence[next_i]["Time"] - animation.KeyframeSequence[current_i]["Time"]) / animation.Speed
 
@@ -635,7 +564,7 @@ function AnimationController:_animateStep(char, animation: Animation)
         end
     else
         if animation.Increment < 0 then
-            animation._index = animation.Length
+            animation._index = animation.UpperBound
             animation.TimeDiff = 0
         end
     end
@@ -667,27 +596,27 @@ function AnimationController:_animateStep(char, animation: Animation)
 end
 
 
+function AnimationController:_AnimatePriority(priority: Enum)
+    local char = Player.getCharacter()
+
+    for i, animation in pairs(self.AnimationTable[priority]) do
+        if animation._playing then
+            self:_animateStep(char, animation) 
+        end
+    end
+end
+
+
 function AnimationController:Animate(keyframeTable, canInterp, framerate, filterTable)
     if Player:GetState("Respawning") then return end
 
-    local char = Player.getCharacter()
-
-    for priority, animationTable in pairs(self.AnimationTable) do
-        --print(animationTable)
-        for i, animation in pairs(animationTable) do
-            if animation._playing then
-                self:_animateStep(char, animation) 
-            end
-        end
-    end
-
-    --[[
-    if keyframeTable then
-        self:_animate(char, canInterp, framerate, filterTable)
-    else
-        self:_animate(char, canInterp, framerate, filterTable)
-    end
-    --]]
+    self:_AnimatePriority(Enum.AnimationPriority.Core)
+    self:_AnimatePriority(Enum.AnimationPriority.Idle)
+    self:_AnimatePriority(Enum.AnimationPriority.Movement)
+    self:_AnimatePriority(Enum.AnimationPriority.Action)
+    self:_AnimatePriority(Enum.AnimationPriority.Action2)
+    self:_AnimatePriority(Enum.AnimationPriority.Action3)
+    self:_AnimatePriority(Enum.AnimationPriority.Action4)
 end
 
 
@@ -723,21 +652,7 @@ end
 function AnimationController.new(animationModule)
     local self = setmetatable({}, AnimationController)
 
-    self.i = 1
-    self.length = 100
-    
-    self.timediff = 0
-    self.time = 0
-
-    self.KFTable = {}
-    self.lastKFTable = {}
     self.lastKF = {}
-
-    self.increment = 1
-    self.speed = 1
-
-    self.upperBound = 1
-    self.lowerBound = self.length
 
     self.filterTable = {}
 
@@ -746,6 +661,11 @@ function AnimationController.new(animationModule)
     end
 
     return self
+end
+
+
+function AnimationController:Destroy()
+    self:UnloadAnimations()
 end
 
 

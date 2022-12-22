@@ -22,7 +22,7 @@ local tweenInfo = { 0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out }
 
 AnimPlayer.Playing = false
 
-local animator = {}
+local currentAnimation = {}
 
 local canDrag = false
 local clicking = false
@@ -121,8 +121,10 @@ end
 
 
 local function setTimePosition()
-    local pos = animator.i / animator.length
-    FastTween(timePosition, tweenInfo, {Position = UDim2.fromScale(pos, 0)})
+    if currentAnimation._index then
+        local pos = currentAnimation._index / currentAnimation.UpperBound
+        FastTween(timePosition, tweenInfo, {Position = UDim2.fromScale(pos, 0)}) 
+    end
 end
 
 
@@ -133,37 +135,37 @@ local function changeFramePosition()
 
     local pos = math.clamp(relMousePosRelToTimeline, 0, 1)
 
-    framePosition = math.round(pos * animator.length)
+    framePosition = math.round(pos * (currentAnimation.UpperBound - currentAnimation.LowerBound + 1))
     print(framePosition)
-    animator.i = framePosition
+    currentAnimation._index = framePosition
 
 end
 
 
-function AnimPlayer:AttachToAnimationController(animationController: AnimationController)
-    animator = animationController
+function AnimPlayer:AttachToAnimation(animation: Animation)
+    currentAnimation = animation
 end
 
 
 function AnimPlayer:SkipFrame(direction: number)
-    animator.i = (animator.i - 1 + (direction % animator.length) + animator.length) % animator.length + 1
+    currentAnimation._index = (currentAnimation._index - 1 + (direction % currentAnimation.UpperBound) + currentAnimation.UpperBound) % currentAnimation.UpperBound + currentAnimation.LowerBound
 end
 
 
 function AnimPlayer:SkipToEnd(pos: number)
-    pos = math.round(pos) or animator.length
+    pos = math.round(pos) or currentAnimation.UpperBound
 
-    animator.i = pos
+    currentAnimation._index = pos
 end
 
 
 function AnimPlayer:Play(isForward)
     if self.Playing then
         self.Playing = false
-        animator.increment = 0
+        currentAnimation.Increment = 0
     else
         self.Playing = true
-        animator.increment = isForward and 1 or -1
+        currentAnimation.Increment = isForward and 1 or -1
         --print("Playing forward:", isForward)
     end
 
@@ -172,7 +174,7 @@ end
 
 
 function AnimPlayer:SetSpeed(speedMultiplier)
-    animator.speed = math.clamp(speedMultiplier, 0, math.huge)
+    currentAnimation.speed = math.clamp(speedMultiplier, 0, math.huge)
 end
 
 
@@ -211,13 +213,13 @@ function AnimPlayer:Init(playerFrame: Frame)
     handle = playerFrame.Handle
     tab = playerFrame.Parent.AnimList.PlayerTab
 
-    self:AttachToAnimationController(PlayerController.DanceLayer)
+    self:AttachToAnimation(PlayerController.Animation)
 
-    speedMultiplier.Text = tostring(animator.speed) .. "x"
+    speedMultiplier.Text = tostring(currentAnimation.speed) .. "x"
 
     setupInput(play.Selection, self.Play, self, true)
     setupInput(rewind.Selection, self.Play, self, false)
-    setupInput(skipForward.Selection, self.SkipToEnd, self, animator.length)
+    setupInput(skipForward.Selection, self.SkipToEnd, self, currentAnimation.UpperBound)
     setupInput(skipBack.Selection, self.SkipToEnd, self, 1)
     setupInput(skipFrameForward.Selection, self.SkipFrame, self, 1)
     setupInput(skipFrameBack.Selection, self.SkipFrame, self, -1)
@@ -302,7 +304,7 @@ function AnimPlayer:Init(playerFrame: Frame)
             if num then
                 self:SetSpeed(num) 
                 speedMultiplier.Text = tostring(num) .. "x"
-                print(animator.speed)
+                print(currentAnimation.speed)
             end
         end
     end)

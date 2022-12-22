@@ -142,17 +142,14 @@ function ActionHandler.Listen(an, is, io)
         elseif io.KeyCode == prevSettings.crouchButton then
             --print("Crouching")
         elseif io.KeyCode == prevSettings.dodgeButton then
-            local contraction = (Player.Sprinting or Player:GetState("Walking") or Player.Running) and 0.7 or 0
+            local contraction = (Player.Sprinting:GetState() or Player:GetState("Walking") or Player.Running:GetState()) and 10 or 0
             Player.Dodging = true
-            if not Player:OnGround() then
-                task.delay(1, function()
-                    Player.Dodging = false
-                end)
+            if Player:OnGround() then
+                local anim = Player:GetAnimation("Roll")
+                anim.UpperBound = anim.Length - contraction
             else
-                local kf = Player.AnimationModule.Roll.Keyframes
-                task.delay(kf[#kf]["Time"] - contraction, function()
-                    Player.Dodging = false
-                end)
+                local anim = Player:GetAnimation("Flip")
+                anim.UpperBound = anim.Length - contraction
             end
         end
     elseif is == Enum.UserInputState.End then

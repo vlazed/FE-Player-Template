@@ -12,9 +12,9 @@ local State = {}
 State.__index = State
 
 State.States = {}
+State.LocomotionStates = {}
 
-
-function State.new(name: string, value: boolean)
+function State.new(name: string, value: boolean, locomotion: boolean)
 	local self = setmetatable({}, State)
 	
 	self._name = name
@@ -24,7 +24,11 @@ function State.new(name: string, value: boolean)
 	self.OnFalse = Signal.new()
 	self.PreviousState = nil
 
-	State.States[self._name] = self
+	if locomotion then
+		State.LocomotionStates[self._name] = self
+	else
+		State.States[self._name] = self
+	end
 
 	return self
 end
@@ -42,25 +46,25 @@ end
 
 function State:SetState(value: boolean)
 	value = value or false
-	if self._value and value then return end
+	if self._value == value then return end
 	self._value = value
 	if value then
-		self.OnTrue:Fire()
+		self.OnTrue:Fire(self)
 	else
-		self.OnFalse:Fire()
+		self.OnFalse:Fire(self)
 	end
-	self.OnChanged:Fire()
+	self.OnChanged:Fire(self)
 end
 
 
-function State:GetEnabledState()
-	for i, state in pairs(State.States) do
+function State:GetEnabledLocomotionState(locomotion: boolean)
+	for i, state in pairs(State.LocomotionStates) do
 		if state:GetState() then return state end
 	end
 end
 
 
-function State:GetStateName()
+function State:GetName()
 	return self._name
 end
 
@@ -71,7 +75,7 @@ end
 
 
 function State:__tostring()
-	return self:GetStateName()
+	return self:GetName()
 end
 
 function State:Remove()

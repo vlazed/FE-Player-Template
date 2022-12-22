@@ -1,3 +1,11 @@
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
+local Signal = require(Project.Packages.Signal)
 
 local Animation = {}
 Animation.__index = Animation
@@ -44,7 +52,15 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.UpperBound = self.Length
     self.LowerBound = 1
 
+    self.Stopped = Signal.new()
+    self.Looped = Signal.new()
+
     return self
+end
+
+
+function Animation:IsPlaying()
+    return self._playing
 end
 
 
@@ -56,6 +72,7 @@ end
 function Animation:Stop()
     self._playing = false
     self._index = 1
+    self.Stopped:Fire(self)
 end
 
 

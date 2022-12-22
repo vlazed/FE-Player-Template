@@ -90,7 +90,7 @@ StaffWielder.UnequippedAnimations = {
 	Fall = require(Unequipped.Fall),
     Idle = require(Unequipped.Hold),
     FightIdle = require(Unequipped.FightIdle),
-    Roll = require(Unequipped.DodgeGround),
+    Roll = require(Unequipped.Roll),
     Emotes = {}
 }
 StaffWielder.EquippedAnimations = {
@@ -101,7 +101,7 @@ StaffWielder.EquippedAnimations = {
 	Fall = require(Equipped.Fall),
     Idle = require(Equipped.Hold),
     FightIdle = require(Equipped.FightIdle),
-    Roll = require(Equipped.DodgeGround),
+    Roll = require(Equipped.Roll),
     Emotes = {}
 }
 

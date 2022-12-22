@@ -13,11 +13,11 @@ local State = require(Project.Util.State)
 local Player = {}
 
 Player.States = {
-	["Idling"] = State.new("Idling", false),
-	["Walking"] = State.new("Walking", false),
-	["Jumping"] = State.new("Jumping", false),
-	["Falling"] = State.new("Falling", false),
-	["Respawning"] = State.new("Respawning", false),
+	["Idling"] = State.new("Idling", false, true),
+	["Walking"] = State.new("Walking", false, true),
+	["Jumping"] = State.new("Jumping", false, true),
+	["Falling"] = State.new("Falling", false, true),
+	["Respawning"] = State.new("Respawning", false, true),
 }
 
 --[[
@@ -180,8 +180,8 @@ function Player:GetStateClass(state)
 end
 
 
-function Player:GetEnabledState()
-	return State:GetEnabledState()
+function Player:GetEnabledLocomotionState()
+	return State:GetEnabledLocomotionState()
 end
 
 
@@ -294,6 +294,7 @@ function Player:UpdateMass()
 	local mass = 0
 	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
 		if instance:IsA("BasePart") then
+			if instance.Massless then continue end
 			mass += instance.Mass
 		end
 	end
@@ -306,6 +307,7 @@ end
 function Player:_initializeMass()
 	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
 		if instance:IsA("BasePart") then
+			if instance.Massless then continue end
 			self.Mass += instance.Mass
 		end
 	end
