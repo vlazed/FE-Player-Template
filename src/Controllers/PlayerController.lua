@@ -503,6 +503,7 @@ local function _NexoLoad(canClickFling)
 	
     for D,E in next,b:GetDescendants()do 
 		if E:IsA("BasePart")then 
+			--E.Massless = true
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
@@ -531,7 +532,6 @@ local function _NexoLoad(canClickFling)
 	for D,E in next,y:GetDescendants()do 
 		if E:IsA('BasePart') or E:IsA('Decal') then 
 			E.Transparency=1 
-			if E:IsA('BasePart') then E.Massless = true end
 		end 
 	end 
 	local h=5.65 
@@ -1180,6 +1180,11 @@ function PlayerController:OnIdle()
 		Player:GetAnimation("FlyWalk"):Pause()
 		Player:GetAnimation("FlyIdle"):Play()
 	else
+		Player:GetAnimation("FlyJump"):Stop()
+		Player:GetAnimation("FlyIdle"):Stop()
+		Player:GetAnimation("FlyFall"):Stop()
+		Player:GetAnimation("FlyJump"):Stop()
+
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Walk"):Pause()
@@ -1202,20 +1207,27 @@ function PlayerController.OnStopAnimation(animation: Animation)
 end
 
 
+local function delayStopAnim(anim: Animation)
+	if Player:GetEnabledLocomotionState():GetName() == "Idling" then
+		anim:Play()
+	end
+end
+
+
 function PlayerController.StoppedState(state)
 	if state:GetName() == "Sprinting" then
 		print("Skidded HARD")
 		Player:GetAnimation("Sprint"):Stop()
+		task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
 	elseif state:GetName() == "Running" then
 		print("Skidded")
-		Player:GetAnimation("RunStop"):Play()
 		Player:GetAnimation("Run"):Stop()
+		task.delay(0.05, delayStopAnim, Player:GetAnimation("RunStop"))
 	end
 end
 
 
 function PlayerController:OnWalk()
-	print("Walking")
 	if Player.Flying then
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
@@ -1229,12 +1241,13 @@ end
 
 
 function PlayerController:OnJump()
-	print("Jumping")
 	if Player.Flying then
+		print("FlyJump")
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyWalk"):Pause()
 		Player:GetAnimation("FlyJump"):Play()
 	else
+		print("Jump")
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Walk"):Pause()
 		Player:GetAnimation("Jump"):Play()
@@ -1243,12 +1256,13 @@ end
 
 
 function PlayerController:OnFall()
-	print("Falling")
 	if Player.Flying then
+		print("FlyFall")
 		Player:GetAnimation("FlyWalk"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
 		Player:GetAnimation("FlyFall"):Play()
 	else
+		print("Fall")
 		Player:GetAnimation("Walk"):Pause()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Fall"):Play()
