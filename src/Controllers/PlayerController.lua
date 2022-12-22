@@ -1191,8 +1191,13 @@ function PlayerController:OnIdle()
 		Player:GetAnimation("Idle"):Play()
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
 			if math.abs(fallingSpeed) > 150 then
+				Player:GetAnimation("LandHard").Framerate = 30
+				Player.Landing = true
+				Player:GetAnimation("LandHard"):Play()
 				print("Landed HARD")
 			else
+				Player.Landing = true
+				Player:GetAnimation("LandSoft"):Play()
 				print("Landed")
 			end
 		end	
@@ -1203,6 +1208,8 @@ end
 function PlayerController.OnStopAnimation(animation: Animation)
 	if Player.Dodging or animation.Name == "Roll" then
 		Player.Dodging = false
+	elseif animation.Name == "LandSoft" or animation.Name == "LandHard" then
+		Player.Landing = false
 	end
 end
 

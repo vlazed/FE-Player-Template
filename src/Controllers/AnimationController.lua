@@ -132,7 +132,7 @@ local function lookAtMouse(torso)
     return headCF
 end
 
-function AnimationController:_poseR15(character, keyframe, interp, filterTable)
+function AnimationController:_poseR15(character, keyframe, interp, filterTable, looking)
     interp = interp or 1
 
 	local function animateTorso(cf, lastCF, alpha)
@@ -155,6 +155,8 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
             Player.Dancing 
             or Player.Attacking 
             or Player.Dodging 
+            or Player.Emoting
+            or Player.Landing
             or Player.FightMode
         )
         then
@@ -241,7 +243,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
     local headCF, torsoCF
 
 	if kfA then
-        if self.looking then
+        if looking then
             headCF = lookAtMouse(character["UpperTorso"])
         end
 
@@ -398,7 +400,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
     lastFilterTable = filterTable
 end
 
-function AnimationController:_poseR6(character, keyframe, interp, filterTable)
+function AnimationController:_poseR6(character, keyframe, interp, filterTable, looking)
     interp = interp or 1
 
     local nexoCharacter = Player.getNexoCharacter()
@@ -427,6 +429,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
                 Player.Attacking or 
                 Player.Dodging or 
                 Player.Emoting or 
+                Player.Landing or
                 Player.FightMode
             )
         then
@@ -502,7 +505,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 		if kfA["Left Leg"] and kfB["Left Leg"] then
 			animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame, interp)
 		end
-        if self.looking then
+        if looking then
             headCF = lookAtMouse(character["Torso"]) 
         end
 		if kfA["Head"] and kfB["Head"] then
@@ -587,9 +590,9 @@ function AnimationController:_animateStep(char, animation: Animation)
     --print(animation.KeyframeSequence)
 
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable)
+        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable, animation.Looking)
     else 
-        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable)
+        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable, animation.Looking)
     end
 
     

@@ -20,7 +20,7 @@ end
 for i,v in ipairs(directory:GetChildren()) do
     if v:IsA("ModuleScript") then
         --print(v)
-        PlayerAnimations[v.Name] = Animation.new(v.Name, require(v))
+        PlayerAnimations[v.Name] = Animation.new(v.Name, require(v), require(v).Properties.Framerate, true)
     end
 end
 
@@ -44,7 +44,7 @@ PlayerAnimations.Flip = require(directory.Flip)
 PlayerAnimations.Emotes = {}
 
 for i,emote in ipairs(directory.Emotes:GetChildren()) do
-    PlayerAnimations.Emotes[emote.name:lower()] = Animation.new(emote.name, require(emote))
+    PlayerAnimations.Emotes[emote.name:lower()] = Animation.new(emote.name, require(emote), true)
 end
 
 return PlayerAnimations

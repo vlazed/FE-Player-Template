@@ -40,6 +40,7 @@ Player.Swimming = false
 Player.Emoting = false
 Player.Focusing = false
 Player.ChatEmoting = false
+Player.Landing = false
 
 Player.AnimationModule = PlayerAnimations
 
