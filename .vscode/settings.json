@@ -4,5 +4,10 @@
         "isfolder",
         "sethiddenproperty",
         "sethiddenproperty"
+    ],
+    "robloxLsp.workspace.ignoreDir": [
+        ".vscode",
+        "**/_Index/**",
+        "fe-player-template/animations"
     ]
 }

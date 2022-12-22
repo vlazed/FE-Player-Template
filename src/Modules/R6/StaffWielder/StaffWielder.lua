@@ -27,7 +27,13 @@
         - Populate a keyboard with different emotes (with a known emote mapping).
 --]]
 
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local Player = require(Project.Player)
 
 local PlayerController = require(Project.Controllers.PlayerController)
@@ -49,7 +55,7 @@ local Equipped = Animations.Equipped
 local Unequipped = Animations.Unequipped
 local filterTable = {}
 
-StaffWielder.PlayerAnimator = AnimationController.new(true)
+StaffWielder.PlayerAnimator = AnimationController.new()
 
 StaffWielder.Idle = require(Equipped.Hold)
 
@@ -171,11 +177,11 @@ function StaffWielder:ProcessInputs()
     if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking then
         self.PlayerAnimator.i = 1
         self.PlayerAnimator.speed = 1
-        attack = self.LightAttacks[self.AttackIndex].Keyframes
+        attack = self.LightAttacks[self.AttackIndex]
+        local attackKFTable = attack.Keyframes
         Player.Attacking = true
         Player:SetStateForDuration("FightMode", true, 4)
-        print(attack[#attack]["Time"])
-        task.delay(attack[#attack]["Time"]-attack[#attack]["Time"]/2,function()
+        task.delay(attackKFTable[#attackKFTable]["Time"]-attackKFTable[#attackKFTable]["Time"]/2,function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
             self.PlayerAnimator.speed = 1
@@ -183,10 +189,11 @@ function StaffWielder:ProcessInputs()
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking then
         self.PlayerAnimator.i = 1
         self.PlayerAnimator.speed = 1.175
-        attack = self.HeavyAttacks[self.AttackIndex].Keyframes
+        attack = self.HeavyAttacks[self.AttackIndex]
+        local attackKFTable = attack.Keyframes
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking = true
-        task.delay((attack[#attack]["Time"]-attack[#attack]["Time"]/3)/self.PlayerAnimator.speed,function()
+        task.delay((attackKFTable[#attackKFTable]["Time"]-attackKFTable[#attackKFTable]["Time"]/3)/self.PlayerAnimator.speed,function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
             self.PlayerAnimator.speed = 1
@@ -207,7 +214,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
         self.PlayerAnimator:Animate(
             self.Sit.Keyframes, 
             true, 
-            30 * Player:GetAnimationSpeed(), 
+            30, 
             filterTable
         )
     end
@@ -215,7 +222,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Equipping then
         self.AttackIndex = 1
         print("Equipping")
-        self.PlayerAnimator:Animate(self.Equipp.Keyframes, true, 30 * Player:GetAnimationSpeed(), filterTable)
+        self.PlayerAnimator:Animate(self.Equipp.Keyframes, true, 30, filterTable)
         task.delay(25/30, function() self:Equip() end)
         task.delay(
             self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
@@ -228,7 +235,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Unequipping then
         self.AttackIndex = 1
         print("Unequipping")
-        self.PlayerAnimator:Animate(self.Unequipp.Keyframes, true, 30 * Player:GetAnimationSpeed(), filterTable)
+        self.PlayerAnimator:Animate(self.Unequipp.Keyframes, true, 30, filterTable)
         task.delay(25/30, function() self:Unequip() end)
         task.delay(
             self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
@@ -243,7 +250,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Equipped and AccessoryStaff then
         self.LightAttacks = self.EquippedLightAttacks
         self.HeavyAttacks = self.EquippedHeavyAttacks
-        attack = self.LightAttacks[self.AttackIndex].Keyframes
+        attack = self.LightAttacks[self.AttackIndex]
         local nexoStaff = Player.getNexoCharacter():FindFirstChild(AccessoryStaff.Name)
 
         AccessoryStaff.Handle.CFrame = 
@@ -270,10 +277,10 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
             if self.Equipped and AccessoryStaff then
                 char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
             else
-                char.HumanoidRootPart.Position = char.Torso.Position
+                char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -2))
             end
         end
-        self.PlayerAnimator:Animate(attack, true, 20 * Player:GetAnimationSpeed(), filterTable)
+        self.PlayerAnimator:Animate(attack.Keyframes, true, attack.Framerate, filterTable)
     end
         
     self.PlayerAnimator.looking = true

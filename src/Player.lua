@@ -1,15 +1,23 @@
-local Thread = require(script.Parent.Util.Thread)
-local PlayerAnimations = require(script.Parent.Controllers.PlayerAnimations)
-local ControllerSettings = require(script.Parent.Controllers.ControllerSettings)
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
+local Thread = require(Project.Util.Thread)
+local PlayerAnimations = require(Project.Controllers.PlayerAnimations)
+local ControllerSettings = require(Project.Controllers.ControllerSettings)
+local State = require(Project.Util.State)
 
 local Player = {}
 
 Player.States = {
-	["Idling"] = false,
-	["Walking"] = false,
-	["Jumping"] = false,
-	["Falling"] = false,
-	["Respawning"] = false,
+	["Idling"] = State.new("Idling", false),
+	["Walking"] = State.new("Walking", false),
+	["Jumping"] = State.new("Jumping", false),
+	["Falling"] = State.new("Falling", false),
+	["Respawning"] = State.new("Respawning", false),
 }
 
 --[[
@@ -23,19 +31,21 @@ Player.Transitioning = false
 Player.Flying = false
 Player.Crouching = false
 Player.Dodging = false
-Player.Running = false
-Player.Sprinting = false
+Player.Running = State.new("Running", false)
+Player.Sprinting = State.new("Sprinting", false)
 Player.Dancing = false
 Player.Looking = true
+Player.Swimming = false
 
 Player.Emoting = false
 Player.Focusing = false
 Player.ChatEmoting = false
 
 Player.AnimationModule = PlayerAnimations
-Player.InAir = false
 
 Player.Locked = false
+
+Player.Mass = 0
 
 function Player.getPlayer()
 	return game.Players.LocalPlayer
@@ -86,18 +96,16 @@ function Player:GetAnimationSpeed()
 end
 
 
-function Player:InAir()
+function Player:OnGround()
 	local hrp = self.getNexoHumanoidRootPart()
+	local _hrp = self.getHumanoidRootPart()
 	local params = RaycastParams.new()
-	params.FilterDescendantsInstances = {hrp.Parent}
+	params.FilterDescendantsInstances = {hrp.Parent, Player.getCharacter()}
 	params.FilterType = Enum.RaycastFilterType.Blacklist
 	params.IgnoreWater = false
-	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-1000,0), params)
-	if raycastResult then
-		return ((raycastResult.Position - hrp.Position).Magnitude > 5)
-	else
-		return true
-	end	
+	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-5,0), params)
+	
+	return raycastResult
 end
 
 function Player:SetAnimationModule(module)
@@ -165,19 +173,29 @@ function Player.GetStateTable()
 end
 
 
-function Player.GetState(state)
-	if Player.States[state] then
-		return Player.States[state]
+function Player:GetStateClass(state)
+	if self.States[state] then
+		return self.States[state]
 	end
 end
 
 
-function Player.SetState(targetState, value)
+function Player:GetEnabledState()
+	return State:GetEnabledState()
+end
+
+
+function Player:GetState(state)
+	return self:GetStateClass(state):GetState()
+end
+
+
+function Player:SetState(targetState, value)
 	for state, boolvalue in pairs(Player.States) do
 		if state == targetState then
-			Player.States[state] = value
+			self:GetStateClass(state):SetState(value)
 		else
-			Player.States[state] = false
+			self:GetStateClass(state):SetState(false)
 		end
 	end
 end
@@ -270,5 +288,41 @@ end
 function Player.tweenHumanoidAttribute(attribute: string, value: any, tweenInfo: table)
 	
 end
+
+
+function Player:UpdateMass()
+	local mass = 0
+	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
+		if instance:IsA("BasePart") then
+			mass += instance.Mass
+		end
+	end
+	if mass ~= self.Mass then
+		self.Mass = mass
+	end
+end
+
+
+function Player:_initializeMass()
+	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
+		if instance:IsA("BasePart") then
+			self.Mass += instance.Mass
+		end
+	end
+end
+
+
+function Player:GetWeight()
+	return self.Mass * workspace.Gravity
+end
+
+function Player:CleanStates()
+	for i,state in pairs(self.States) do
+		state:Remove()
+	end
+end
+
+
+Player:_initializeMass()
 
 return Player

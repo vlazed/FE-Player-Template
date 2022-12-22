@@ -1,5 +1,10 @@
 local UserInputService = game:GetService("UserInputService")
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
 
 local Thread = require(Project.Util.Thread)
 local PlayerController = require(Project.Controllers.PlayerController)

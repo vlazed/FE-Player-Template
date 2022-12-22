@@ -1,7 +1,7 @@
 return {
 	Properties = {
 		Looping = true,
-		Priority = Enum.AnimationPriority.Idle
+		Priority = Enum.AnimationPriority.Movement
 	},
 	Keyframes = {
 		{

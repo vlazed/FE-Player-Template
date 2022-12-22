@@ -1,4 +1,10 @@
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local Player = require(Project.Player)
 
@@ -105,8 +111,8 @@ function ActionHandler.DelayListen(an, is, io)
     if is == Enum.UserInputState.Begin then    
         if io.KeyCode == prevSettings.sprintButton then
             print("Sprinting")
-            Player.Running = false
-            Player.Sprinting = true
+            Player.Running:SetState(false)
+            Player.Sprinting:SetState(true) 
         elseif io.KeyCode == Enum.KeyCode.Space then
             Player.Flying = not Player.Flying
         end
@@ -123,22 +129,22 @@ function ActionHandler.Listen(an, is, io)
     if is == Enum.UserInputState.Begin then
         if io.KeyCode == prevSettings.respawnButton then
             --print("Respawning")
-            Player.SetState("Respawning", true)
+            Player:SetState("Respawning", true)
         elseif io.KeyCode == prevSettings.sprintButton then
             --print("Sprinting")
-            Player.Running = true
+            Player.Running:SetState(true)
         elseif io.KeyCode == Enum.KeyCode.Space then
             --print("Jumping")
-            Player.SetState("Jumping", true)
+            Player:SetState("Jumping", true)
             task.delay(0.5, function()
-                Player.SetState("Jumping", false)
+                Player:SetState("Jumping", false)
             end)
         elseif io.KeyCode == prevSettings.crouchButton then
             --print("Crouching")
         elseif io.KeyCode == prevSettings.dodgeButton then
-            local contraction = (Player.Sprinting or Player.GetState("Walking") or Player.Running) and 0.7 or 0
+            local contraction = (Player.Sprinting or Player:GetState("Walking") or Player.Running) and 0.7 or 0
             Player.Dodging = true
-            if Player:InAir() then
+            if not Player:OnGround() then
                 task.delay(1, function()
                     Player.Dodging = false
                 end)
@@ -152,8 +158,8 @@ function ActionHandler.Listen(an, is, io)
     elseif is == Enum.UserInputState.End then
         if io.KeyCode == prevSettings.sprintButton then
             --print("Not sprinting")
-            Player.Running = false
-            Player.Sprinting = false
+            Player.Running:SetState(false)
+            Player.Sprinting:SetState(false)
         elseif io.KeyCode == prevSettings.crouchButton then
             --print("Crouching")
         end

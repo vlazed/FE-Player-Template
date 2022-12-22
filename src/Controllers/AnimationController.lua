@@ -1,4 +1,10 @@
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local Player = require(Project.Player)
 local Spring = require(Project.Util.Spring)
@@ -14,10 +20,19 @@ AnimationController.TiltVector = Vector3.new(0,1,0)
 AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
+AnimationController.AnimationTable = {
+    [Enum.AnimationPriority.Action4] = {},
+    [Enum.AnimationPriority.Action3] = {},
+    [Enum.AnimationPriority.Action2] = {},
+    [Enum.AnimationPriority.Action] = {},
+    [Enum.AnimationPriority.Movement] = {},
+    [Enum.AnimationPriority.Idle] = {},
+    [Enum.AnimationPriority.Core] = {}
+}
+
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
 local angleSpringY = Spring.new(16, 0)
 local angleSpringX = Spring.new(16, 0)
-
 
 local function playerIKControl(R6Legs)
     local Settings = ControllerSettings:GetSettings()
@@ -28,7 +43,7 @@ local function playerIKControl(R6Legs)
 	local CF			=CFrame.new 
 	local ANGLES		=CFrame.Angles
 
-	if Player.GetState("Walking") then
+	if Player:GetState("Walking") then
 		for _, Leg in pairs(R6Legs) do
 			local strideCF = Leg.StrideCF or CFrame.new(0, 0, -2 / 2)
 			local strideOffset = Leg.StrideOffset or 0
@@ -135,10 +150,13 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable)
         Player.getNexoCharacter().LowerTorso["Root"].Transform = cfLerp
         hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
 		character.LowerTorso.CFrame = hrp.CFrame * (C0 * cfLerp * C1:Inverse())
-        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.FightMode) 
-            or Player:GetState("Jumping")
-            or Player:GetState("Walking")
-            or Player:GetState("Falling") 
+        if 
+        not (
+            Player.Dancing 
+            or Player.Attacking 
+            or Player.Dodging 
+            or Player.FightMode
+        )
         then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
                 character.LowerTorso.CFrame.Position,
@@ -403,10 +421,14 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable)
 		character.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
         nexoCharacter.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
 
-        if not (Player.Dancing or Player.Attacking or Player.Dodging or Player.Emoting or Player.FightMode)
-            or Player:GetState("Jumping")
-            or Player:GetState("Walking")
-            or Player:GetState("Falling")
+        if 
+            not (
+                Player.Dancing or 
+                Player.Attacking or 
+                Player.Dodging or 
+                Player.Emoting or 
+                Player.FightMode
+            )
         then
             character.Torso.CFrame = CFrame.fromMatrix(
                 character.Torso.CFrame.Position,
@@ -503,6 +525,7 @@ end
 function AnimationController:_animate(char, interp, framerate, filterTable)
 
     framerate = framerate or 30
+    framerate *=  Player:GetAnimationSpeed()
 
     local current_i = (self.i - 1 + self.length) % self.length + 1
     local offset = 0
@@ -576,34 +599,128 @@ function AnimationController:_animate(char, interp, framerate, filterTable)
 end
 
 
-function AnimationController:Animate(keyframeTable, canInterp, framerate, filterTable)
-    if Player.GetState("Respawning") then return end
+function AnimationController:_animateStep(char, animation: Animation)
 
-    self.KFTable = keyframeTable
-    self.length = #self.KFTable
-    self.filterTable = filterTable
+    local framerate = animation.Framerate
+    framerate *=  Player:GetAnimationSpeed()
+
+    local current_i = (animation._index - 1 + animation.Length) % animation.Length + 1
+    local offset = 0
+
+    if animation._index == animation.Length and not animation.Looping then
+        animation:Stop()
+        return
+    end
+
+    if animation.Increment >= 1 then
+        offset = (animation.Increment * animation.Speed) % animation.Length
+    elseif animation.Increment < 0 then
+        offset = -(animation.Length - (animation.Increment * animation.Speed) % animation.Length)
+    end
+
+    local next_i = (animation._index - 1 + math.ceil(offset) + animation.Length) % animation.Length + 1 
+
+    animation.TimeDiff = math.abs(animation.KeyframeSequence[next_i]["Time"] - animation.KeyframeSequence[current_i]["Time"]) / animation.Speed
+
+    if not Player.Transitioning then
+        animation.Time += 1/framerate * animation.Speed
+    else
+        animation.Time += 1/framerate/2 * animation.Speed
+    end
+
+    if current_i > next_i then
+        if animation.Increment > 0 then
+            animation._index = 1
+            animation.TimeDiff = 0
+        end
+    else
+        if animation.Increment < 0 then
+            animation._index = animation.Length
+            animation.TimeDiff = 0
+        end
+    end
+
+    if animation.Time > animation.TimeDiff then
+        animation._index = next_i
+        self.lastKF = animation.KeyframeSequence[current_i]
+        animation.Time = 0
+    else 
+        animation._index =  current_i
+    end
+    
+    if animation.TimeDiff == 0 then
+        animation.TimeDiff = 0.1
+    end
+
+    local interp = math.clamp((animation.IsInterpolating and animation.Time/animation.TimeDiff or 1), 0, 1)
+
+    --print(animation.Name)
+    --print(animation.KeyframeSequence)
+
+    if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
+        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable)
+    else 
+        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable)
+    end
+
+    
+end
+
+
+function AnimationController:Animate(keyframeTable, canInterp, framerate, filterTable)
+    if Player:GetState("Respawning") then return end
 
     local char = Player.getCharacter()
+
+    for priority, animationTable in pairs(self.AnimationTable) do
+        --print(animationTable)
+        for i, animation in pairs(animationTable) do
+            if animation._playing then
+                self:_animateStep(char, animation) 
+            end
+        end
+    end
+
+    --[[
     if keyframeTable then
         self:_animate(char, canInterp, framerate, filterTable)
     else
         self:_animate(char, canInterp, framerate, filterTable)
     end
+    --]]
 end
 
 
-function AnimationController:_InterpolateToRest()
-    local char = Player.getCharacter()
-    local hum = Player.getHumanoid()
-    if hum.RigType == Enum.HumanoidRigType.R6 then
-        self:_animate(char, self.lastKFTable, true, 30)
-    else 
-        self:_animate(char, self.lastKFTable, true, 30)
+function AnimationController:UnloadAnimations()
+    for priority,v in pairs(self.AnimationTable) do
+        self.AnimationTable[priority] = {}
     end
 end
 
 
-function AnimationController.new(looking: boolean)
+function AnimationController:UnloadAnimation(animation: Animation)
+    self.AnimationTable[animation.Priority][animation.Name] = nil
+end
+
+
+function AnimationController:LoadAnimation(animation: Animation)
+    self.AnimationTable[animation.Priority][animation.Name] = animation
+end
+
+
+function AnimationController:_InitializeAnimations(animModule)
+    for index,animationTable in pairs(self.AnimationTable) do
+        for i, animation in pairs(animModule) do
+            --print(animation.Name)
+            if index == animation.Priority then
+                animationTable[animation.Name] = animation
+            end
+        end
+    end
+end
+
+
+function AnimationController.new(animationModule)
     local self = setmetatable({}, AnimationController)
 
     self.i = 1
@@ -624,13 +741,12 @@ function AnimationController.new(looking: boolean)
 
     self.filterTable = {}
 
-    self.connections = {}
-
-    self.looking = looking or false
+    if animationModule then
+        self:_InitializeAnimations(animationModule)
+    end
 
     return self
 end
-
 
 
 return AnimationController

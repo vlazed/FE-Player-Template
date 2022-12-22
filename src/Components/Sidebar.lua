@@ -1,5 +1,11 @@
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local RunService = game:GetService("RunService")
-local Project = script:FindFirstAncestor("FE-Player-Template")
 
 local Thread = require(Project.Util.Thread)
 local PlayerController = require(Project.Controllers.PlayerController)
@@ -48,7 +54,7 @@ function Sidebar:CreateAnimationElement(filePath)
                 Player.Dancing = true
                 PlayerController.LayerA.i = 1
                 PlayerController:SetAnimation(keyframes)
-                PlayerController.Framerate = animTable.Properties.Framerate or 30
+                PlayerController.Framerate = animTable.Framerate or 30
             else
                 Player.Dancing = false
             end

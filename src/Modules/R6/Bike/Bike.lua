@@ -27,7 +27,13 @@
         - Populate a keyboard with different emotes (with a known emote mapping).
 --]]
 
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local Player = require(Project.Player)
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)

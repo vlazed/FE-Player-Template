@@ -1,10 +1,14 @@
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
 
 local App = {}
 
 local RunService = game:GetService("RunService")
 local ParentGui = game:GetService("CoreGui")
-
-local Project = script:FindFirstAncestor("FE-Player-Template")
 
 local Player = require(Project.Player)
 
@@ -53,7 +57,7 @@ end
 function App.Update()
     --print("App update")
     --print(PlayerHelper.Respawning)
-    if Player.GetState("Respawning") then
+    if Player:GetState("Respawning") then
         print("Removing App")
         AnimPlayer:Remove()
         Sidebar:Remove()

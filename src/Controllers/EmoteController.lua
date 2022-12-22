@@ -1,4 +1,10 @@
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
+
 local Player = require(Project.Player)
 local AnimationController = require(Project.Controllers.AnimationController)
 
@@ -12,7 +18,7 @@ local chatbar
 
 local PlayerGui = Player.getPlayerGui()
 
-local EmoteLayer = AnimationController.new()
+local EmoteLayer = AnimationController.new(Player.AnimationModule.Emotes)
 
 local Emote = {}
 local ChatEmote = {}
@@ -145,7 +151,7 @@ function EmoteController:Update()
         EmoteLayer:Animate(
             Emote,
             true, 
-            24 * Player:GetAnimationSpeed()
+            24
         )
     elseif Player.ChatEmoting or Player.Focusing then
         --print(#Emote)
@@ -153,7 +159,7 @@ function EmoteController:Update()
         EmoteLayer:Animate(
             ChatEmote,
             true, 
-            24 * Player:GetAnimationSpeed()
+            24
         )     
     end  
 end

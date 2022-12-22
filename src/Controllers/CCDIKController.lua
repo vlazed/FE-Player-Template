@@ -4,7 +4,12 @@
 
 -- Modified by Vlazed to adapt controller to project package
 
-local Project = script:FindFirstAncestor("FE-Player-Template")
+local Project
+if getgenv then
+	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
+else
+	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
+end
 
 local Debris = game:GetService("Debris") -- for debugging
 local RunService = game:GetService("RunService")
