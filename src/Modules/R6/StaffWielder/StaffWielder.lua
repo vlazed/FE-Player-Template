@@ -38,6 +38,7 @@ local Player = require(Project.Player)
 
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
+local Animation = require(Project.Controllers.Animations.Animation)
 local AnimationController = require(Project.Controllers.AnimationController)
 
 local StaffWielder = {}
@@ -46,24 +47,19 @@ StaffWielder.Initialized = false
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
-    or somehow loses the accessory.
+    or somehow lose the accessory.
 --]]
 local Staff = "Giant Sword Catcher"
 
 local Animations = script.Parent.Animations
+local Emotes = Animations.Emotes
 local Equipped = Animations.Equipped
 local Unequipped = Animations.Unequipped
 local filterTable = {}
 
-StaffWielder.PlayerAnimator = AnimationController.new()
-
-StaffWielder.Idle = require(Equipped.Hold)
-
-StaffWielder.Unequipp = require(Equipped.Unequip)
-
-StaffWielder.Equipp = require(Unequipped.Equip)
-
-StaffWielder.Sit = require(Unequipped.Sit)
+StaffWielder.Unequipp = Animation.new("Unequip", require(Equipped.Unequip), 30, true)
+StaffWielder.Equipp = Animation.new("Equip", require(Unequipped.Equip), 30, true)
+StaffWielder.Sit = Animation.new("Sit", require(Unequipped.Sit), 30, true)
 
 StaffWielder.Keybinds = {
     Enum.KeyCode.Q,    -- Equip/Unequip
@@ -80,56 +76,88 @@ local SitButton = Enum.KeyCode.C
 
 --[[
     An example of an animation table with fields to access those animations. All animation tables
-    must have the fields listed below. Access the wiki for a list of animation fields
+    will need the fields listed below. Access the wiki for a list of animation fields
+    - Walk
+    - Run
+    - Sprint
+    - Jump
+    - Fall
+    - Idle
+    - Roll
+    - Flip
+
 --]]
+
 StaffWielder.UnequippedAnimations = {
-	Walk = require(Unequipped.Walk),
-	Run = require(Unequipped.Run),
-	Sprint = require(Unequipped.Sprint),
-	Jump = require(Unequipped.Jump),
-	Fall = require(Unequipped.Fall),
-    Idle = require(Unequipped.Hold),
-    FightIdle = require(Unequipped.FightIdle),
-    Roll = require(Unequipped.Roll),
     Emotes = {}
 }
+
 StaffWielder.EquippedAnimations = {
-	Walk = require(Equipped.Walk),
-	Run = require(Equipped.Run),
-	Sprint = require(Equipped.Sprint),
-	Jump = require(Equipped.Jump),
-	Fall = require(Equipped.Fall),
-    Idle = require(Equipped.Hold),
-    FightIdle = require(Equipped.FightIdle),
-    Roll = require(Equipped.Roll),
     Emotes = {}
 }
 
-StaffWielder.EquippedLightAttacks = {
-    require(Equipped.LightAttackA),
-    require(Equipped.LightAttackB)
-}
+StaffWielder.EquippedLightAttacks = {}
 
-StaffWielder.UnequippedLightAttacks = {
-    require(Unequipped.LightAttackA),
-    require(Unequipped.LightAttackB),
-    require(Unequipped.LightAttackC),
-    require(Unequipped.LightAttackD),
-}
+StaffWielder.UnequippedLightAttacks = {}
 
-StaffWielder.EquippedHeavyAttacks = {
-    require(Unequipped.HeavyAttackA),
-    require(Unequipped.HeavyAttackB),
-    require(Unequipped.HeavyAttackC),
-    require(Unequipped.HeavyAttackD),
-}
+StaffWielder.EquippedHeavyAttacks = {}
 
-StaffWielder.UnequippedHeavyAttacks = {
-    require(Unequipped.HeavyAttackA),
-    require(Unequipped.HeavyAttackB),
-    require(Unequipped.HeavyAttackC),
-    require(Unequipped.HeavyAttackD),
-}
+StaffWielder.UnequippedHeavyAttacks = {}
+
+function StaffWielder:_InitializeAnimations()
+    PlayerController.LayerA:LoadAnimation(self.Sit)
+    PlayerController.LayerA:LoadAnimation(self.Equipp)
+    PlayerController.LayerA:LoadAnimation(self.Unequipp)
+
+    for i,v in ipairs(self.EquippedLightAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.UnequippedLightAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.EquippedHeavyAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.UnequippedHeavyAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+end
+
+local function populateEmoteTable(inputTable: table, targetTable: table)
+    for i,v in ipairs(inputTable) do
+        if v:IsA("ModuleScript") then
+            local animation = require(v)
+            targetTable[v.Name:lower()] = Animation.new(v.Name, animation, animation.Properties.Framerate, true)
+        end    
+    end
+end
+
+local function populateAnimationTable(inputTable: table, targetTable: table)
+    for i,v in ipairs(inputTable) do
+        if v:IsA("ModuleScript") then
+            local animation = require(v)
+            targetTable[v.Name] = Animation.new(v.Name, animation, animation.Properties.Framerate, true)                
+        end
+    end
+end
+
+local function populateAttackTable(inputTable: table, targetTable: table)
+    for i,v in ipairs(inputTable) do
+        if v:IsA("ModuleScript") then
+            local animation = require(v)
+            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, true))                
+        end
+    end
+end
+
+populateAnimationTable(Unequipped:GetChildren(), StaffWielder.UnequippedAnimations)
+populateAnimationTable(Equipped:GetChildren(), StaffWielder.EquippedAnimations)
+populateEmoteTable(Emotes:GetChildren(), StaffWielder.UnequippedAnimations.Emotes)
+populateEmoteTable(Emotes:GetChildren(), StaffWielder.EquippedAnimations.Emotes)
+populateAttackTable(Unequipped.LightAttacks:GetChildren(), StaffWielder.UnequippedLightAttacks)
+populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), StaffWielder.UnequippedHeavyAttacks)
+populateAttackTable(Equipped.LightAttacks:GetChildren(), StaffWielder.EquippedLightAttacks)
+populateAttackTable(Equipped.HeavyAttacks:GetChildren(), StaffWielder.EquippedHeavyAttacks)
 
 StaffWielder.LightAttacks = {}
 StaffWielder.HeavyAttacks = {}
@@ -145,14 +173,6 @@ StaffWielder.Sitting = false
 
 local attack
 
-for i,emote in ipairs(Unequipped.Parent.Emotes:GetChildren()) do
-    StaffWielder.UnequippedAnimations.Emotes[emote.name:lower()] = require(emote)
-end
-
-for i,emote in ipairs(Equipped.Parent.Emotes:GetChildren()) do
-    StaffWielder.EquippedAnimations.Emotes[emote.name:lower()] = require(emote)
-end
-
 --[[
     An example of an input processing function. Ideally, one should provide some debounce
     implementation to prevent inputs from processing on the update step
@@ -163,43 +183,41 @@ function StaffWielder:ProcessInputs()
     if ActionHandler.IsKeyDownBool(EquipButton) then
         if not self.Equipped and not self.Equipping then
             self.Unequipping = false
-            self.PlayerAnimator.i = 1
             self.Equipping = true
+            self.Equipp:Stop()
+            self.Equipp:Play()
+            task.delay(25/30, function() self:Equip() end)
         elseif self.Equipped and not self.Unequipping then
             self.Equipping = false
-            self.PlayerAnimator.i = 1
             self.Unequipping = true
+            self.Unequipp:Stop()
+            self.Unequipp:Play()
+            task.delay(25/30, function() self:Unequip() end)
         end
-    elseif ActionHandler.IsKeyDownBool(SitButton) then
+    elseif ActionHandler.IsKeyDownBool(SitButton) and not self.Sit:IsPlaying() then
         self.Sitting = not self.Sitting
+        self.Sit:Play()
     end
 
     if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking then
-        self.PlayerAnimator.i = 1
-        self.PlayerAnimator.speed = 1
         attack = self.LightAttacks[self.AttackIndex]
-        local attackKFTable = attack.Keyframes
         Player.Attacking = true
+        attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
-        task.delay(attackKFTable[#attackKFTable]["Time"]-attackKFTable[#attackKFTable]["Time"]/2,function()
+        task.delay(attack.Length/2,function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
-            self.PlayerAnimator.speed = 1
         end)
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking then
-        self.PlayerAnimator.i = 1
-        self.PlayerAnimator.speed = 1.175
         attack = self.HeavyAttacks[self.AttackIndex]
-        local attackKFTable = attack.Keyframes
+        attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking = true
-        task.delay((attackKFTable[#attackKFTable]["Time"]-attackKFTable[#attackKFTable]["Time"]/3)/self.PlayerAnimator.speed,function()
+        task.delay(2*attack.Length/3, function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
-            self.PlayerAnimator.speed = 1
         end)
     end
-    
 end
 
 
@@ -207,45 +225,6 @@ end
     An example of a state processing function. 
 --]]
 function StaffWielder:ProcessStates(char, AccessoryStaff)
-    
-    if self.Sitting then
-        self.lastKFTable = PlayerController.LayerA.KFTable
-        Player.Transition(3)
-        self.PlayerAnimator:Animate(
-            self.Sit.Keyframes, 
-            true, 
-            30, 
-            filterTable
-        )
-    end
-
-    if self.Equipping then
-        self.AttackIndex = 1
-        print("Equipping")
-        self.PlayerAnimator:Animate(self.Equipp.Keyframes, true, 30, filterTable)
-        task.delay(25/30, function() self:Equip() end)
-        task.delay(
-            self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
-            function() 
-                self.Equipping = false 
-            end
-        )
-    end
-
-    if self.Unequipping then
-        self.AttackIndex = 1
-        print("Unequipping")
-        self.PlayerAnimator:Animate(self.Unequipp.Keyframes, true, 30, filterTable)
-        task.delay(25/30, function() self:Unequip() end)
-        task.delay(
-            self.Equipp.Keyframes[#self.Equipp.Keyframes]["Time"],
-            function() 
-                self.Unequipping = false 
-            end
-        )
-    end
-
-    --print(self.AttackIndex)
 
     if self.Equipped and AccessoryStaff then
         self.LightAttacks = self.EquippedLightAttacks
@@ -272,7 +251,6 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     end
 
     if Player.Attacking then
-        self.PlayerAnimator.looking = false
         if char.HumanoidRootPart then
             if self.Equipped and AccessoryStaff then
                 char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
@@ -280,16 +258,14 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
                 char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -2))
             end
         end
-        self.PlayerAnimator:Animate(attack.Keyframes, true, attack.Framerate, filterTable)
     end
-        
-    self.PlayerAnimator.looking = true
 end
 
 function StaffWielder:Unequip()
     self.Equipped = false
     filterTable[Staff] = nil
-    Player.AnimationModule = self.UnequippedAnimations
+    Player:SetAnimationModule(self.UnequippedAnimations)
+    PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
 end
 
 
@@ -299,7 +275,8 @@ function StaffWielder:Equip()
     if AccessoryStaff then
         filterTable[Staff] = AccessoryStaff
     end
-    Player.AnimationModule = self.EquippedAnimations
+    Player:SetAnimationModule(self.EquippedAnimations)
+    PlayerController.LayerA:UpdateModule(self.EquippedAnimations)
 end
 
 --[[

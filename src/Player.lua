@@ -113,6 +113,10 @@ function Player:SetAnimationModule(module)
 	self.AnimationModule = module
 end
 
+function Player:GetAnimationModule()
+	return self.AnimationModule
+end
+
 function Player:ResetAnimationModule()
 	self.AnimationModule = PlayerAnimations
 end

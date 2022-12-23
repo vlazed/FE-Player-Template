@@ -643,6 +643,18 @@ function AnimationController:LoadAnimation(animation: Animation)
 end
 
 
+function AnimationController:UpdateModule(animModule)
+    for index,animationTable in pairs(self.AnimationTable) do
+        for i, animation in pairs(animModule) do
+            --print(animation.Name)
+            if index == animation.Priority then
+                animationTable[animation.Name] = animation
+            end
+        end
+    end
+end
+
+
 function AnimationController:_InitializeAnimations(animModule)
     for index,animationTable in pairs(self.AnimationTable) do
         for i, animation in pairs(animModule) do
