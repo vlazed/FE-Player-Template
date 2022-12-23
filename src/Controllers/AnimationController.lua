@@ -589,9 +589,6 @@ function AnimationController:_animateStep(char, animation: Animation)
 
     local interp = math.clamp((animation.IsInterpolating and animation.Time/animation.TimeDiff or 1), 0, 1)
 
-    --print(animation.Name)
-    --print(animation.KeyframeSequence)
-
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
         self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, self.FilterTable, animation.Looking)
     else 

@@ -34,6 +34,8 @@ else
 	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
 end
 
+local RunService = game:GetService("RunService")
+
 local Player = require(Project.Player)
 
 local PlayerController = require(Project.Controllers.PlayerController)
@@ -56,9 +58,7 @@ local Emotes = Animations.Emotes
 local Equipped = Animations.Equipped
 local Unequipped = Animations.Unequipped
 local filterTable = {}
-
-StaffWielder.Unequipp = Animation.new("Unequip", require(Equipped.Unequip), 30, true)
-StaffWielder.Equipp = Animation.new("Equip", require(Unequipped.Equip), 30, true)
+ 
 StaffWielder.Sit = Animation.new("Sit", require(Unequipped.Sit), 30, true)
 
 StaffWielder.Keybinds = {
@@ -88,13 +88,9 @@ local SitButton = Enum.KeyCode.C
 
 --]]
 
-StaffWielder.UnequippedAnimations = {
-    Emotes = {}
-}
+StaffWielder.UnequippedAnimations = {Emotes = {}}
 
-StaffWielder.EquippedAnimations = {
-    Emotes = {}
-}
+StaffWielder.EquippedAnimations = {Emotes = {}}
 
 StaffWielder.EquippedLightAttacks = {}
 
@@ -104,27 +100,6 @@ StaffWielder.EquippedHeavyAttacks = {}
 
 StaffWielder.UnequippedHeavyAttacks = {}
 
-function StaffWielder:_InitializeAnimations()
-    PlayerController.LayerA:LoadAnimation(self.Sit)
-    PlayerController.LayerA:LoadAnimation(self.Equipp)
-    PlayerController.LayerA:LoadAnimation(self.Unequipp)
-
-    self.Unequipp.Stopped:Connect(self.OnStopAnimation)
-    self.Equipp.Stopped:Connect(self.OnStopAnimation)
-
-    for i,v in ipairs(self.EquippedLightAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
-    for i,v in ipairs(self.UnequippedLightAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
-    for i,v in ipairs(self.EquippedHeavyAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
-    for i,v in ipairs(self.UnequippedHeavyAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
-end
 
 local function populateEmoteTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
@@ -155,12 +130,31 @@ end
 
 populateAnimationTable(Unequipped:GetChildren(), StaffWielder.UnequippedAnimations)
 populateAnimationTable(Equipped:GetChildren(), StaffWielder.EquippedAnimations)
-populateEmoteTable(Emotes:GetChildren(), StaffWielder.UnequippedAnimations.Emotes)
 populateEmoteTable(Emotes:GetChildren(), StaffWielder.EquippedAnimations.Emotes)
+populateEmoteTable(Emotes:GetChildren(), StaffWielder.UnequippedAnimations.Emotes)
 populateAttackTable(Unequipped.LightAttacks:GetChildren(), StaffWielder.UnequippedLightAttacks)
 populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), StaffWielder.UnequippedHeavyAttacks)
 populateAttackTable(Equipped.LightAttacks:GetChildren(), StaffWielder.EquippedLightAttacks)
 populateAttackTable(Equipped.HeavyAttacks:GetChildren(), StaffWielder.EquippedHeavyAttacks)
+
+StaffWielder.Unequipp = StaffWielder.EquippedAnimations.Unequip
+StaffWielder.Equipp = StaffWielder.UnequippedAnimations.Equip
+
+function StaffWielder:_InitializeAnimations()
+    PlayerController.LayerA:LoadAnimation(self.Sit)
+    PlayerController.LayerA:LoadAnimation(self.Equipp)
+    PlayerController.LayerA:LoadAnimation(self.Unequipp)
+
+    self.Unequipp.Stopped:Connect(self.OnStopAnimation)
+    self.Equipp.Stopped:Connect(self.OnStopAnimation)
+
+    for i,v in ipairs(self.UnequippedLightAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.UnequippedHeavyAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+end
 
 StaffWielder.LightAttacks = {}
 StaffWielder.HeavyAttacks = {}
@@ -183,7 +177,7 @@ function StaffWielder:ProcessInputs()
     if Player.Focusing or Player.Emoting:GetState() then return end
 
     if ActionHandler.IsKeyDownBool(EquipButton) then
-        print("EquipButton")
+        --print("EquipButton")
         if not self.Equipped and not self.Equipping then
             self.Unequipping = false
             self.Equipping = true
@@ -214,7 +208,6 @@ function StaffWielder:ProcessInputs()
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking:SetState(true)
         task.delay(attack.TimeLength/2, function()
-            print("Setting to false")
             Player.Attacking:SetState(false)
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
         end)
@@ -246,23 +239,26 @@ end
 --]]
 function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Equipped and AccessoryStaff then
-        self.LightAttacks = self.EquippedLightAttacks
-        self.HeavyAttacks = self.EquippedHeavyAttacks
         local nexoStaff = Player.getNexoCharacter():FindFirstChild(AccessoryStaff.Name)
 
-        AccessoryStaff.Handle.CFrame = 
-        char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-            * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-            * CFrame.fromOrientation(90, -0, 45)
-            * CFrame.fromOrientation(1, 1, 0)
-            * CFrame.new(1.5,1.5,0):Inverse()
+        if not RunService:IsStudio() then
+            AccessoryStaff.Handle.CFrame = 
+                char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
+                    * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * CFrame.fromOrientation(90, -0, 45)
+                    * CFrame.fromOrientation(1, 1, 0)
+                    * CFrame.new(1.5,1.5,0):Inverse()
+            
+            nexoStaff.Handle.CFrame = 
+                char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
+                    * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * CFrame.fromOrientation(90, -0, 45)
+                    * CFrame.fromOrientation(1, 1, 0)
+                    * CFrame.new(1.5,1.5,0):Inverse()
+        end
         
-        nexoStaff.Handle.CFrame = 
-            char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-                * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-                * CFrame.fromOrientation(90, -0, 45)
-                * CFrame.fromOrientation(1, 1, 0)
-                * CFrame.new(1.5,1.5,0):Inverse()
+        self.LightAttacks = self.EquippedLightAttacks
+        self.HeavyAttacks = self.EquippedHeavyAttacks
     else
         self.LightAttacks = self.UnequippedLightAttacks
         self.HeavyAttacks = self.UnequippedHeavyAttacks
@@ -270,10 +266,12 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
 
     if Player.Attacking:GetState() then
         if char.HumanoidRootPart then
+            char.HumanoidRootPart.Anchored = false
+            char.HumanoidRootPart.CanCollide = true
             if self.Equipped and AccessoryStaff then
                 char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
             else
-                char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -2))
+                char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
         end
     end
@@ -285,6 +283,13 @@ function StaffWielder:Unequip()
     filterTable[Staff] = nil
     Player:SetAnimationModule(self.UnequippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
+    for i,v in ipairs(self.UnequippedLightAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.UnequippedHeavyAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    self.AttackIndex = 1
 end
 
 
@@ -296,6 +301,13 @@ function StaffWielder:Equip()
     end
     Player:SetAnimationModule(self.EquippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
+    for i,v in ipairs(self.EquippedLightAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    for i,v in ipairs(self.EquippedHeavyAttacks) do
+        PlayerController.LayerA:LoadAnimation(v)
+    end
+    self.AttackIndex = 1
 end
 
 --[[

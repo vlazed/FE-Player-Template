@@ -10,7 +10,10 @@ local RunService = game:GetService("RunService")
 local Thread = require(Project.Util.Thread)
 local PlayerController = require(Project.Controllers.PlayerController)
 local Player = require(Project.Player)
+local Animation = require(Project.Controllers.Animations.Animation)
 local FastTween = require(Project.Util.FastTween)
+
+local rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
 
 local Sidebar = {}
 
@@ -46,16 +49,17 @@ function Sidebar:CreateAnimationElement(filePath)
             FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.4 })
             
             animTable = loadfile(filePath)()
-            keyframes = animTable.Keyframes
-            table.sort(keyframes, function(k1, k2) 
+            keyframes = Animation.new(name, animTable, animTable.Properties.Framerate, true)
+            table.sort(keyframes.KeyframeSequence, function(k1, k2) 
                 return k1["Time"] < k2["Time"] 
             end)
-            if PlayerController.AnimationTable ~= keyframes and not Player.Dancing then
+            if PlayerController.Animation.Name ~= keyframes.Name then
                 Player.Dancing = true
-                PlayerController.LayerA.i = 1
+                keyframes._index = 1
+                PlayerController.DanceLayer:LoadAnimation(keyframes)
                 PlayerController:SetAnimation(keyframes)
-                PlayerController.Framerate = animTable.Framerate or 30
-            else
+            elseif PlayerController.Animation.Name == keyframes.Name then
+                PlayerController.DanceLayer:UnloadAnimations()
                 Player.Dancing = false
             end
         end
@@ -130,12 +134,12 @@ function Sidebar:Update()
     if listfiles then
         if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
             animfiles = listfiles("fe-player-template/animations/R15")
-            internalmodfiles = Project.Modules.R15:GetChildren()
-            --externalmodfiles = listfiles("fe-player-template/modules/R15")
+            --internalmodfiles = Project.Modules.R15:GetChildren()
+            externalmodfiles = listfiles("fe-player-template/modules/R15")
         else
             animfiles = listfiles("fe-player-template/animations/R6")
-            internalmodfiles = Project.Modules.R6:GetChildren()
-            --externalmodfiles = listfiles("fe-player-template/modules/R6")
+            --internalmodfiles = Project.Modules.R6:GetChildren()
+            externalmodfiles = listfiles("fe-player-template/modules/R6")
         end    
     else
         animfiles = game:GetService("ReplicatedStorage").Anims:GetChildren()
@@ -148,18 +152,19 @@ function Sidebar:Update()
         end
     end
 
+    --[[
     for _,element in ipairs(modbar:GetChildren()) do
         if element:IsA("Frame") and not table.find(internalmodfiles, element.Name) then
             element:Destroy()
         end
     end
-    --[[
+    ]]
+
     for _,element in ipairs(modbar:GetChildren()) do
         if element:IsA("Frame") and not table.find(externalmodfiles, element.Name) then
             element:Destroy()
         end
     end
-    ]]
 
     for _,filePath in ipairs(animfiles) do
         if not animbar:FindFirstChild(filePath) then
@@ -167,6 +172,7 @@ function Sidebar:Update()
         end
     end
 
+    --[[
     for _,folder in ipairs(internalmodfiles) do
         if not modbar:FindFirstChild(folder) then
             local file = folder:FindFirstChildOfClass("ModuleScript")
@@ -175,18 +181,33 @@ function Sidebar:Update()
             end
         end
     end
+    ]]
 
     -- TODO: Figure out how to support external animation modules
-    --[[
+    
     for _,filePath in ipairs(externalmodfiles) do
         if not modbar:FindFirstChild(filePath) then
-            local file = filePath
-            if file then
-                self:CreateModuleElement(file)
+            local fileModule = rbxmSuite.launch(filePath, {
+                runscripts = false,
+                deferred = true,
+                nocache = false,
+                nocirculardeps = true,
+                -- TODO: Remove unused packages 
+                debug = true,
+                verbose = false
+            })
+            if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
+                fileModule.Parent = Project.Modules.R15
+            else
+                fileModule.Parent = Project.Modules.R6
+            end
+            local moduleScript = fileModule:FindFirstChildOfClass("ModuleScript")
+            if moduleScript then
+                self:CreateModuleElement(moduleScript)
             end
         end
     end
-    ]]
+    
 end
 
 

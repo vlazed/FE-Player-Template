@@ -74,9 +74,14 @@ function Animation:Play()
 end
 
 
-function Animation:Stop()
+function Animation:_Stop()
     self._playing = false
     self._index = 1
+end
+
+
+function Animation:Stop()
+    self:_Stop()
     self.Stopped:Fire(self)
 end
 
@@ -87,7 +92,7 @@ end
 
 
 function Animation:__tostring()
-    return self.Name
+    return self.Name 
 end
 
 return Animation

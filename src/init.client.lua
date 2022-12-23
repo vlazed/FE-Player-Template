@@ -54,6 +54,15 @@ end
 
 local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
 
---PlayerController:Init()
-SelectedModule:Init()
-App:Init()
+local success, error = pcall(function()
+    PlayerController:Init()
+    --SelectedModule:Init()
+    App:Init()
+end)
+
+if not success then
+    if getgenv then
+        getgenv().Running = false
+    end
+    print("An error has occurred while running this module:", error)
+end

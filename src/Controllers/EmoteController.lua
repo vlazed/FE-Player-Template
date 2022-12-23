@@ -18,7 +18,7 @@ local chatbar
 
 local PlayerGui = Player.getPlayerGui()
 
-local EmoteLayer
+local EmoteLayer = AnimationController.new()
 
 local Emote = {}
 local ChatEmote = {}
@@ -34,15 +34,22 @@ local function getEmoteName(message)
 end
 
 
+function EmoteController:_InitializeEmotes()
+    EmoteLayer:UpdateModule(Player:GetDefaultEmotes())
+    EmoteLayer:UpdateModule(Player.AnimationModule.Emotes)
+    --print(EmoteLayer.AnimationTable)
+end
+
+
 function EmoteController:_InitializeStates()
-    Player:GetAnimation("StartChatting").Stopped:Connect(self.OnStopAnimation)
+    Player:GetDefaultEmotes()["startchatting"].Stopped:Connect(self.OnStopAnimation)
     Player.Emoting.OnTrue:Connect(self.OnEmote)
 end
 
 
 function EmoteController:_CleanUpStates()
-    Player:GetAnimation("StartChatting").Stopped:Disconnect()
-    Player.Emoting.OnTrue:Disconnect()
+    Player:GetDefaultEmotes()["startchatting"].Stopped:DisconnectAll()
+    Player.Emoting.OnTrue:DisconnectAll()
 end
 
 
@@ -170,7 +177,7 @@ function EmoteController:Init()
         end)
     end
 
-    EmoteLayer = AnimationController.new(Player.AnimationModule.Emotes)
+    self:_InitializeEmotes()
     self:_InitializeStates()
     initialized = true
 end

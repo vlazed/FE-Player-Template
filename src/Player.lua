@@ -68,18 +68,25 @@ function Player.getNexoCharacter()
 end
 
 
-function Player:GetAnimation(animation: string)
-	--print(animation)
-	--print(PlayerAnimations.Emotes[animation:lower()])
+function Player:GetAnimation(animation: string): Animation
 	if self.AnimationModule[animation] then
+		--print(self.AnimationModule[animation])
 		return self.AnimationModule[animation]
 	elseif self.AnimationModule.Emotes[animation:lower()] then
+		--print(self.AnimationModule.Emotes[animation])
 		return self.AnimationModule.Emotes[animation:lower()]
 	elseif PlayerAnimations.Emotes[animation:lower()] then
+		--print(PlayerAnimations.Emotes[animation:lower()])	
 		return PlayerAnimations.Emotes[animation:lower()]
 	elseif PlayerAnimations[animation] then
+		--print(PlayerAnimations[animation])
 		return PlayerAnimations[animation]
 	end
+end
+
+
+function Player:GetDefaultEmotes()
+	return PlayerAnimations.Emotes
 end
 
 

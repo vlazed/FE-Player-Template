@@ -174,7 +174,7 @@ end
 
 
 function AnimPlayer:SetSpeed(speedMultiplier)
-    currentAnimation.speed = math.clamp(speedMultiplier, 0, math.huge)
+    currentAnimation.Speed = math.clamp(speedMultiplier, 0, math.huge)
 end
 
 
@@ -215,7 +215,7 @@ function AnimPlayer:Init(playerFrame: Frame)
 
     self:AttachToAnimation(PlayerController.Animation)
 
-    speedMultiplier.Text = tostring(currentAnimation.speed) .. "x"
+    speedMultiplier.Text = tostring(currentAnimation.Speed) .. "x"
 
     setupInput(play.Selection, self.Play, self, true)
     setupInput(rewind.Selection, self.Play, self, false)
@@ -304,7 +304,7 @@ function AnimPlayer:Init(playerFrame: Frame)
             if num then
                 self:SetSpeed(num) 
                 speedMultiplier.Text = tostring(num) .. "x"
-                print(currentAnimation.speed)
+                print(currentAnimation.Speed)
             end
         end
     end)

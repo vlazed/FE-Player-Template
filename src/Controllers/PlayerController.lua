@@ -1051,7 +1051,6 @@ function PlayerController:ProcessStates(char, nexoChar)
 	end
 
 	if Player.Dancing and not self.Animation:IsPlaying() then
-		self.DanceLayer:LoadAnimation(self.Animation)
 		self.Animation:Play()
 	end
 
@@ -1156,8 +1155,9 @@ function PlayerController:Update()
 		else
 			char.HumanoidRootPart.Position=nexoChar.LowerTorso.Position + (not toggleFling and 1 or 0)*Vector3.new(0,50,0)
 		end
-		char.HumanoidRootPart.Anchored = not toggleFling
-		char.HumanoidRootPart.CanCollide = toggleFling
+		char.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		--char.HumanoidRootPart.Anchored = not toggleFling
+		--char.HumanoidRootPart.CanCollide = toggleFling
 	end
 
 	self:Fly()
@@ -1168,11 +1168,13 @@ function PlayerController:Update()
 
 	self:ProcessStates(char, nexoChar)
 
-	self:RunUpdateTable()
-	
 	ActionHandler:Update()
 	self.LayerA:Animate()
 	EmoteController:Update()
+	self.DanceLayer:Animate()
+
+	self:RunUpdateTable()
+	
 end    
 
 
@@ -1366,10 +1368,6 @@ function PlayerController:Respawn()
 	self.LayerB:Destroy()
 	self.DanceLayer:Destroy()
 
-	if getgenv then
-		getgenv().Running = false
-	end
-
 	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function()
 		task.wait()
 		Player.getCharacter().HumanoidRootPart.CFrame = oldCFrame
@@ -1379,6 +1377,10 @@ function PlayerController:Respawn()
 	task.wait(0.5)
 	Player:SetState("Respawning", false)
 	Player:CleanStates()
+
+	if getgenv then
+		getgenv().Running = false
+	end
 	self.Initialized = false
 end    
 
