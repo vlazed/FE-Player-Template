@@ -37,9 +37,9 @@ Player.Dancing = false
 Player.Looking = true
 Player.Swimming = false
 
-Player.Emoting = false
+Player.Emoting = State.new("Emoting", false)
 Player.Focusing = false
-Player.ChatEmoting = false
+Player.ChatEmoting = State.new("ChatEmoting", false)
 Player.Landing = false
 
 Player.AnimationModule = PlayerAnimations
@@ -321,6 +321,9 @@ end
 
 function Player:CleanStates()
 	for i,state in pairs(self.States) do
+		state:Remove()
+	end
+	for i,state in pairs(State.States) do
 		state:Remove()
 	end
 end

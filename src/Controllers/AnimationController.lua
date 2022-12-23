@@ -20,16 +20,6 @@ AnimationController.TiltVector = Vector3.new(0,1,0)
 AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
-AnimationController.AnimationTable = {
-    [Enum.AnimationPriority.Core] = {},
-    [Enum.AnimationPriority.Idle] = {},
-    [Enum.AnimationPriority.Movement] = {},
-    [Enum.AnimationPriority.Action] = {},
-    [Enum.AnimationPriority.Action2] = {},
-    [Enum.AnimationPriority.Action3] = {},
-    [Enum.AnimationPriority.Action4] = {}
-}
-
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
 local angleSpringY = Spring.new(16, 0)
 local angleSpringX = Spring.new(16, 0)
@@ -541,17 +531,30 @@ function AnimationController:_animateStep(char, animation: Animation)
 
     local next_i = (animation._index - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
 
-    if current_i > next_i then
-        if not animation.Looping then
-            --print("Stop animation")
-            animation:Stop()
-            return
-        else
-            --print("Loop Animation")
-            animation.Looped:Fire()
+    if offset > 0 then
+        if (current_i > next_i) then
+            if not animation.Looping then
+                --print("Stop animation")
+                animation:Stop()
+                return
+            else
+                --print("Loop Animation")
+                animation.Looped:Fire()
+            end
+        end
+    elseif offset < 0 then
+        if (current_i < next_i) then
+            if not animation.Looping then
+                --print("Stop animation")
+                animation:Stop()
+                return
+            else
+                --print("Loop Animation")
+                animation.Looped:Fire()
+            end
         end
     end
-
+    
     animation.TimeDiff = math.abs(animation.KeyframeSequence[next_i]["Time"] - animation.KeyframeSequence[current_i]["Time"]) / animation.Speed
 
     if not Player.Transitioning then
@@ -658,6 +661,15 @@ function AnimationController.new(animationModule)
     self.lastKF = {}
 
     self.filterTable = {}
+    self.AnimationTable = {
+        [Enum.AnimationPriority.Core] = {},
+        [Enum.AnimationPriority.Idle] = {},
+        [Enum.AnimationPriority.Movement] = {},
+        [Enum.AnimationPriority.Action] = {},
+        [Enum.AnimationPriority.Action2] = {},
+        [Enum.AnimationPriority.Action3] = {},
+        [Enum.AnimationPriority.Action4] = {}
+    }
 
     if animationModule then
         self:_InitializeAnimations(animationModule)

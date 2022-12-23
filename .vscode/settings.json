@@ -3,7 +3,9 @@
         "makefolder",
         "isfolder",
         "sethiddenproperty",
-        "sethiddenproperty"
+        "sethiddenproperty",
+        "getgenv",
+        "Drawing"
     ],
     "robloxLsp.workspace.ignoreDir": [
         ".vscode",

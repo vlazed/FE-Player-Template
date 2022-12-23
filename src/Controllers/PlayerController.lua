@@ -1164,8 +1164,8 @@ function PlayerController:Update()
 	self:RunUpdateTable()
 	
 	ActionHandler:Update()
-	EmoteController:Update()
 	self.LayerA:Animate()
+	EmoteController:Update()
 	
 end    
 
