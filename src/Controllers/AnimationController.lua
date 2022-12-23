@@ -534,18 +534,21 @@ function AnimationController:_animateStep(char, animation: Animation)
     if offset > 0 then
         if (current_i > next_i) then
             if not animation.Looping then
-                --print("Stop animation")
+                if animation.Name == "Roll" then
+                    print("Stop animation")
+                end
                 animation:Stop()
                 return
             else
-                --print("Loop Animation")
+                print("Loop Animation")
                 animation.Looped:Fire()
             end
         end
     elseif offset < 0 then
         if (current_i < next_i) then
             if not animation.Looping then
-                --print("Stop animation")
+                
+                print("Stop animation")
                 animation:Stop()
                 return
             else
@@ -654,7 +657,7 @@ function AnimationController:UpdateModule(animModule)
         end
     end
 
-    print(self.AnimationTable)
+    --print(self.AnimationTable)
 end
 
 

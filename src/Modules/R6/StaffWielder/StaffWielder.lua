@@ -147,6 +147,7 @@ function StaffWielder:_InitializeAnimations()
 
     self.Unequipp.Stopped:Connect(self.OnStopAnimation)
     self.Equipp.Stopped:Connect(self.OnStopAnimation)
+    Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
 
     for i,v in ipairs(self.UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
@@ -225,11 +226,17 @@ function StaffWielder:ProcessInputs()
 end
 
 
+--[[
+    Some weird looping behavior occurs if you have animation overrides that run with a keybind.
+    Best to have an OnStopAnimation callback to ensure that bugs don't occur.
+--]]
 function StaffWielder.OnStopAnimation(animation: Animation)
     if animation.Name == "Equip" then
         StaffWielder.Equipping = false
     elseif animation.Name == "Unequip" then
         StaffWielder.Unequipping = false
+    elseif animation.Name == "Roll" then
+        Player.Dodging = false
     end
 end
 

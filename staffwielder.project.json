@@ -1,0 +1,6 @@
+{
+    "name": "Staff Wielder",
+    "tree": {
+      "$path": "src/Modules/R6/StaffWielder"
+    }
+  }

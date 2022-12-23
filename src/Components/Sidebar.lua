@@ -13,7 +13,10 @@ local Player = require(Project.Player)
 local Animation = require(Project.Controllers.Animations.Animation)
 local FastTween = require(Project.Util.FastTween)
 
-local rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
+local rbxmSuite 
+if not RunService:IsStudio() then
+    rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
+end
 
 local Sidebar = {}
 
@@ -181,29 +184,31 @@ function Sidebar:Update()
             end
         end
     end
-    ]]
+    --]]
 
     -- TODO: Figure out how to support external animation modules
+    if not RunService:IsStudio() then
     
-    for _,filePath in ipairs(externalmodfiles) do
-        if not modbar:FindFirstChild(filePath) then
-            local fileModule = rbxmSuite.launch(filePath, {
-                runscripts = false,
-                deferred = true,
-                nocache = false,
-                nocirculardeps = true,
-                -- TODO: Remove unused packages 
-                debug = true,
-                verbose = false
-            })
-            if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
-                fileModule.Parent = Project.Modules.R15
-            else
-                fileModule.Parent = Project.Modules.R6
-            end
-            local moduleScript = fileModule:FindFirstChildOfClass("ModuleScript")
-            if moduleScript then
-                self:CreateModuleElement(moduleScript)
+        for _,filePath in ipairs(externalmodfiles) do
+            if not modbar:FindFirstChild(filePath) then
+                local fileModule = rbxmSuite.launch(filePath, {
+                    runscripts = false,
+                    deferred = true,
+                    nocache = false,
+                    nocirculardeps = true,
+                    -- TODO: Remove unused packages 
+                    debug = true,
+                    verbose = false
+                })
+                if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
+                    fileModule.Parent = Project.Modules.R15
+                else
+                    fileModule.Parent = Project.Modules.R6
+                end
+                local moduleScript = fileModule:FindFirstChildOfClass("ModuleScript")
+                if moduleScript then
+                    self:CreateModuleElement(moduleScript)
+                end
             end
         end
     end
