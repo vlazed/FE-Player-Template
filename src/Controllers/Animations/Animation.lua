@@ -30,13 +30,16 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.Looking = looking or false
 
     -- Check if modulescript or keyframesequence instance
+    self.Properties = {}
     self.KeyframeSequence = keyframeSequence or {}
     self.Priority = Enum.AnimationPriority.Core
     self.Looping = false
     self.Framerate = 30
+    
     if self.KeyframeSequence.Keyframes then
         --print("Module script")
         self.KeyframeSequence = keyframeSequence.Keyframes
+        self.Properties = keyframeSequence.Properties
         self.Priority = keyframeSequence.Properties.Priority
         self.Looping = keyframeSequence.Properties.Looping
         self.Framerate = keyframeSequence.Properties.Framerate or 30
@@ -49,11 +52,21 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
         self.Priority = keyframeSequence.Priority
         self.Looping = keyframeSequence.Loop
         self.Framerate = framerate or 30
+        self.Properties = {
+            Priority = self.Priority,
+            Looping = self.Looping,
+            Framerate = self.Framerate
+        }
     else
         self.KeyframeSequence = {}
         self.Priority = Enum.AnimationPriority.Core
         self.Looping = true
         self.Framerate = framerate or 30
+        self.Properties = {
+            Priority = self.Priority,
+            Looping = self.Looping,
+            Framerate = self.Framerate
+        }
     end
 
     self.Length = #self.KeyframeSequence

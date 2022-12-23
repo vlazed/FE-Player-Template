@@ -35,6 +35,8 @@ local tiltVector = Vector3.new(0, 1, 0)
 local tiltSpring = Spring.new(2, tiltVector)
 local moveSpring = Spring.new(2, moveVector)
 
+local posSpring = Spring.new(1, Vector3.new())
+
 local toggleFling = false
 local debounce = false
 
@@ -701,7 +703,8 @@ local function _NexoLoad(canClickFling)
 			A=false 
 		end))
 	end 
-
+	
+	--[[
 	d(c,k.KeyDown:Connect(function(D)
 		if D==' 'then
 			p=true 
@@ -763,7 +766,7 @@ local function _NexoLoad(canClickFling)
 			y.Humanoid.WalkToPoint=y.HumanoidRootPart.Position 
 		end 
 	end))
-
+	--]]
 	workspace.CurrentCamera.CameraSubject=y.Humanoid 
 
 	nexoConnections = c
@@ -825,6 +828,8 @@ function PlayerController:_InitializeStates()
 	Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("LandSoft").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("LandHard").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("SprintStop").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("RunStop").Stopped:Connect(self.OnStopAnimation)
 	
 	Player.FightMode.OnFalse:Connect(self.StoppedState)
 	Player.Attacking.OnFalse:Connect(self.StoppedState)
@@ -991,12 +996,25 @@ function PlayerController:Fly()
 end
 
 
+function PlayerController:DodgeMove(direction)
+	Player.getNexoHumanoidRootPart().CFrame = Player.getNexoHumanoidRootPart().CFrame + direction / Player:GetAnimationSpeed()
+end
+
+
 function PlayerController:DodgeGround()
 	if Player.Dancing or Player.Swimming then return end
-	Player.getNexoHumanoidRootPart().CFrame = Player.getNexoHumanoidRootPart().CFrame + moveVector * 0.3 / Player:GetAnimationSpeed()
-	self.LayerA:LoadAnimation(Player:GetAnimation("Roll"))
-	if not Player:GetAnimation("Roll"):IsPlaying() then
-		Player:GetAnimation("Roll"):Play()
+
+	if Player.DodgeMoving then
+		self:DodgeMove(moveVector * 0.3)
+	end
+
+	local roll = Player:GetAnimation("Roll")
+	local rollDelay = roll.Properties.DodgeTime or 1.35
+	self.LayerA:LoadAnimation(roll)
+	if not roll:IsPlaying() then
+		roll:Play()
+		Player.DodgeMoving = true
+		task.delay(rollDelay, function() Player.DodgeMoving = false end)
 	end
 end
 
@@ -1031,6 +1049,8 @@ function PlayerController:LeanCharacter(char)
 
 	AnimationController.TiltVector = tilt
 	AnimationController.MoveVector = move
+
+	
 end
 
 
@@ -1109,6 +1129,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	hum.AutoRotate = false
 	nexoHum.AutoRotate = false
+	nexoHum:Move(moveVector)
 
 	if tick() >= massExecuteTime then
 		Player:UpdateMass()
@@ -1227,12 +1248,15 @@ function PlayerController.OnStopAnimation(animation: Animation)
 		Player.Dodging = false
 	elseif animation.Name == "LandSoft" or animation.Name == "LandHard" then
 		Player.Landing = false
+	elseif animation.Name == "RunStop" or animation.Name == "SprintStop" then
+		Player.Slowing = false
 	end
 end
 
 
 local function delayStopAnim(anim: Animation)
 	if Player:GetEnabledLocomotionState():GetName() == "Idling" then
+		Player.Slowing = true
 		anim:Play()
 	end
 end

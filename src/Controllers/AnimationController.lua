@@ -148,6 +148,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
             or Player.Emoting:GetState()
             or Player.Landing
             or Player.FightMode:GetState()
+            or Player.Slowing
         )
         then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
@@ -420,7 +421,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Dodging or 
                 Player.Emoting:GetState() or 
                 Player.Landing or
-                Player.FightMode:GetState()
+                Player.FightMode:GetState() or
+                Player.Slowing 
             )
         then
             character.Torso.CFrame = CFrame.fromMatrix(

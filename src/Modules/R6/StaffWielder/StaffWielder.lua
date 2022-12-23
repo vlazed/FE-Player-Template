@@ -147,7 +147,8 @@ function StaffWielder:_InitializeAnimations()
 
     self.Unequipp.Stopped:Connect(self.OnStopAnimation)
     self.Equipp.Stopped:Connect(self.OnStopAnimation)
-    Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
+    self.EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
+    self.UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
 
     for i,v in ipairs(self.UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)

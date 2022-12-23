@@ -41,6 +41,8 @@ Player.Emoting = State.new("Emoting", false)
 Player.Focusing = false
 Player.ChatEmoting = State.new("ChatEmoting", false)
 Player.Landing = false
+Player.Slowing = false
+Player.DodgeMoving = false
 
 Player.AnimationModule = PlayerAnimations
 
