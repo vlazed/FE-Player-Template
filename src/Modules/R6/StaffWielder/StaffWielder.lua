@@ -109,6 +109,9 @@ function StaffWielder:_InitializeAnimations()
     PlayerController.LayerA:LoadAnimation(self.Equipp)
     PlayerController.LayerA:LoadAnimation(self.Unequipp)
 
+    self.Unequipp.Stopped:Connect(self.OnStopAnimation)
+    self.Equipp.Stopped:Connect(self.OnStopAnimation)
+
     for i,v in ipairs(self.EquippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
@@ -127,7 +130,7 @@ local function populateEmoteTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
         if v:IsA("ModuleScript") then
             local animation = require(v)
-            targetTable[v.Name:lower()] = Animation.new(v.Name, animation, animation.Properties.Framerate, true)
+            targetTable[v.Name:lower()] = Animation.new(v.Name, animation, animation.Properties.Framerate, false)
         end    
     end
 end
@@ -168,7 +171,6 @@ StaffWielder.Equipping = false
 StaffWielder.Unequipping = false
 
 StaffWielder.Equipped = false
-StaffWielder.Attacking = false
 StaffWielder.Sitting = false
 
 local attack
@@ -205,28 +207,36 @@ function StaffWielder:ProcessInputs()
         end
     end
 
-    --print("Attacking:", Player.Attacking)
-    if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking then
+    if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking:GetState() then
         attack = self.LightAttacks[self.AttackIndex]
         attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
-        Player.Attacking = true
+        Player.Attacking:SetState(true)
         task.delay(attack.TimeLength/2, function()
             print("Setting to false")
-            Player.Attacking = false
+            Player.Attacking:SetState(false)
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
         end)
-    elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking then
+    elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking:GetState() then
         attack = self.HeavyAttacks[self.AttackIndex]
         attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
-        Player.Attacking = true
+        Player.Attacking:SetState(true)
         task.delay(2*attack.TimeLength/3, function()
-            Player.Attacking = false
+            Player.Attacking:SetState(false)
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
         end)
+    end
+end
+
+
+function StaffWielder.OnStopAnimation(animation: Animation)
+    if animation.Name == "Equip" then
+        StaffWielder.Equipping = false
+    elseif animation.Name == "Unequip" then
+        StaffWielder.Unequipping = false
     end
 end
 
@@ -238,7 +248,6 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     if self.Equipped and AccessoryStaff then
         self.LightAttacks = self.EquippedLightAttacks
         self.HeavyAttacks = self.EquippedHeavyAttacks
-        attack = self.LightAttacks[self.AttackIndex]
         local nexoStaff = Player.getNexoCharacter():FindFirstChild(AccessoryStaff.Name)
 
         AccessoryStaff.Handle.CFrame = 
@@ -259,7 +268,7 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
         self.HeavyAttacks = self.UnequippedHeavyAttacks
     end
 
-    if Player.Attacking then
+    if Player.Attacking:GetState() then
         if char.HumanoidRootPart then
             if self.Equipped and AccessoryStaff then
                 char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
@@ -270,11 +279,11 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     end
 end
 
+
 function StaffWielder:Unequip()
     self.Equipped = false
     filterTable[Staff] = nil
     Player:SetAnimationModule(self.UnequippedAnimations)
-    PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
 end
 
@@ -286,7 +295,6 @@ function StaffWielder:Equip()
         filterTable[Staff] = AccessoryStaff
     end
     Player:SetAnimationModule(self.EquippedAnimations)
-    PlayerController.LayerA:UpdateModule(self.EquippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
 end
 

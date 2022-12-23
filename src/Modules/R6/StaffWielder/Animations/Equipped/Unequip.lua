@@ -1,6 +1,6 @@
 return {
 	Properties = {
-		Looping = true,
+		Looping = false,
 		Priority = Enum.AnimationPriority.Action3,
 		Framerate = 24
 	},

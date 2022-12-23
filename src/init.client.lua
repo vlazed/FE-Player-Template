@@ -6,7 +6,7 @@ elseif not Drawing then
 end
 
 if getgenv then
-    getgenv.PROJECT_NAME = "FE-Player-Template"
+    getgenv().PROJECT_NAME = "FE-Player-Template"
     if not getgenv().Running then
         getgenv().Running = true
     else

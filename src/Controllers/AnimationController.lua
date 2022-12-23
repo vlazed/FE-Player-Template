@@ -143,11 +143,11 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
         if 
         not (
             Player.Dancing 
-            or Player.Attacking 
+            or Player.Attacking:GetState() 
             or Player.Dodging 
             or Player.Emoting:GetState()
             or Player.Landing
-            or Player.FightMode
+            or Player.FightMode:GetState()
         )
         then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
@@ -416,11 +416,11 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
         if 
             not (
                 Player.Dancing or 
-                Player.Attacking or 
+                Player.Attacking:GetState() or 
                 Player.Dodging or 
                 Player.Emoting:GetState() or 
                 Player.Landing or
-                Player.FightMode
+                Player.FightMode:GetState()
             )
         then
             character.Torso.CFrame = CFrame.fromMatrix(
@@ -644,21 +644,26 @@ end
 
 
 function AnimationController:UpdateModule(animModule)
+    if self.CurrentModule == animModule then return end
+
+    print("Updating module")
+    self.CurrentModule = animModule
+
     for index,animationTable in pairs(self.AnimationTable) do
         for i, animation in pairs(animModule) do
-            --print(animation.Name)
             if index == animation.Priority then
                 animationTable[animation.Name] = animation
             end
         end
     end
+
+    print(self.AnimationTable)
 end
 
 
 function AnimationController:_InitializeAnimations(animModule)
     for index,animationTable in pairs(self.AnimationTable) do
         for i, animation in pairs(animModule) do
-            --print(animation.Name)
             if index == animation.Priority then
                 animationTable[animation.Name] = animation
             end
@@ -682,6 +687,8 @@ function AnimationController.new(animationModule)
         [Enum.AnimationPriority.Action3] = {},
         [Enum.AnimationPriority.Action4] = {}
     }
+
+    self.CurrentModule = animationModule
 
     if animationModule then
         self:_InitializeAnimations(animationModule)

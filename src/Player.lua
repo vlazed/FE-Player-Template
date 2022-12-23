@@ -24,8 +24,8 @@ Player.States = {
 	Add custom player states here
 --]]
 Player.Blocking = false
-Player.Attacking = false
-Player.FightMode = false
+Player.Attacking = State.new("Attacking", false)
+Player.FightMode = State.new("FightMode", false)
 Player.Following = false
 Player.Transitioning = false
 Player.Flying = false
@@ -68,7 +68,9 @@ function Player.getNexoCharacter()
 end
 
 
-function Player:GetAnimation(animation)
+function Player:GetAnimation(animation: string)
+	--print(animation)
+	--print(PlayerAnimations.Emotes[animation:lower()])
 	if self.AnimationModule[animation] then
 		return self.AnimationModule[animation]
 	elseif self.AnimationModule.Emotes[animation:lower()] then
@@ -212,12 +214,21 @@ function Player:_SetStateThroughValue(states, value, duration)
 
 		if self[state] ~= nil then
 			self.Locked = true
-			self[state] = value
+			if self[state].GetState then
+				self[state]:SetState(value)
+			else
+				self[state] = value
+			end
 
 			task.delay(duration, function()
 				self.Locked = false
-				self[state] = not value
+				if self[state].GetState then
+					self[state]:SetState(not value)
+				else
+					self[state] = not value
+				end
 			end)
+
 		end
 	elseif typeof(states) == "table" then
 		self.Locked = true

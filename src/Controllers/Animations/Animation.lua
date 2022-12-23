@@ -35,14 +35,17 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.Looping = false
     self.Framerate = 30
     if keyframeSequence.Keyframes then
-        print("Module script")
+        --print("Module script")
         self.KeyframeSequence = keyframeSequence.Keyframes
         self.Priority = keyframeSequence.Properties.Priority
         self.Looping = keyframeSequence.Properties.Looping
         self.Framerate = keyframeSequence.Properties.Framerate or 30
     else
-        print("Keyframe sequence")
+        --print("Keyframe sequence")
         self.KeyframeSequence = keyframeSequence:GetChildren()
+        table.sort(self.KeyframeSequence, function(k1, k2)
+            return k1["Time"] < k2["Time"]
+        end)
         self.Priority = keyframeSequence.Priority
         self.Looping = keyframeSequence.Loop
         self.Framerate = framerate or 30

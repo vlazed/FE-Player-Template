@@ -63,6 +63,9 @@ local nexoConnections
 local massPollRate = 1
 local massExecuteTime = tick() + 1/massPollRate
 
+local updateModuleRate = 1
+local moduleExecuteTime = tick() + 1/updateModuleRate
+
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
 	if RunService:IsStudio() then return end
@@ -822,7 +825,9 @@ function PlayerController:_InitializeStates()
 	Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("LandSoft").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("LandHard").Stopped:Connect(self.OnStopAnimation)
-
+	
+	Player.FightMode.OnFalse:Connect(self.StoppedState)
+	Player.Attacking.OnFalse:Connect(self.StoppedState)
 	Player.Sprinting.OnFalse:Connect(self.StoppedState)
 	Player.Running.OnFalse:Connect(self.StoppedState)
 end
@@ -958,11 +963,7 @@ function PlayerController:Idle()
 		Player.Transition(2)
 	elseif Player.Swimming then
 		tiltSpring.f = 10 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-	elseif Player.FightMode then
-		Player:GetAnimation("FightIdle"):Play()
 	else
-		Player:GetAnimation("FightIdle"):Stop()
 		Player.Transition(1)
 	end
 end
@@ -1114,6 +1115,10 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player:UpdateMass()
 		massExecuteTime = tick() + 1 / massPollRate
 	end
+	if tick() >= moduleExecuteTime then
+		self.LayerA:UpdateModule(Player:GetAnimationModule())
+		moduleExecuteTime = tick() + 1 / updateModuleRate
+	end
 end
 
 
@@ -1172,9 +1177,10 @@ end
 
 
 function PlayerController:OnIdle()
-	print("Idling")
+	--print("Idling")
 	local nexoHRP = Player.getNexoHumanoidRootPart()
 	--print(fallingSpeed)
+	if Player.Dancing then return end
 	if Player.Flying then
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
@@ -1189,18 +1195,25 @@ function PlayerController:OnIdle()
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Walk"):Pause()
-		Player:GetAnimation("Idle"):Play()
 
+		if Player.FightMode:GetState() then
+			Player:GetAnimation("Idle"):Stop()
+			Player:GetAnimation("FightIdle"):Play()
+		else
+			Player:GetAnimation("Idle"):Play()
+			Player:GetAnimation("FightIdle"):Stop()
+		end
+		
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
 			if math.abs(fallingSpeed) > 150 then
 				Player:GetAnimation("LandHard").Framerate = 30
 				Player.Landing = true
 				Player:GetAnimation("LandHard"):Play()
-				print("Landed HARD")
+				--print("Landed HARD")
 			else
 				Player.Landing = true
 				Player:GetAnimation("LandSoft"):Play()
-				print("Landed")
+				--print("Landed")
 			end
 		end	
 	end
@@ -1225,13 +1238,24 @@ end
 
 function PlayerController.StoppedState(state)
 	if state:GetName() == "Sprinting" then
-		print("Skidded HARD")
+		--print("Skidded HARD")
 		Player:GetAnimation("Sprint"):Stop()
 		task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
 	elseif state:GetName() == "Running" then
-		print("Skidded")
+		--print("Skidded")
 		Player:GetAnimation("Run"):Stop()
 		task.delay(0.05, delayStopAnim, Player:GetAnimation("RunStop"))
+	elseif state:GetName() == "FightMode" then
+		Player:GetAnimation("FightIdle"):Stop()
+		Player:GetAnimation("Idle"):Play()
+	elseif state:GetName() == "Attacking" then
+		if Player.FightMode:GetState() then
+			Player:GetAnimation("FightIdle"):Play()
+			Player:GetAnimation("Idle"):Stop()
+		else
+			Player:GetAnimation("FightIdle"):Stop()
+			Player:GetAnimation("Idle"):Play()
+		end
 	end
 end
 
@@ -1251,12 +1275,12 @@ end
 
 function PlayerController:OnJump()
 	if Player.Flying then
-		print("FlyJump")
+		--print("FlyJump")
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyWalk"):Pause()
 		Player:GetAnimation("FlyJump"):Play()
 	else
-		print("Jump")
+		--print("Jump")
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Walk"):Pause()
 		Player:GetAnimation("Jump"):Play()
@@ -1266,12 +1290,12 @@ end
 
 function PlayerController:OnFall()
 	if Player.Flying then
-		print("FlyFall")
+		--print("FlyFall")
 		Player:GetAnimation("FlyWalk"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
 		Player:GetAnimation("FlyFall"):Play()
 	else
-		print("Fall")
+		--print("Fall")
 		Player:GetAnimation("Walk"):Pause()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Fall"):Play()
