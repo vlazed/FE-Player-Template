@@ -40,7 +40,7 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
         self.Priority = keyframeSequence.Properties.Priority
         self.Looping = keyframeSequence.Properties.Looping
         self.Framerate = keyframeSequence.Properties.Framerate or 30
-    else
+    elseif typeof(keyframeSequence) == 'Instance' then
         --print("Keyframe sequence")
         self.KeyframeSequence = keyframeSequence:GetChildren()
         table.sort(self.KeyframeSequence, function(k1, k2)
@@ -49,13 +49,24 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
         self.Priority = keyframeSequence.Priority
         self.Looping = keyframeSequence.Loop
         self.Framerate = framerate or 30
+    else
+        self.KeyframeSequence = {}
+        self.Priority = Enum.AnimationPriority.Core
+        self.Looping = true
+        self.Framerate = framerate or 30
     end
 
     self.Length = #self.KeyframeSequence
     self.UpperBound = self.Length
     self.LowerBound = 1
 
-    self.TimeLength = self.KeyframeSequence[self.UpperBound]["Time"]
+    if self.UpperBound > 0 then
+        self.TimeLength = self.KeyframeSequence[self.UpperBound]["Time"]
+    else
+        self.Length = 1
+        self.UpperBound = 1
+        self.TimeLength = 1
+    end
 
     self.Stopped = Signal.new()
     self.Looped = Signal.new()
@@ -64,13 +75,29 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
 end
 
 
+function Animation:GetIndex()
+    return self._index
+end
+
+
+function Animation:SetIndex(value: number)
+    self._index = value
+end
+
+
+function Animation:NextFrame(direction)
+    self:SetIndex((self:GetIndex() - 1 + (direction % self.UpperBound) + self.UpperBound) % self.UpperBound + self.LowerBound)
+end
+
+
 function Animation:IsPlaying()
     return self._playing
 end
 
 
-function Animation:Play()
+function Animation:Play(reversed: boolean)
     self._playing = true
+    self.Increment = reversed and -1 or 1
 end
 
 
@@ -83,6 +110,11 @@ end
 function Animation:Stop()
     self:_Stop()
     self.Stopped:Fire(self)
+end
+
+
+function Animation:Freeze()
+    self.Increment = 0
 end
 
 

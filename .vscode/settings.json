@@ -5,11 +5,16 @@
         "sethiddenproperty",
         "sethiddenproperty",
         "getgenv",
-        "Drawing"
+        "Drawing",
+        "loadfile",
+        "listfiles"
     ],
     "robloxLsp.workspace.ignoreDir": [
         ".vscode",
         "**/_Index/**",
-        "fe-player-template/animations"
+        "fe-player-template/animations",
+        "src/Controllers/Animations/R6",
+        "src/Controllers/Animations/R15",
+        "src/Modules/R6/StaffWielder/Animations"
     ]
 }

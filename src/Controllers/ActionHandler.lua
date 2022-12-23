@@ -110,7 +110,7 @@ end
 function ActionHandler.DelayListen(an, is, io)
     if is == Enum.UserInputState.Begin then    
         if io.KeyCode == prevSettings.sprintButton then
-            print("Sprinting")
+            --print("Sprinting")
             Player.Running:SetState(false)
             Player.Sprinting:SetState(true) 
         elseif io.KeyCode == Enum.KeyCode.Space then

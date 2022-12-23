@@ -121,10 +121,8 @@ end
 
 
 local function setTimePosition()
-    if currentAnimation._index then
-        local pos = currentAnimation._index / currentAnimation.UpperBound
-        FastTween(timePosition, tweenInfo, {Position = UDim2.fromScale(pos, 0)}) 
-    end
+    local pos = currentAnimation:GetIndex() / currentAnimation.UpperBound
+    FastTween(timePosition, tweenInfo, {Position = UDim2.fromScale(pos, 0)})
 end
 
 
@@ -136,8 +134,7 @@ local function changeFramePosition()
     local pos = math.clamp(relMousePosRelToTimeline, 0, 1)
 
     framePosition = math.round(pos * (currentAnimation.UpperBound - currentAnimation.LowerBound + 1))
-    print(framePosition)
-    currentAnimation._index = framePosition
+    currentAnimation:SetIndex(framePosition)
 
 end
 
@@ -148,28 +145,25 @@ end
 
 
 function AnimPlayer:SkipFrame(direction: number)
-    currentAnimation._index = (currentAnimation._index - 1 + (direction % currentAnimation.UpperBound) + currentAnimation.UpperBound) % currentAnimation.UpperBound + currentAnimation.LowerBound
+    currentAnimation:NextFrame(direction)
 end
 
 
 function AnimPlayer:SkipToEnd(pos: number)
     pos = math.round(pos) or currentAnimation.UpperBound
 
-    currentAnimation._index = pos
+    currentAnimation:SetIndex(pos)
 end
 
 
-function AnimPlayer:Play(isForward)
+function AnimPlayer:Play(isReversed)
     if self.Playing then
         self.Playing = false
-        currentAnimation.Increment = 0
+        currentAnimation:Freeze()
     else
         self.Playing = true
-        currentAnimation.Increment = isForward and 1 or -1
-        --print("Playing forward:", isForward)
+        currentAnimation:Play(isReversed)
     end
-
-    --print("Playing:", self.Playing)
 end
 
 
@@ -182,6 +176,8 @@ function AnimPlayer:Update(frame)
     if canDrag and clicking then
         changeFramePosition()
     end
+    self:AttachToAnimation(PlayerController.Animation)
+    print(currentAnimation.Name)
     setTimePosition()
 
     if frame.BackgroundTransparency == 1 then
@@ -217,8 +213,8 @@ function AnimPlayer:Init(playerFrame: Frame)
 
     speedMultiplier.Text = tostring(currentAnimation.Speed) .. "x"
 
-    setupInput(play.Selection, self.Play, self, true)
-    setupInput(rewind.Selection, self.Play, self, false)
+    setupInput(play.Selection, self.Play, self, false)
+    setupInput(rewind.Selection, self.Play, self, true)
     setupInput(skipForward.Selection, self.SkipToEnd, self, currentAnimation.UpperBound)
     setupInput(skipBack.Selection, self.SkipToEnd, self, 1)
     setupInput(skipFrameForward.Selection, self.SkipFrame, self, 1)

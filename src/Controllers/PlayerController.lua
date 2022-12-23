@@ -6,6 +6,7 @@ else
 end
 
 local ActionHandler = require(Project.Controllers.ActionHandler)
+local Animation = require(Project.Controllers.Animations.Animation)
 local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local EmoteController = require(Project.Controllers.EmoteController)
@@ -42,7 +43,7 @@ local fallingSpeed = 0
 
 local previousCFrame = CFrame.new()
 
-PlayerController.Animation = {}
+PlayerController.Animation = Animation.new("Blank", {}, 30, false)
 PlayerController.Framerate = 30
 PlayerController.LerpEnabled = false
 

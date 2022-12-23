@@ -520,7 +520,7 @@ function AnimationController:_animateStep(char, animation: Animation)
     local framerate = animation.Framerate
     framerate *=  Player:GetAnimationSpeed()
 
-    local current_i = (animation._index - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
+    local current_i = (animation:GetIndex() - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0
 
     if animation.Increment >= 1 then
@@ -529,30 +529,23 @@ function AnimationController:_animateStep(char, animation: Animation)
         offset = -(animation.UpperBound - (animation.Increment * animation.Speed) % animation.UpperBound)
     end
 
-    local next_i = (animation._index - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
+    local next_i = (animation:GetIndex() - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
 
     if offset > 0 then
         if (current_i > next_i) then
             if not animation.Looping then
-                if animation.Name == "Roll" then
-                    print("Stop animation")
-                end
                 animation:Stop()
                 return
             else
-                print("Loop Animation")
                 animation.Looped:Fire()
             end
         end
     elseif offset < 0 then
         if (current_i < next_i) then
             if not animation.Looping then
-                
-                print("Stop animation")
                 animation:Stop()
                 return
             else
-                --print("Loop Animation")
                 animation.Looped:Fire()
             end
         end
@@ -568,22 +561,22 @@ function AnimationController:_animateStep(char, animation: Animation)
 
     if current_i > next_i then
         if animation.Increment > 0 then
-            animation._index = 1
+            animation:SetIndex(1)
             animation.TimeDiff = 0
         end
     else
         if animation.Increment < 0 then
-            animation._index = animation.UpperBound
+            animation:SetIndex(animation.UpperBound)
             animation.TimeDiff = 0
         end
     end
 
     if animation.Time > animation.TimeDiff then
-        animation._index = next_i
+        animation:SetIndex(next_i)
         self.lastKF = animation.KeyframeSequence[current_i]
         animation.Time = 0
     else 
-        animation._index =  current_i
+        animation:SetIndex(current_i)
     end
     
     if animation.TimeDiff == 0 then
@@ -593,9 +586,9 @@ function AnimationController:_animateStep(char, animation: Animation)
     local interp = math.clamp((animation.IsInterpolating and animation.Time/animation.TimeDiff or 1), 0, 1)
 
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, self.FilterTable, animation.Looking)
+        self:_poseR6(char, animation.KeyframeSequence[animation:GetIndex()], interp, self.FilterTable, animation.Looking)
     else 
-        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, self.FilterTable, animation.Looking)
+        self:_poseR15(char, animation.KeyframeSequence[animation:GetIndex()], interp, self.FilterTable, animation.Looking)
     end
 
     
