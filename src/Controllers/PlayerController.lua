@@ -21,7 +21,6 @@ local FastTween = require(Project.Util.FastTween)
 local Thread = require(Project.Util.Thread)
 local Signal = require(Project.Packages.Signal)
 local Spring = require(Project.Util.Spring)
-local EmoteController = require(Project.Controllers.EmoteController)
 
 local RunService = game:GetService("RunService")
 

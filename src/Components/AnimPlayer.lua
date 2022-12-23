@@ -18,6 +18,8 @@ local oldPlayerPosition
 local framePosition = 0
 local minimized = false
 
+local speed = 1
+
 local tweenInfo = { 0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out }
 
 AnimPlayer.Playing = false
@@ -141,6 +143,7 @@ end
 
 function AnimPlayer:AttachToAnimation(animation: Animation)
     currentAnimation = animation
+    currentAnimation.Speed = speed
 end
 
 
@@ -168,7 +171,7 @@ end
 
 
 function AnimPlayer:SetSpeed(speedMultiplier)
-    currentAnimation.Speed = math.clamp(speedMultiplier, 0, math.huge)
+    speed = math.clamp(speedMultiplier, 0, math.huge)
 end
 
 

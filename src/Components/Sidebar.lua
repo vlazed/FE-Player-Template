@@ -24,6 +24,8 @@ local tweenInfo = { 0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out }
 
 local animbar, modbar, handle, animtemplate, modtemplate, animtab, modtab
 
+local previousAnimation = Animation.new()
+
 local minimized = false
 
 local connection
@@ -56,12 +58,16 @@ function Sidebar:CreateAnimationElement(filePath)
             table.sort(keyframes.KeyframeSequence, function(k1, k2) 
                 return k1["Time"] < k2["Time"] 
             end)
-            if PlayerController.Animation.Name ~= keyframes.Name then
+            if previousAnimation.Name ~= keyframes.Name then
                 Player.Dancing = true
                 keyframes._index = 1
+                if previousAnimation and previousAnimation.Name ~= "" then
+                    PlayerController.DanceLayer:UnloadAnimation(previousAnimation)
+                end
                 PlayerController.DanceLayer:LoadAnimation(keyframes)
                 PlayerController:SetAnimation(keyframes)
-            elseif PlayerController.Animation.Name == keyframes.Name then
+                previousAnimation = keyframes
+            elseif previousAnimation.Name == keyframes.Name then
                 PlayerController.DanceLayer:UnloadAnimations()
                 Player.Dancing = false
             end
@@ -212,7 +218,7 @@ function Sidebar:Update()
             end
         end
     end
-    
+
 end
 
 

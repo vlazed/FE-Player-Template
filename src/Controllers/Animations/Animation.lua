@@ -13,7 +13,7 @@ Animation.__index = Animation
 function Animation.new(name: string, keyframeSequence: table, framerate: number, looking: boolean) : Animation
     local self = setmetatable({}, Animation)
 
-    self.Name = name
+    self.Name = name or ""
     self._playing = false
     self._index = 1
 
@@ -30,11 +30,11 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.Looking = looking or false
 
     -- Check if modulescript or keyframesequence instance
-    self.KeyframeSequence = {}
+    self.KeyframeSequence = keyframeSequence or {}
     self.Priority = Enum.AnimationPriority.Core
     self.Looping = false
     self.Framerate = 30
-    if keyframeSequence.Keyframes then
+    if self.KeyframeSequence.Keyframes then
         --print("Module script")
         self.KeyframeSequence = keyframeSequence.Keyframes
         self.Priority = keyframeSequence.Properties.Priority
