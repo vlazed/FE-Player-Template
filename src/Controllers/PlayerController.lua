@@ -503,7 +503,6 @@ local function _NexoLoad(canClickFling)
 	
     for D,E in next,b:GetDescendants()do 
 		if E:IsA("BasePart")then 
-			--E.Massless = true
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
@@ -821,6 +820,8 @@ function PlayerController:_InitializeStates()
 	Player:GetStateClass("Walking").OnTrue:Connect(self.OnWalk)
 
 	Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("LandSoft").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("LandHard").Stopped:Connect(self.OnStopAnimation)
 
 	Player.Sprinting.OnFalse:Connect(self.StoppedState)
 	Player.Running.OnFalse:Connect(self.StoppedState)
@@ -959,8 +960,9 @@ function PlayerController:Idle()
 		tiltSpring.f = 10 * Player:GetAnimationSpeed()
 		if Player.Dancing then return end
 	elseif Player.FightMode then
-		Player.Transition(2)
+		Player:GetAnimation("FightIdle"):Play()
 	else
+		Player:GetAnimation("FightIdle"):Stop()
 		Player.Transition(1)
 	end
 end
@@ -1166,14 +1168,13 @@ function PlayerController:Update()
 	ActionHandler:Update()
 	self.LayerA:Animate()
 	EmoteController:Update()
-	
 end    
 
 
 function PlayerController:OnIdle()
 	print("Idling")
 	local nexoHRP = Player.getNexoHumanoidRootPart()
-	print(fallingSpeed)
+	--print(fallingSpeed)
 	if Player.Flying then
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
@@ -1189,6 +1190,7 @@ function PlayerController:OnIdle()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Walk"):Pause()
 		Player:GetAnimation("Idle"):Play()
+
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
 			if math.abs(fallingSpeed) > 150 then
 				Player:GetAnimation("LandHard").Framerate = 30

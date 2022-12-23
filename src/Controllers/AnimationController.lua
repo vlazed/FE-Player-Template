@@ -145,7 +145,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
             Player.Dancing 
             or Player.Attacking 
             or Player.Dodging 
-            or Player.Emoting
+            or Player.Emoting:GetState()
             or Player.Landing
             or Player.FightMode
         )
@@ -418,7 +418,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Dancing or 
                 Player.Attacking or 
                 Player.Dodging or 
-                Player.Emoting or 
+                Player.Emoting:GetState() or 
                 Player.Landing or
                 Player.FightMode
             )
@@ -593,9 +593,9 @@ function AnimationController:_animateStep(char, animation: Animation)
     --print(animation.KeyframeSequence)
 
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable, animation.Looking)
+        self:_poseR6(char, animation.KeyframeSequence[animation._index], interp, self.FilterTable, animation.Looking)
     else 
-        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, animation.FilterTable, animation.Looking)
+        self:_poseR15(char, animation.KeyframeSequence[animation._index], interp, self.FilterTable, animation.Looking)
     end
 
     
@@ -672,7 +672,7 @@ function AnimationController.new(animationModule)
 
     self.lastKF = {}
 
-    self.filterTable = {}
+    self.FilterTable = {}
     self.AnimationTable = {
         [Enum.AnimationPriority.Core] = {},
         [Enum.AnimationPriority.Idle] = {},

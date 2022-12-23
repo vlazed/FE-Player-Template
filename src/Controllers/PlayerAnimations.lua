@@ -27,7 +27,8 @@ end
 PlayerAnimations.Emotes = {}
 
 for i,emote in ipairs(directory.Emotes:GetChildren()) do
-    PlayerAnimations.Emotes[emote.name:lower()] = Animation.new(emote.name, require(emote), require(emote).Properties.Framerate, true)
+    local animation = require(emote)
+    PlayerAnimations.Emotes[emote.name:lower()] = Animation.new(emote.name, animation, animation.Properties.Framerate, true)
 end
 
 return PlayerAnimations

@@ -52,6 +52,8 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.UpperBound = self.Length
     self.LowerBound = 1
 
+    self.TimeLength = self.KeyframeSequence[self.UpperBound]["Time"]
+
     self.Stopped = Signal.new()
     self.Looped = Signal.new()
 

@@ -2,7 +2,7 @@ return {
 	Properties = {
 		Looping = true,
 		Priority = Enum.AnimationPriority.Movement,
-		Framerate = 30
+		Framerate = 24
 	},
 	Keyframes = {
 		{

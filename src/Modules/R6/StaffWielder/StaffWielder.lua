@@ -24,7 +24,7 @@
     different scripts. For example, this allows the player to
         - Switch between different fighting animations,
         - Equip different weapons on their character, or
-        - Populate a keyboard with different emotes (with a known emote mapping).
+        - Populate a keyboard with different emotes (with a known emote mapping), for instance to simulate playing notes.
 --]]
 
 local Project
@@ -39,9 +39,9 @@ local Player = require(Project.Player)
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local Animation = require(Project.Controllers.Animations.Animation)
-local AnimationController = require(Project.Controllers.AnimationController)
 
 local StaffWielder = {}
+StaffWielder.Name = "Staff Wielder"
 
 StaffWielder.Initialized = false
 
@@ -178,9 +178,10 @@ local attack
     implementation to prevent inputs from processing on the update step
 --]]
 function StaffWielder:ProcessInputs()
-    if Player.Focusing or Player.Emoting then return end
+    if Player.Focusing or Player.Emoting:GetState() then return end
 
     if ActionHandler.IsKeyDownBool(EquipButton) then
+        print("EquipButton")
         if not self.Equipped and not self.Equipping then
             self.Unequipping = false
             self.Equipping = true
@@ -194,26 +195,35 @@ function StaffWielder:ProcessInputs()
             self.Unequipp:Play()
             task.delay(25/30, function() self:Unequip() end)
         end
-    elseif ActionHandler.IsKeyDownBool(SitButton) and not self.Sit:IsPlaying() then
+    elseif ActionHandler.IsKeyDownBool(SitButton) then
+        print("SitButotn")
         self.Sitting = not self.Sitting
-        self.Sit:Play()
+        if self.Sit:IsPlaying() then
+            self.Sit:Stop()
+        else
+            self.Sit:Play()
+        end
     end
 
+    --print("Attacking:", Player.Attacking)
     if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking then
         attack = self.LightAttacks[self.AttackIndex]
-        Player.Attacking = true
+        attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
-        task.delay(attack.Length/2,function()
+        Player.Attacking = true
+        task.delay(attack.TimeLength/2, function()
+            print("Setting to false")
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
         end)
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking then
         attack = self.HeavyAttacks[self.AttackIndex]
+        attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking = true
-        task.delay(2*attack.Length/3, function()
+        task.delay(2*attack.TimeLength/3, function()
             Player.Attacking = false
             self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
         end)
@@ -225,7 +235,6 @@ end
     An example of a state processing function. 
 --]]
 function StaffWielder:ProcessStates(char, AccessoryStaff)
-
     if self.Equipped and AccessoryStaff then
         self.LightAttacks = self.EquippedLightAttacks
         self.HeavyAttacks = self.EquippedHeavyAttacks
@@ -266,6 +275,7 @@ function StaffWielder:Unequip()
     filterTable[Staff] = nil
     Player:SetAnimationModule(self.UnequippedAnimations)
     PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
+    PlayerController.LayerA.FilterTable = filterTable
 end
 
 
@@ -277,12 +287,14 @@ function StaffWielder:Equip()
     end
     Player:SetAnimationModule(self.EquippedAnimations)
     PlayerController.LayerA:UpdateModule(self.EquippedAnimations)
+    PlayerController.LayerA.FilterTable = filterTable
 end
 
 --[[
     An update function. Generally, this function should only contain the processInputs or processStates function.
 --]]
 function StaffWielder:Update()
+    --print("Update")
     local AccessoryStaff = Player.getCharacter():FindFirstChild(Staff)
     local char = Player.getCharacter()
 
@@ -294,6 +306,8 @@ end
 function StaffWielder:Init()
     if self.Initialized then return end
     Player:SetAnimationModule(self.UnequippedAnimations)
+    PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
+    self:_InitializeAnimations()
     PlayerController.Modules[self] = self
     PlayerController:Init()
     self.Initialized = true
@@ -304,6 +318,11 @@ function StaffWielder:Stop()
     Player:ResetAnimationModule()
     PlayerController.Modules[self] = nil
     self.Initialized = false
+end
+
+
+function StaffWielder:__tostring()
+    return self.Name
 end
 
 
