@@ -180,7 +180,7 @@ function AnimPlayer:Update(frame)
         changeFramePosition()
     end
     self:AttachToAnimation(PlayerController.Animation)
-    print(currentAnimation.Name)
+    --print(currentAnimation.Name)
     setTimePosition()
 
     if frame.BackgroundTransparency == 1 then

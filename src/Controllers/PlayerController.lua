@@ -68,6 +68,8 @@ local massExecuteTime = tick() + 1/massPollRate
 local updateModuleRate = 1
 local moduleExecuteTime = tick() + 1/updateModuleRate
 
+local previousVelocity = Vector3.new()
+
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
 	if RunService:IsStudio() then return end
@@ -613,7 +615,7 @@ local function _NexoLoad(canClickFling)
 	for D,E in next,b:GetDescendants()do 
 		if E:IsA('BasePart')then 
 			d(c,x.Stepped:Connect(function()
-				E.CanCollide=false 
+				E.CanCollide=false
 			end))
 		end 
 	end 
@@ -815,6 +817,37 @@ local function initializeControls()
 		buoyancyForce.RelativeTo = Enum.ActuatorRelativeTo.World
 		buoyancyForce.Parent = Player.getNexoHumanoidRootPart()
 		PlayerController.Buoyancy = buoyancyForce	
+	end
+end
+
+local function acceleration(v1, v2, dt)
+	dt = dt or 0.01
+	return (v2-v1).Magnitude/dt
+end
+
+--[[
+	Some scripts are able to bypass the noclip anti-fling. This is a safeguard against these
+	types
+--]]
+local function detectFling(threshold: number, dt)
+	threshold = threshold or 1000
+
+	local currentVelocity = Vector3.new()
+	local currentAcceleration = 0
+
+	local nhrp = Player.getNexoHumanoidRootPart()
+	if nhrp then
+		currentVelocity = nhrp.AssemblyLinearVelocity
+		currentAcceleration = acceleration(previousVelocity, currentVelocity, dt)
+		previousVelocity = currentVelocity
+	end
+
+	--print(currentAcceleration)
+
+	if currentAcceleration > threshold then
+		print("Detected Fling")
+		nhrp.CFrame = previousCFrame:PointToWorldSpace(Vector3.new(0, 5, 0))
+		nhrp.AssemblyLinearVelocity = Vector3.new()
 	end
 end
 
@@ -1060,6 +1093,8 @@ function PlayerController:ProcessStates(char, nexoChar)
 	local hum = Player.getHumanoid()
 	local height = nexoChar.HumanoidRootPart.CFrame.Position.Y 
 
+	local threshold = 5000
+
 	if Player:GetState("Respawning") then
 		self:Respawn()	
 	end
@@ -1079,20 +1114,24 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player:SetState("Jumping", true)
 		nexoChar.Humanoid.Jump = true
 		char.Humanoid.Jump = true
+		threshold *= 2
 		self:Jump()
 	elseif not (Player:OnGround() or Player.Flying) then
 		Player:GetStateClass("Falling"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Falling", true)
 		fallingSpeed = nexoChar.HumanoidRootPart.AssemblyLinearVelocity.Y
+		threshold *= 2
 		self:Fall()
 	elseif Player.Running:GetState() or Player.Sprinting:GetState() then
 		Player.Running:SetPreviousState(Player:GetEnabledLocomotionState())
 		Player.Sprinting:SetPreviousState(Player:GetEnabledLocomotionState())
 		self:Sprint()
+		threshold *= 10
 	elseif char.Humanoid.MoveDirection.Magnitude > 0 and not Player:GetState("Jumping") then
 		Player:GetStateClass("Walking"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Walking", true)
 		self:Walk()
+		threshold *= 2
 	else
 		Player:GetStateClass("Idling"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Idling", true)
@@ -1131,6 +1170,10 @@ function PlayerController:ProcessStates(char, nexoChar)
 	nexoHum.AutoRotate = false
 	nexoHum:Move(moveVector)
 
+	if Player.Flying then
+		threshold *= 12
+	end
+
 	if tick() >= massExecuteTime then
 		Player:UpdateMass()
 		massExecuteTime = tick() + 1 / massPollRate
@@ -1139,6 +1182,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 		self.LayerA:UpdateModule(Player:GetAnimationModule())
 		moduleExecuteTime = tick() + 1 / updateModuleRate
 	end
+	detectFling(threshold)
 end
 
 

@@ -73,10 +73,10 @@ function EmoteController:ChooseChatAnim(message)
     local anim
 
     if capitals:len()/string_sum > 0.5 then
-        print("Shout")
+        --print("Shout")
         anim = "ChattedShout" .. tostring(index)
     else
-        print("Talk")
+        --print("Talk")
         anim = "ChattedNormal" .. tostring(index)
     end
 
@@ -128,7 +128,7 @@ function EmoteController:Chatting()
 
     ChatEmote = Player:GetAnimation("Chatting")
 
-    print("Chatting something")
+    --print("Chatting something")
 
     Player.Focusing = true
 end
@@ -142,7 +142,7 @@ end
 function EmoteController.OnStopAnimation(emote: Animation)
     print(emote.Name)
     if emote.Name == "StartChatting" and Player.Focusing then
-        print("Chatting")
+        --print("Chatting")
         Player:GetAnimation("Chatting"):Play()
     else
         Player:GetAnimation("Chatting"):Stop()

@@ -194,7 +194,7 @@ function StaffWielder:ProcessInputs()
             task.delay(25/30, function() self:Unequip() end)
         end
     elseif ActionHandler.IsKeyDownBool(SitButton) then
-        print("SitButotn")
+        --print("SitButotn")
         self.Sitting = not self.Sitting
         if self.Sit:IsPlaying() then
             self.Sit:Stop()
