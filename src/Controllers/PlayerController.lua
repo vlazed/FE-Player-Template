@@ -109,6 +109,9 @@ local function _R15ReanimLoad()
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
+					if E.Name == "HumanoidRootPart" then
+						E.Anchored = not (toggleFling or Player.Attacking:GetState())
+					end
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
@@ -382,9 +385,9 @@ local function _R15ReanimLoad()
 		local function q(D)
 			local r=Instance.new('BodyAngularVelocity')
 			local b=Instance.new('AngularVelocity')
-			r.AngularVelocity=Vector3.new(9e9,9e9,9e9)
-			r.MaxTorque=Vector3.new(9e9,9e9,9e9)
-			b.AngularVelocity = Vector3.new(9e9,9e9,9e9)
+			r.AngularVelocity=Vector3.new(0,9e9,0)
+			r.MaxTorque=Vector3.new(0,9e9,0)
+			b.AngularVelocity = Vector3.new(0,9e9,0)
 			b.MaxTorque = 9e9
 			b.Attachment0 = D["RootAttachment"]
 			b.Parent = D
@@ -396,6 +399,7 @@ local function _R15ReanimLoad()
 		s.P=9e9 
 		s.D=9e9 
 		s.MaxForce=Vector3.new(99999,99999,99999)
+		s.Position = char.HumanoidRootPart.Position
 		s.Parent = char.HumanoidRootPart
 
 		local A 
@@ -513,6 +517,10 @@ local function _NexoLoad(canClickFling)
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
+					if E.Name == "HumanoidRootPart" then
+						E.Velocity=Vector3.new(0,0,0)
+						E.Anchored = not (toggleFling or Player.Attacking:GetState())
+					end
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
@@ -662,8 +670,8 @@ local function _NexoLoad(canClickFling)
 	local l,m,n,o,p=false,false,false,false,false
 	local function q(D)
 		local r=Instance.new('BodyAngularVelocity')
-		r.AngularVelocity=Vector3.new(9e9,9e9,9e9)
-		r.MaxTorque=Vector3.new(9e9,9e9,9e9)
+		r.AngularVelocity=Vector3.new(0,9e9,0)
+		r.MaxTorque=Vector3.new(0,9e9,0)
         r.Parent = D
 	end 
 	q(b.HumanoidRootPart)
@@ -672,6 +680,7 @@ local function _NexoLoad(canClickFling)
 	s.P=9e9 
     s.D=9e9 
     s.MaxForce=Vector3.new(99999,99999,99999)
+	s.Position = b.HumanoidRootPart.Position
     s.Parent = b.HumanoidRootPart
 
 	local A 
@@ -680,13 +689,13 @@ local function _NexoLoad(canClickFling)
 			b.HumanoidRootPart.Anchored = true
 		end
 		if A==true then 
-			b.HumanoidRootPart.CanCollide = toggleFling
 			s.Position=k.Hit.p 
             b.HumanoidRootPart.Position=k.Hit.p 
-		else 
+		else
 			s.Position=y.Torso.Position 
 		end 
 		b.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
+		b.HumanoidRootPart.Anchored = not (toggleFling or Player.Attacking:GetState())
 	end))
 
 	local B=Instance.new("SelectionBox")
@@ -1087,6 +1096,9 @@ function PlayerController:LeanCharacter(char)
 end
 
 
+
+
+
 function PlayerController:ProcessStates(char, nexoChar)
 
 	local nexoHum = Player.getNexoHumanoid()
@@ -1237,6 +1249,8 @@ function PlayerController:Update()
 	self.LayerA:Animate()
 	EmoteController:Update()
 	self.DanceLayer:Animate()
+
+	self.LayerB:Animate()
 
 	self:RunUpdateTable()
 	

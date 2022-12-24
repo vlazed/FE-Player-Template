@@ -7,14 +7,7 @@ end
 
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"
-    if not getgenv().Running then
-        getgenv().Running = true
-    else
-        print("Already activated")
-        return
-    end
-else
-    _G.PROJECT_NAME = "FE-Player-Template"
+    print(getgenv().PROJECT_NAME)
 end
 
 print("FE Player Template v1.0")
@@ -54,11 +47,27 @@ end
 
 local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
 
+if getgenv then
+    getgenv().PROJECT_NAME = "FE-Player-Template"
+    if getgenv().Running then
+        print("Already activated")
+        return
+    end
+else
+    _G.PROJECT_NAME = "FE-Player-Template"
+end
+
 local success, error = pcall(function()
     PlayerController:Init()
     --SelectedModule:Init()
     App:Init()
 end)
+
+if getgenv then
+    if not getgenv().Running and success then
+        getgenv().Running = true
+    end
+end
 
 if not success then
     if getgenv then

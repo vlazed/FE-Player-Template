@@ -58,6 +58,7 @@ function EmoteController:NotChatted()
     local chattingAnim = Player:GetAnimation("Chatting")
 
     startChattingAnim.Increment = -1
+    startChattingAnim:SetIndex(startChattingAnim.Length)
     chattingAnim:Stop()
     startChattingAnim:Play()
     
