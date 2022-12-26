@@ -8,6 +8,8 @@ end
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"
     print(getgenv().PROJECT_NAME)
+else
+    _G.PROJECT_NAME = "FE-Player-Template"
 end
 
 print("FE Player Template v1.0")
@@ -53,8 +55,6 @@ if getgenv then
         print("Already activated")
         return
     end
-else
-    _G.PROJECT_NAME = "FE-Player-Template"
 end
 
 local success, error = pcall(function()

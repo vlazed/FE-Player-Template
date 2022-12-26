@@ -20,6 +20,9 @@ AnimationController.TiltVector = Vector3.new(0,1,0)
 AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
 
+AnimationController.XDirection = 0
+AnimationController.ZDirection = 0
+
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
 local angleSpringY = Spring.new(16, 0)
 local angleSpringX = Spring.new(16, 0)
@@ -391,6 +394,19 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
     lastFilterTable = filterTable
 end
 
+
+-- FIXME: Buggy behavior
+function AnimationController:Flip(xDir, zDir, dt)
+    dt = dt or 10
+	local torso = Player.getCharacter().Torso
+    local nexoTorso = Player.getNexoCharacter().HumanoidRootPart
+    local dtheta = CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
+	--torso.CFrame *= CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
+    FastTween(nexoTorso, {0.1}, {CFrame = nexoTorso.CFrame*dtheta})
+    --nexoTorso.CFrame *= CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
+end
+
+
 function AnimationController:_poseR6(character, keyframe, interp, filterTable, looking)
     interp = interp or 1
 
@@ -410,7 +426,14 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
         
         FastTween(hrp["RootJoint"], {0.1}, {Transform = cf})
 
-        hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
+        local lookAt = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
+        if Player.Flipping then
+            self:Flip(self.XDirection, self.ZDirection)
+        else
+            FastTween(hrp, {0.1}, {CFrame = lookAt})
+            --hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
+        end
+
 		character.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
         nexoCharacter.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
 
@@ -422,19 +445,15 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Emoting:GetState() or 
                 Player.Landing or
                 Player.FightMode:GetState() or
-                Player.Slowing 
+                Player.Slowing
             )
         then
-            character.Torso.CFrame = CFrame.fromMatrix(
+            local tiltFrame = CFrame.fromMatrix(
                 character.Torso.CFrame.Position,
                 self.TiltVector:Cross(-self.MoveVector), 
-                self.TiltVector
-            )
-            nexoCharacter.Torso.CFrame = CFrame.fromMatrix(
-                character.Torso.CFrame.Position,
-                self.TiltVector:Cross(-self.MoveVector), 
-                self.TiltVector
-            )
+                self.TiltVector)
+            character.Torso.CFrame = tiltFrame 
+            nexoCharacter.Torso.CFrame = tiltFrame
         end
 	end
 

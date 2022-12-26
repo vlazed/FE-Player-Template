@@ -42,16 +42,16 @@ local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local Animation = require(Project.Controllers.Animations.Animation)
 
-local StaffWielder = {}
-StaffWielder.Name = "Staff Wielder"
+local ElegantSword = {}
+ElegantSword.Name = "Elegant Sword"
 
-StaffWielder.Initialized = false
+ElegantSword.Initialized = false
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
     or somehow lose the accessory.
 --]]
-local Staff = "Giant Sword Catcher"
+local Sword = ""
 
 local Animations = script.Parent.Animations
 local Emotes = Animations.Emotes
@@ -59,9 +59,9 @@ local Equipped = Animations.Equipped
 local Unequipped = Animations.Unequipped
 local filterTable = {}
  
-StaffWielder.Sit = Animation.new("Sit", require(Unequipped.Sit), 30, true)
+local Sit = Animation.new("Sit", require(Unequipped.Sit), 30, true)
 
-StaffWielder.Keybinds = {
+local Keybinds = {
     Enum.KeyCode.Q,    -- Equip/Unequip
     Enum.KeyCode.F,    -- Light Attack
     Enum.KeyCode.G,    -- Heavy Attack
@@ -88,17 +88,17 @@ local SitButton = Enum.KeyCode.C
 
 --]]
 
-StaffWielder.UnequippedAnimations = {Emotes = {}}
+local UnequippedAnimations = {Emotes = {}}
 
-StaffWielder.EquippedAnimations = {Emotes = {}}
+local EquippedAnimations = {Emotes = {}}
 
-StaffWielder.EquippedLightAttacks = {}
+local EquippedLightAttacks = {}
 
-StaffWielder.UnequippedLightAttacks = {}
+local UnequippedLightAttacks = {}
 
-StaffWielder.EquippedHeavyAttacks = {}
+local EquippedHeavyAttacks = {}
 
-StaffWielder.UnequippedHeavyAttacks = {}
+local UnequippedHeavyAttacks = {}
 
 
 local function populateEmoteTable(inputTable: table, targetTable: table)
@@ -128,27 +128,27 @@ local function populateAttackTable(inputTable: table, targetTable: table)
     end
 end
 
-populateAnimationTable(Unequipped:GetChildren(), StaffWielder.UnequippedAnimations)
-populateAnimationTable(Equipped:GetChildren(), StaffWielder.EquippedAnimations)
-populateEmoteTable(Emotes:GetChildren(), StaffWielder.EquippedAnimations.Emotes)
-populateEmoteTable(Emotes:GetChildren(), StaffWielder.UnequippedAnimations.Emotes)
-populateAttackTable(Unequipped.LightAttacks:GetChildren(), StaffWielder.UnequippedLightAttacks)
-populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), StaffWielder.UnequippedHeavyAttacks)
-populateAttackTable(Equipped.LightAttacks:GetChildren(), StaffWielder.EquippedLightAttacks)
-populateAttackTable(Equipped.HeavyAttacks:GetChildren(), StaffWielder.EquippedHeavyAttacks)
+populateAnimationTable(Unequipped:GetChildren(), UnequippedAnimations)
+populateAnimationTable(Equipped:GetChildren(), EquippedAnimations)
+populateEmoteTable(Emotes:GetChildren(), EquippedAnimations.Emotes)
+populateEmoteTable(Emotes:GetChildren(), UnequippedAnimations.Emotes)
+populateAttackTable(Unequipped.LightAttacks:GetChildren(), UnequippedLightAttacks)
+populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), UnequippedHeavyAttacks)
+populateAttackTable(Equipped.LightAttacks:GetChildren(), EquippedLightAttacks)
+populateAttackTable(Equipped.HeavyAttacks:GetChildren(), EquippedHeavyAttacks)
 
-StaffWielder.Unequipp = StaffWielder.EquippedAnimations.Unequip
-StaffWielder.Equipp = StaffWielder.UnequippedAnimations.Equip
+local Unequipp = EquippedAnimations.Unequip
+local Equipp = UnequippedAnimations.Equip
 
-function StaffWielder:_InitializeAnimations()
-    PlayerController.LayerA:LoadAnimation(self.Sit)
-    PlayerController.LayerB:LoadAnimation(self.Equipp)
-    PlayerController.LayerB:LoadAnimation(self.Unequipp)
+function ElegantSword:_InitializeAnimations()
+    PlayerController.LayerA:LoadAnimation(Sit)
+    PlayerController.LayerB:LoadAnimation(Equipp)
+    PlayerController.LayerB:LoadAnimation(Unequipp)
 
-    self.Unequipp.Stopped:Connect(self.OnStopAnimation)
-    self.Equipp.Stopped:Connect(self.OnStopAnimation)
-    self.EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
-    self.UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
+    Unequipp.Stopped:Connect(self.OnStopAnimation)
+    Equipp.Stopped:Connect(self.OnStopAnimation)
+    EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
+    UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
 
     for i,v in ipairs(self.UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
@@ -158,16 +158,16 @@ function StaffWielder:_InitializeAnimations()
     end
 end
 
-StaffWielder.LightAttacks = {}
-StaffWielder.HeavyAttacks = {}
+local LightAttacks = {}
+local HeavyAttacks = {}
 
-StaffWielder.AttackIndex = 1
+local AttackIndex = 1
 
-StaffWielder.Equipping = false
-StaffWielder.Unequipping = false
+local Equipping = false
+local Unequipping = false
 
-StaffWielder.Equipped = false
-StaffWielder.Sitting = false
+local Equipped = false
+local Sitting = false
 
 local attack
 
@@ -175,53 +175,53 @@ local attack
     An example of an input processing function. Ideally, one should provide some debounce
     implementation to prevent inputs from processing on the update step
 --]]
-function StaffWielder:ProcessInputs()
+function ElegantSword:ProcessInputs()
     if Player.Focusing or Player.Emoting:GetState() then return end
 
     if ActionHandler.IsKeyDownBool(EquipButton) then
         --print("EquipButton")
-        if not self.Equipped and not self.Equipping then
-            self.Unequipping = false
-            self.Equipping = true
-            self.Equipp:Stop()
-            self.Equipp:Play()
+        if not Equipped and not Equipping then
+            Unequipping = false
+            Equipping = true
+            Equipp:Stop()
+            Equipp:Play()
             task.delay(25/30, function() self:Equip() end)
-        elseif self.Equipped and not self.Unequipping then
-            self.Equipping = false
-            self.Unequipping = true
-            self.Unequipp:Stop()
-            self.Unequipp:Play()
+        elseif Equipped and not Unequipping then
+            Equipping = false
+            Unequipping = true
+            Unequipp:Stop()
+            Unequipp:Play()
             task.delay(25/30, function() self:Unequip() end)
         end
     elseif ActionHandler.IsKeyDownBool(SitButton) then
         --print("SitButotn")
-        self.Sitting = not self.Sitting
-        if self.Sit:IsPlaying() then
-            self.Sit:Stop()
+        Sitting = not Sitting
+        if Sit:IsPlaying() then
+            Sit:Stop()
         else
-            self.Sit:Play()
+            Sit:Play()
         end
     end
 
     if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking:GetState() then
-        attack = self.LightAttacks[self.AttackIndex]
+        attack = LightAttacks[AttackIndex]
         attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking:SetState(true)
         task.delay(attack.TimeLength/2, function()
             Player.Attacking:SetState(false)
-            self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
+            AttackIndex = (AttackIndex - 1 + (1 % #LightAttacks) + #LightAttacks) % #LightAttacks + 1
         end)
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking:GetState() then
-        attack = self.HeavyAttacks[self.AttackIndex]
+        attack = HeavyAttacks[AttackIndex]
         attack.Speed = 1.175
         attack:Play()
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking:SetState(true)
         task.delay(2*attack.TimeLength/3, function()
             Player.Attacking:SetState(false)
-            self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
+            AttackIndex = (AttackIndex - 1 + (1 % #HeavyAttacks) + #HeavyAttacks) % #HeavyAttacks + 1
         end)
     end
 end
@@ -231,11 +231,11 @@ end
     Some weird looping behavior occurs if you have animation overrides that run with a keybind.
     Best to have an OnStopAnimation callback to ensure that bugs don't occur.
 --]]
-function StaffWielder.OnStopAnimation(animation: Animation)
+function ElegantSword.OnStopAnimation(animation: Animation)
     if animation.Name == "Equip" then
-        StaffWielder.Equipping = false
+        Equipping = false
     elseif animation.Name == "Unequip" then
-        StaffWielder.Unequipping = false
+        Unequipping = false
     elseif animation.Name == "Roll" then
         Player.Dodging = false
     end
@@ -245,39 +245,39 @@ end
 --[[
     An example of a state processing function. 
 --]]
-function StaffWielder:ProcessStates(char, AccessoryStaff)
-    if self.Equipped and AccessoryStaff then
-        local nexoStaff = Player.getNexoCharacter():FindFirstChild(AccessoryStaff.Name)
+function ElegantSword:ProcessStates(char, Accessory)
+    if Equipped and Accessory then
+        local nexoStaff = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
 
         if not RunService:IsStudio() then
-            AccessoryStaff.Handle.CFrame = 
+            Accessory.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-                    * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                     * CFrame.fromOrientation(90, -0, 45)
                     * CFrame.fromOrientation(1, 1, 0)
                     * CFrame.new(1.5,1.5,0):Inverse()
             
             nexoStaff.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-                    * AccessoryStaff.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                     * CFrame.fromOrientation(90, -0, 45)
                     * CFrame.fromOrientation(1, 1, 0)
                     * CFrame.new(1.5,1.5,0):Inverse()
         end
         
-        self.LightAttacks = self.EquippedLightAttacks
-        self.HeavyAttacks = self.EquippedHeavyAttacks
+        LightAttacks = EquippedLightAttacks
+        HeavyAttacks = EquippedHeavyAttacks
     else
-        self.LightAttacks = self.UnequippedLightAttacks
-        self.HeavyAttacks = self.UnequippedHeavyAttacks
+        LightAttacks = UnequippedLightAttacks
+        HeavyAttacks = UnequippedHeavyAttacks
     end
 
     if Player.Attacking:GetState() then
         if char.HumanoidRootPart then
             char.HumanoidRootPart.Anchored = false
             char.HumanoidRootPart.CanCollide = true
-            if self.Equipped and AccessoryStaff then
-                char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
+            if Equipped and Accessory then
+                char.HumanoidRootPart.Position = Accessory.Handle.Position    
             else
                 char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
@@ -286,55 +286,56 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
 end
 
 
-function StaffWielder:Unequip()
-    self.Equipped = false
-    filterTable[Staff] = nil
-    Player:SetAnimationModule(self.UnequippedAnimations)
+function ElegantSword:Unequip()
+    Equipped = false
+    filterTable[Sword] = nil
+    Player:SetAnimationModule(UnequippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
-    for i,v in ipairs(self.UnequippedLightAttacks) do
+    for i,v in ipairs(UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    for i,v in ipairs(self.UnequippedHeavyAttacks) do
+    for i,v in ipairs(UnequippedHeavyAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    self.AttackIndex = 1
+    AttackIndex = 1
 end
 
 
-function StaffWielder:Equip()
-    self.Equipped = true
-    local AccessoryStaff = Player.getCharacter():FindFirstChild(Staff)
-    if AccessoryStaff then
-        filterTable[Staff] = AccessoryStaff
+function ElegantSword:Equip()
+    Equipped = true
+    local AccessorySword = Player.getCharacter():FindFirstChild(Sword)
+    if AccessorySword then
+        filterTable[Sword] = AccessorySword
     end
-    Player:SetAnimationModule(self.EquippedAnimations)
+    Player:SetAnimationModule(EquippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
-    for i,v in ipairs(self.EquippedLightAttacks) do
+    PlayerController.LayerB.FilterTable = filterTable
+    for i,v in ipairs(EquippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    for i,v in ipairs(self.EquippedHeavyAttacks) do
+    for i,v in ipairs(EquippedHeavyAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    self.AttackIndex = 1
+    AttackIndex = 1
 end
 
 --[[
     An update function. Generally, this function should only contain the processInputs or processStates function.
 --]]
-function StaffWielder:Update()
+function ElegantSword:Update()
     --print("Update")
-    local AccessoryStaff = Player.getCharacter():FindFirstChild(Staff)
+    local AccessorySword = Player.getCharacter():FindFirstChild(Sword)
     local char = Player.getCharacter()
 
     self:ProcessInputs()
 
-    self:ProcessStates(char, AccessoryStaff)
+    self:ProcessStates(char, AccessorySword)
 end
 
-function StaffWielder:Init()
+function ElegantSword:Init()
     if self.Initialized then return end
-    Player:SetAnimationModule(self.UnequippedAnimations)
-    PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
+    Player:SetAnimationModule(UnequippedAnimations)
+    PlayerController.LayerA:UpdateModule(UnequippedAnimations)
     self:_InitializeAnimations()
     PlayerController.Modules[self] = self
     PlayerController:Init()
@@ -342,16 +343,16 @@ function StaffWielder:Init()
 end
 
 
-function StaffWielder:Stop()
+function ElegantSword:Stop()
     Player:ResetAnimationModule()
     PlayerController.Modules[self] = nil
     self.Initialized = false
 end
 
 
-function StaffWielder:__tostring()
+function ElegantSword:__tostring()
     return self.Name
 end
 
 
-return StaffWielder
+return ElegantSword

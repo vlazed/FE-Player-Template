@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Project
 if getgenv then
 	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
@@ -7,8 +8,10 @@ end
 
 local Thread = require(Project.Util.Thread)
 local PlayerAnimations = require(Project.Controllers.PlayerAnimations)
+local Animation = require(Project.Controllers.Animations.Animation)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local State = require(Project.Util.State)
+local Spring = require(Project.Util.Spring)
 
 local Player = {}
 
@@ -29,7 +32,7 @@ Player.FightMode = State.new("FightMode", false)
 Player.Following = false
 Player.Transitioning = false
 Player.Flying = false
-Player.Crouching = false
+Player.Crouching = State.new("Crouching", false)
 Player.Dodging = false
 Player.Running = State.new("Running", false)
 Player.Sprinting = State.new("Sprinting", false)
@@ -43,12 +46,19 @@ Player.ChatEmoting = State.new("ChatEmoting", false)
 Player.Landing = false
 Player.Slowing = false
 Player.DodgeMoving = false
+Player.Flipping = false
 
 Player.AnimationModule = PlayerAnimations
 
 Player.Locked = false
 
 Player.Mass = 0
+
+local prevClock = os.clock()
+local framerate = 60
+local framerateSpring = Spring.new(0.5, 60)
+
+local heartbeatConnection
 
 function Player.getPlayer()
 	return game.Players.LocalPlayer
@@ -83,6 +93,8 @@ function Player:GetAnimation(animation: string): Animation
 	elseif PlayerAnimations[animation] then
 		--print(PlayerAnimations[animation])
 		return PlayerAnimations[animation]
+	else
+		return Animation.new()
 	end
 end
 
@@ -104,7 +116,7 @@ end
 
 
 function Player:GetAnimationSpeed()
-	return ControllerSettings.GetSettings().DT * 100
+	return ControllerSettings.GetSettings().DT * 100 * 60/framerate
 end
 
 
@@ -115,7 +127,7 @@ function Player:OnGround()
 	params.FilterDescendantsInstances = {hrp.Parent, Player.getCharacter()}
 	params.FilterType = Enum.RaycastFilterType.Blacklist
 	params.IgnoreWater = false
-	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-5,0), params)
+	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-7,0), params)
 	
 	return raycastResult
 end
@@ -312,6 +324,23 @@ end
 
 function Player.tweenHumanoidAttribute(attribute: string, value: any, tweenInfo: table)
 	
+end
+
+function Player:GetFramerate()
+	return framerate
+end
+
+
+function Player:HookFramerate()
+	heartbeatConnection = RunService.Heartbeat:Connect(function(dt)
+		framerate = framerateSpring:Update(0.01, 1/dt)
+		--print(framerate)
+	end)
+end
+
+
+function Player:UnhookFramerate()
+	heartbeatConnection:Disconnect()
 end
 
 

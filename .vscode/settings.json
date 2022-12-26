@@ -15,6 +15,9 @@
         "fe-player-template/animations",
         "src/Controllers/Animations/R6",
         "src/Controllers/Animations/R15",
-        "src/Modules/R6/StaffWielder/Animations"
+        "src/Modules/R6/StaffWielder/Animations",
+        "src/Modules/R6/ElegantSword/Animations",
+        "src/Modules/R6/Bike/Animations",
+        "src/Modules/R6/MuayThai/Animations"
     ]
 }

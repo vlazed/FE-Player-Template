@@ -30,6 +30,8 @@ local FALLEN_PARTS_THRESHOLD = 0.25
 
 local respawnConnection
 
+local EPSILON = 1e-4
+
 local moveVector = Vector3.new(1, 0, 0)
 local tiltVector = Vector3.new(0, 1, 0)
 local tiltSpring = Spring.new(2, tiltVector)
@@ -41,6 +43,7 @@ local toggleFling = false
 local debounce = false
 
 local fallingSpeed = 0
+local currentFlipDelay = 0
 
 local previousCFrame = CFrame.new()
 
@@ -853,9 +856,9 @@ local function detectFling(threshold: number, dt)
 
 	--print(currentAcceleration)
 
-	if currentAcceleration > threshold then
+	if currentAcceleration > threshold and not Player.Landing and not (Player.Sprinting or Player.Running) then
 		print("Detected Fling")
-		nhrp.CFrame = previousCFrame:PointToWorldSpace(Vector3.new(0, 5, 0))
+		nhrp.CFrame = previousCFrame:ToWorldSpace(CFrame.new(0, 5, 0))
 		nhrp.AssemblyLinearVelocity = Vector3.new()
 	end
 end
@@ -867,11 +870,23 @@ function PlayerController:_InitializeStates()
 	Player:GetStateClass("Jumping").OnTrue:Connect(self.OnJump)
 	Player:GetStateClass("Walking").OnTrue:Connect(self.OnWalk)
 
+	Player.Crouching.OnTrue:Connect(self.OnCrouch)
+	Player.Crouching.OnFalse:Connect(self.StoppedCrouch)
+
+	Player:GetStateClass("Walking").OnFalse:Connect(self.StoppedState)
+
 	Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("Slide").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("FrontFlip").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("BackFlip").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("RightFlip").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("LeftFlip").Stopped:Connect(self.OnStopAnimation)
+
 	Player:GetAnimation("LandSoft").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("LandHard").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("SprintStop").Stopped:Connect(self.OnStopAnimation)
 	Player:GetAnimation("RunStop").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("WalkStop").Stopped:Connect(self.OnStopAnimation)
 	
 	Player.FightMode.OnFalse:Connect(self.StoppedState)
 	Player.Attacking.OnFalse:Connect(self.StoppedState)
@@ -969,8 +984,18 @@ function PlayerController:Fall()
 end
 
 
-function PlayerController:Jump()
+function PlayerController:Jump(char)
 	local Settings = ControllerSettings:GetSettings()
+
+	char = char or Player.getNexoCharacter()
+
+	if Player:OnGround() then
+		char.Humanoid.Jump = true
+	elseif Player.Dodging and not Player:GetState("Jumping") then
+		char.Humanoid:ChangeState(3)
+		task.wait(Settings.DT)
+		char.Humanoid:ChangeState(5)
+	end
 
 	if Player.Flying then
 		--print("FlyingJump")
@@ -1034,12 +1059,30 @@ function PlayerController:Fly()
 	local ascent = (ActionHandler.IsKeyDown(Settings.ascendButton) - ActionHandler.IsKeyDown(Settings.crouchButton)) * Settings.ascentSpeed * Vector3.new(0,1,0)
 
 	alignRot.CFrame = CFrame.fromMatrix(hrp.CFrame.Position, Camera.CFrame.XVector, Camera.CFrame.YVector)
-	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * walkSpeed/16
+	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * humanoid.JumpPower/50
 end
 
 
 function PlayerController:DodgeMove(direction)
-	Player.getNexoHumanoidRootPart().CFrame = Player.getNexoHumanoidRootPart().CFrame + direction / Player:GetAnimationSpeed()
+	local hrp = Player.getNexoHumanoidRootPart()
+	hrp.CFrame = hrp.CFrame + direction / Player:GetAnimationSpeed()
+end
+
+
+function PlayerController:Slide()
+	if Player.DodgeMoving then
+		self:DodgeMove(moveVector*0.1)
+		return
+	end
+
+	local slide = Player:GetAnimation("Slide")
+	local slideDelay = slide.Properties.DodgeTime or 1
+	self.LayerA:LoadAnimation(slide)
+	if not slide:IsPlaying() then
+		slide:Play()
+		Player.DodgeMoving = true
+		task.delay(slideDelay, function() Player.DodgeMoving = false Player.Transition(2) end)
+	end
 end
 
 
@@ -1048,6 +1091,7 @@ function PlayerController:DodgeGround()
 
 	if Player.DodgeMoving then
 		self:DodgeMove(moveVector * 0.3)
+		return
 	end
 
 	local roll = Player:GetAnimation("Roll")
@@ -1062,9 +1106,49 @@ end
 
 
 -- Flip Implementation: Use feFlip to rotate character latitudinally or longitudinally, then animate character twist motion
-function PlayerController:DodgeAir()
-	if Player.Dancing or Player.Swimming then return end
-	--print("Dodging in Air")
+function PlayerController:DodgeAir(char)
+	if Player.Dancing or Player.Swimming or Player.Flipping then return end
+	local torso = char.HumanoidRootPart
+
+	local flip
+
+	local rightVector = torso.CFrame.RightVector
+	local lookVector = torso.CFrame.lookVector
+	local c0 = rightVector:Dot(moveVector) + EPSILON / 2
+	local c1 = lookVector:Dot(moveVector) + EPSILON / 2
+
+	if math.abs(c0) < EPSILON then
+		if c1 >= 0 then
+			flip = Player:GetAnimation("FrontFlip")
+		else
+			flip = Player:GetAnimation("BackFlip")
+		end
+	else
+		if c0 >= 0 then
+			flip = Player:GetAnimation("RightFlip")
+		else
+			flip = Player:GetAnimation("LeftFlip")
+		end
+	end
+
+	print(flip)
+	currentFlipDelay = flip.Properties.DodgeTime or flip.TimeLength
+	self.LayerA:LoadAnimation(flip)
+	
+	if not flip:IsPlaying() then
+		flip:Play()
+		Player.Flipping = true
+		Player.DodgeMoving = true
+		self.LayerA.XDirection = math.round(c1)
+		self.LayerA.ZDirection = math.round(c0)
+		self:Jump()
+		torso:ApplyImpulse(Player:GetWeight()*(Vector3.new(0,0.5,0) + moveVector).Unit / 4)
+		task.delay(currentFlipDelay, function() 
+			Player.DodgeMoving = false
+			Player.Flipping = false
+		end)
+	end
+
 end
 
 
@@ -1091,7 +1175,6 @@ function PlayerController:LeanCharacter(char)
 
 	AnimationController.TiltVector = tilt
 	AnimationController.MoveVector = move
-
 	
 end
 
@@ -1121,13 +1204,11 @@ function PlayerController:ProcessStates(char, nexoChar)
 		self.Animation:Play()
 	end
 
-	if Player:GetState("Jumping") then
+	if Player:GetState("Jumping") and not Player.Dodging then
 		Player:GetStateClass("Jumping"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Jumping", true)
-		nexoChar.Humanoid.Jump = true
-		char.Humanoid.Jump = true
-		threshold *= 2
-		self:Jump()
+		threshold *= 4
+		self:Jump(nexoChar)
 	elseif not (Player:OnGround() or Player.Flying) then
 		Player:GetStateClass("Falling"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Falling", true)
@@ -1139,7 +1220,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player.Sprinting:SetPreviousState(Player:GetEnabledLocomotionState())
 		self:Sprint()
 		threshold *= 10
-	elseif char.Humanoid.MoveDirection.Magnitude > 0 and not Player:GetState("Jumping") then
+	elseif char.Humanoid.MoveDirection.Magnitude > 0 and not (Player:GetState("Jumping") or Player:GetState("Falling"))  then
 		Player:GetStateClass("Walking"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Walking", true)
 		self:Walk()
@@ -1157,10 +1238,17 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	if Player.Dodging then
 		if Player:GetState("Falling") or Player:GetState("Jumping") then
-			self:DodgeAir()
+			nexoHum.PlatformStand = true
+			self:DodgeAir(nexoChar)
+		elseif Player.Running:GetState() or Player.Sprinting:GetState() then
+			nexoHum.PlatformStand = false
+			self:Slide()
 		else
+			nexoHum.PlatformStand = false
 			self:DodgeGround()
 		end
+	else
+		nexoHum.PlatformStand = false
 	end
 
 	if 
@@ -1257,6 +1345,40 @@ function PlayerController:Update()
 end    
 
 
+function PlayerController:OnCrouch()
+	local motionName = Player:GetEnabledLocomotionState():GetName()
+	if motionName == "Idling" then
+		Player:GetAnimation("Idle"):Stop()
+		Player:GetAnimation("FightIdle"):Stop()
+		Player:GetAnimation("CrouchIdle"):Play()
+	elseif motionName == "Walking" or Player.Running:GetState() or Player.Sprinting:GetState() then 
+		Player:GetAnimation("Run"):Pause()
+		Player:GetAnimation("Walk"):Pause()
+		Player:GetAnimation("Sprint"):Pause()
+		Player:GetAnimation("CrouchWalk"):Play()
+	end
+end
+
+
+function PlayerController:StoppedCrouch()
+	local motionName = Player:GetEnabledLocomotionState():GetName()
+	Player:GetAnimation("CrouchIdle"):Stop()
+
+	if motionName == "Idling" then
+		Player:GetAnimation("Idle"):Play()
+	elseif motionName == "Walking"  then 
+		Player:GetAnimation("CrouchWalk"):Stop()
+		Player:GetAnimation("Walk"):Play()
+	elseif Player.Running:GetState() or Player.Sprinting:GetState() then
+		if Player.Running:GetState() then 
+			Player:GetAnimation("Run"):Play() 
+		else 
+			Player:GetAnimation("Sprint"):Play()
+		end
+	end
+end
+
+
 function PlayerController:OnIdle()
 	--print("Idling")
 	local nexoHRP = Player.getNexoHumanoidRootPart()
@@ -1302,11 +1424,13 @@ end
 
 
 function PlayerController.OnStopAnimation(animation: Animation)
-	if Player.Dodging or animation.Name == "Roll" then
+	if animation.Name == "Roll" or animation.Name:find("Flip") or animation.Name == "Slide" then
+		print("Flipped")
 		Player.Dodging = false
+		Player.Flipping = false
 	elseif animation.Name == "LandSoft" or animation.Name == "LandHard" then
 		Player.Landing = false
-	elseif animation.Name == "RunStop" or animation.Name == "SprintStop" then
+	elseif animation.Name == "RunStop" or animation.Name == "SprintStop" or animation.Name == "WalkStop" then
 		Player.Slowing = false
 	end
 end
@@ -1329,6 +1453,13 @@ function PlayerController.StoppedState(state)
 		--print("Skidded")
 		Player:GetAnimation("Run"):Stop()
 		task.delay(0.05, delayStopAnim, Player:GetAnimation("RunStop"))
+	elseif state:GetName() == "Walking" then
+		--print("Skidded")
+		Player:GetAnimation("Walk"):Stop()
+		Player:GetAnimation("CrouchWalk"):Stop()
+		if not Player.Crouching:GetState() then
+			task.delay(0.01, delayStopAnim, Player:GetAnimation("WalkStop"))
+		end
 	elseif state:GetName() == "FightMode" then
 		Player:GetAnimation("FightIdle"):Stop()
 		Player:GetAnimation("Idle"):Play()
@@ -1348,7 +1479,11 @@ function PlayerController:OnWalk()
 	if Player.Flying then
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
-		Player:GetAnimation("FlyWalk"):Play()			
+		Player:GetAnimation("FlyWalk"):Play()
+	elseif Player.Crouching:GetState() then
+		Player:GetAnimation("CrouchFall"):Pause()
+		Player:GetAnimation("CrouchJump"):Stop()
+		Player:GetAnimation("CrouchWalk"):Play()		
 	else
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Jump"):Stop()
@@ -1381,7 +1516,6 @@ function PlayerController:OnFall()
 	else
 		--print("Fall")
 		Player:GetAnimation("Walk"):Pause()
-		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Fall"):Play()
 	end
 end
@@ -1395,6 +1529,7 @@ function PlayerController:Init(canClickFling)
 
 	print("Loading Player")
 	setPhysicsOptimizations()
+	Player:HookFramerate()
 	if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
 		_R15ReanimLoad()
 	else
@@ -1459,6 +1594,7 @@ function PlayerController:Respawn()
 	task.wait(0.5)
 	Player:SetState("Respawning", false)
 	Player:CleanStates()
+	Player:UnhookFramerate()
 
 	if getgenv then
 		getgenv().Running = false
