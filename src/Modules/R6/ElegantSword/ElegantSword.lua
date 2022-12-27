@@ -51,7 +51,7 @@ ElegantSword.Initialized = false
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
     or somehow lose the accessory.
 --]]
-local Sword = ""
+local Sword = "Angel Sword"
 
 local Animations = script.Parent.Animations
 local Emotes = Animations.Emotes
@@ -126,7 +126,8 @@ local function populateAttackTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
         if v:IsA("ModuleScript") then
             local animation = require(v)
-            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, true))                
+            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, true))
+            table.sort(targetTable, function(k2, k1) return k1.Name > k2.Name end)             
         end
     end
 end
@@ -135,9 +136,9 @@ populateAnimationTable(Unequipped:GetChildren(), UnequippedAnimations)
 populateAnimationTable(EquippedSword:GetChildren(), EquippedAnimations)
 populateEmoteTable(Emotes:GetChildren(), EquippedAnimations.Emotes)
 populateEmoteTable(Emotes:GetChildren(), UnequippedAnimations.Emotes)
-populateAttackTable(Unequipped.LightAttacks:GetChildren(), UnequippedLightAttacks)
-populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), UnequippedHeavyAttacks)
-populateAttackTable(EquippedSword.Attacks:GetChildren(), EquippedSwordAttacks)
+populateAttackTable(Unequipped.Punches:GetChildren(), UnequippedLightAttacks)
+populateAttackTable(Unequipped.Kicks:GetChildren(), UnequippedHeavyAttacks)
+populateAttackTable(EquippedSword.Slashes:GetChildren(), EquippedSwordAttacks)
 populateAttackTable(EquippedSword.Kicks:GetChildren(), EquippedKickAttacks)
 
 local Unequipp = EquippedAnimations.Unequip
@@ -153,10 +154,10 @@ function ElegantSword:_InitializeAnimations()
     EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
     UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
 
-    for i,v in ipairs(self.UnequippedLightAttacks) do
+    for i,v in ipairs(UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    for i,v in ipairs(self.UnequippedHeavyAttacks) do
+    for i,v in ipairs(UnequippedHeavyAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
 end
@@ -173,6 +174,7 @@ local Equipped = false
 local Sitting = false
 
 local attack
+local prevAttack
 
 --[[
     An example of an input processing function. Ideally, one should provide some debounce
@@ -210,16 +212,23 @@ function ElegantSword:ProcessInputs()
         attack = LightAttacks[AttackIndex]
         attack.Speed = 1.175
         attack:Play()
+        if prevAttack then
+            prevAttack:Stop()
+        end
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking:SetState(true)
         task.delay(attack.TimeLength/2, function()
             Player.Attacking:SetState(false)
             AttackIndex = (AttackIndex - 1 + (1 % #LightAttacks) + #LightAttacks) % #LightAttacks + 1
+            prevAttack = attack
         end)
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking:GetState() then
         attack = HeavyAttacks[AttackIndex]
         attack.Speed = 1.175
         attack:Play()
+        if prevAttack then
+            prevAttack:Stop()
+        end
         Player:SetStateForDuration("FightMode", true, 4)
         Player.Attacking:SetState(true)
         task.delay(2*attack.TimeLength/3, function()
@@ -250,39 +259,39 @@ end
 --]]
 function ElegantSword:ProcessStates(char, Accessory)
     if Equipped and Accessory then
-        local nexoStaff = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
+        local nexoAccessory = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
 
         if not RunService:IsStudio() then
             Accessory.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
                     * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-                    * CFrame.fromOrientation(90, -0, 45)
-                    * CFrame.fromOrientation(1, 1, 0)
-                    * CFrame.new(1.5,1.5,0):Inverse()
+                    * CFrame.fromOrientation(0, -0, math.rad(29.01))
+                    * CFrame.fromOrientation(math.rad(-90), 0, 0)
+                    * CFrame.fromOrientation(0, math.rad(90), 0)
+                    * CFrame.new(0,-3,-0.3)
             
-            nexoStaff.Handle.CFrame = 
+            nexoAccessory.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
                     * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-                    * CFrame.fromOrientation(90, -0, 45)
-                    * CFrame.fromOrientation(1, 1, 0)
-                    * CFrame.new(1.5,1.5,0):Inverse()
+                    * CFrame.fromOrientation(0, -0, math.rad(29.01))
+                    * CFrame.fromOrientation(math.rad(-90), 0, 0)
+                    * CFrame.fromOrientation(0, math.rad(90), 0)
+                    * CFrame.new(0,-3,-0.3)
         end
         
-        LightAttacks = EquippedLightAttacks
-        HeavyAttacks = EquippedHeavyAttacks
+        LightAttacks = EquippedSwordAttacks
+        HeavyAttacks = EquippedKickAttacks
     else
         LightAttacks = UnequippedLightAttacks
         HeavyAttacks = UnequippedHeavyAttacks
     end
 
     if Player.Attacking:GetState() then
-        if char.HumanoidRootPart then
-            char.HumanoidRootPart.Anchored = false
-            char.HumanoidRootPart.CanCollide = true
+        if char:FindFirstChild("HumanoidRootPart") then
             if Equipped and Accessory then
-                char.HumanoidRootPart.Position = Accessory.Handle.Position    
+                PlayerController.AttackPosition = Accessory.Handle.Position
             else
-                char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
+                PlayerController.AttackPosition =  Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
         end
     end
@@ -313,10 +322,10 @@ function ElegantSword:Equip()
     Player:SetAnimationModule(EquippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
     PlayerController.LayerB.FilterTable = filterTable
-    for i,v in ipairs(EquippedLightAttacks) do
+    for i,v in ipairs(EquippedSwordAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
-    for i,v in ipairs(EquippedHeavyAttacks) do
+    for i,v in ipairs(EquippedKickAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
     AttackIndex = 1

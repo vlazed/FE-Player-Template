@@ -140,7 +140,7 @@ function ActionHandler.Listen(an, is, io)
                 Player:SetState("Jumping", false)
             end)
         elseif io.KeyCode == prevSettings.crouchButton then
-            Player.Crouching:SetState(true)
+            Player.Crouching:SetState(not Player.Crouching:GetState())
         elseif io.KeyCode == prevSettings.dodgeButton then
             local contraction = (Player.Sprinting:GetState() or Player:GetState("Walking") or Player.Running:GetState()) and 10 or 0
             Player.Dodging = true
@@ -157,8 +157,6 @@ function ActionHandler.Listen(an, is, io)
             --print("Not sprinting")
             Player.Running:SetState(false)
             Player.Sprinting:SetState(false)
-        elseif io.KeyCode == prevSettings.crouchButton then
-            Player.Crouching:SetState(false)
         end
         ContextActionService:BindAction(
             "DelayListen", 

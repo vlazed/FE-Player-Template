@@ -16,13 +16,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.239, -0.263) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.507)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.397), math.rad(1.49), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.45, -0.177, -0.085) * CFrame.Angles(math.rad(10.027), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.071), math.rad(-72.307), math.rad(-155.845)),
+						CFrame = CFrame.new(0.009, -0.219, -0.019) * CFrame.Angles(math.rad(-15.011), math.rad(-4.24), math.rad(-10.084)),
 					},
 				},
 			},
@@ -39,13 +38,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.243, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.621)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.339), math.rad(1.662), math.rad(65.489)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.457, -0.176, -0.086) * CFrame.Angles(math.rad(10.256), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.727), math.rad(-72.25), math.rad(-155.329)),
+						CFrame = CFrame.new(0.013, -0.218, -0.02) * CFrame.Angles(math.rad(-14.897), math.rad(-4.24), math.rad(-10.084)),
 					},
 				},
 			},
@@ -62,13 +60,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.247, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.736)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.339), math.rad(1.891), math.rad(65.489)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.463, -0.174, -0.087) * CFrame.Angles(math.rad(10.542), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.384), math.rad(-72.193), math.rad(-154.813)),
+						CFrame = CFrame.new(0.016, -0.217, -0.02) * CFrame.Angles(math.rad(-14.782), math.rad(-4.297), math.rad(-10.027)),
 					},
 				},
 			},
@@ -85,13 +82,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.251, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.85)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.282), math.rad(2.063), math.rad(65.432)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.468, -0.173, -0.088) * CFrame.Angles(math.rad(10.772), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.04), math.rad(-72.193), math.rad(-154.298)),
+						CFrame = CFrame.new(0.02, -0.216, -0.021) * CFrame.Angles(math.rad(-14.61), math.rad(-4.297), math.rad(-10.027)),
 					},
 				},
 			},
@@ -108,13 +104,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.254, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.965)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.282), math.rad(2.292), math.rad(65.432)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.473, -0.172, -0.089) * CFrame.Angles(math.rad(10.943), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.696), math.rad(-72.135), math.rad(-153.782)),
+						CFrame = CFrame.new(0.024, -0.215, -0.022) * CFrame.Angles(math.rad(-14.496), math.rad(-4.297), math.rad(-10.027)),
 					},
 				},
 			},
@@ -131,13 +126,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.257, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.079)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.225), math.rad(2.464), math.rad(65.374)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.478, -0.171, -0.09) * CFrame.Angles(math.rad(11.173), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.352), math.rad(-72.078), math.rad(-153.266)),
+						CFrame = CFrame.new(0.027, -0.214, -0.023) * CFrame.Angles(math.rad(-14.381), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -154,13 +148,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.26, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.137)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.225), math.rad(2.636), math.rad(65.374)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.482, -0.17, -0.091) * CFrame.Angles(math.rad(11.345), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.009), math.rad(-72.021), math.rad(-152.751)),
+						CFrame = CFrame.new(0.031, -0.213, -0.024) * CFrame.Angles(math.rad(-14.267), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -177,13 +170,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.262, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.194)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.225), math.rad(2.865), math.rad(65.317)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.486, -0.169, -0.091) * CFrame.Angles(math.rad(11.516), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.665), math.rad(-71.963), math.rad(-152.292)),
+						CFrame = CFrame.new(0.034, -0.212, -0.025) * CFrame.Angles(math.rad(-14.095), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -200,13 +192,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.264, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.309)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.167), math.rad(3.037), math.rad(65.317)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.49, -0.168, -0.092) * CFrame.Angles(math.rad(11.631), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.378), math.rad(-71.906), math.rad(-151.777)),
+						CFrame = CFrame.new(0.038, -0.211, -0.026) * CFrame.Angles(math.rad(-13.98), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -223,13 +214,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.266, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.366)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.167), math.rad(3.209), math.rad(65.26)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.493, -0.168, -0.092) * CFrame.Angles(math.rad(11.746), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.034), math.rad(-71.849), math.rad(-151.318)),
+						CFrame = CFrame.new(0.041, -0.21, -0.027) * CFrame.Angles(math.rad(-13.866), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -246,13 +236,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.268, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.423)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(3.38), math.rad(65.26)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.495, -0.167, -0.093) * CFrame.Angles(math.rad(11.86), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.748), math.rad(-71.792), math.rad(-150.86)),
+						CFrame = CFrame.new(0.045, -0.209, -0.027) * CFrame.Angles(math.rad(-13.751), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -269,13 +258,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.27, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.423)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(3.552), math.rad(65.26)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.498, -0.166, -0.093) * CFrame.Angles(math.rad(11.975), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.462), math.rad(-71.734), math.rad(-150.401)),
+						CFrame = CFrame.new(0.048, -0.208, -0.028) * CFrame.Angles(math.rad(-13.636), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -292,13 +280,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.271, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.481)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(3.724), math.rad(65.203)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.5, -0.166, -0.094) * CFrame.Angles(math.rad(12.089), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.175), math.rad(-71.677), math.rad(-150)),
+						CFrame = CFrame.new(0.051, -0.207, -0.029) * CFrame.Angles(math.rad(-13.522), math.rad(-4.297), math.rad(-9.855)),
 					},
 				},
 			},
@@ -315,13 +302,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.053), math.rad(3.896), math.rad(65.203)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.094) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.889), math.rad(-71.62), math.rad(-149.542)),
+						CFrame = CFrame.new(0.054, -0.206, -0.03) * CFrame.Angles(math.rad(-13.407), math.rad(-4.297), math.rad(-9.855)),
 					},
 				},
 			},
@@ -338,13 +324,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.053), math.rad(4.068), math.rad(65.145)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.503, -0.165, -0.094) * CFrame.Angles(math.rad(12.204), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.602), math.rad(-71.562), math.rad(-149.141)),
+						CFrame = CFrame.new(0.058, -0.206, -0.03) * CFrame.Angles(math.rad(-13.293), math.rad(-4.354), math.rad(-9.855)),
 					},
 				},
 			},
@@ -361,13 +346,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(4.24), math.rad(65.145)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.504, -0.165, -0.095) * CFrame.Angles(math.rad(12.261), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.373), math.rad(-71.505), math.rad(-148.74)),
+						CFrame = CFrame.new(0.061, -0.205, -0.031) * CFrame.Angles(math.rad(-13.178), math.rad(-4.354), math.rad(-9.855)),
 					},
 				},
 			},
@@ -384,13 +368,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(4.412), math.rad(65.145)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.505, -0.165, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.144), math.rad(-71.448), math.rad(-148.396)),
+						CFrame = CFrame.new(0.063, -0.204, -0.032) * CFrame.Angles(math.rad(-13.063), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -407,13 +390,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(4.526), math.rad(65.088)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.506, -0.164, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.857), math.rad(-71.391), math.rad(-147.995)),
+						CFrame = CFrame.new(0.066, -0.203, -0.032) * CFrame.Angles(math.rad(-13.006), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -430,13 +412,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(4.698), math.rad(65.088)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.628), math.rad(-71.333), math.rad(-147.651)),
+						CFrame = CFrame.new(0.069, -0.203, -0.033) * CFrame.Angles(math.rad(-12.892), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -453,13 +434,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(4.813), math.rad(65.088)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.456), math.rad(-71.333), math.rad(-147.307)),
+						CFrame = CFrame.new(0.071, -0.202, -0.034) * CFrame.Angles(math.rad(-12.777), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -476,13 +456,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(4.927), math.rad(65.031)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.227), math.rad(-71.276), math.rad(-147.021)),
+						CFrame = CFrame.new(0.074, -0.201, -0.034) * CFrame.Angles(math.rad(-12.72), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -499,13 +478,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(5.099), math.rad(65.031)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.055), math.rad(-71.219), math.rad(-146.734)),
+						CFrame = CFrame.new(0.076, -0.201, -0.035) * CFrame.Angles(math.rad(-12.662), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -522,13 +500,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(5.214), math.rad(65.031)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.883), math.rad(-71.161), math.rad(-146.448)),
+						CFrame = CFrame.new(0.078, -0.2, -0.035) * CFrame.Angles(math.rad(-12.548), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -545,13 +522,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(5.271), math.rad(64.973)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.711), math.rad(-71.161), math.rad(-146.162)),
+						CFrame = CFrame.new(0.081, -0.2, -0.036) * CFrame.Angles(math.rad(-12.49), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -568,13 +544,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(5.386), math.rad(64.973)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.507, -0.164, -0.095) * CFrame.Angles(math.rad(12.376), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.539), math.rad(-71.104), math.rad(-145.932)),
+						CFrame = CFrame.new(0.082, -0.199, -0.036) * CFrame.Angles(math.rad(-12.433), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -591,13 +566,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(5.5), math.rad(64.973)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.506, -0.164, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.368), math.rad(-71.104), math.rad(-145.703)),
+						CFrame = CFrame.new(0.084, -0.199, -0.037) * CFrame.Angles(math.rad(-12.376), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -614,13 +588,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(5.558), math.rad(64.973)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.506, -0.164, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.253), math.rad(-71.047), math.rad(-145.474)),
+						CFrame = CFrame.new(0.086, -0.198, -0.037) * CFrame.Angles(math.rad(-12.319), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -637,13 +610,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.672), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.505, -0.165, -0.095) * CFrame.Angles(math.rad(12.319), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.138), math.rad(-71.047), math.rad(-145.302)),
+						CFrame = CFrame.new(0.087, -0.198, -0.038) * CFrame.Angles(math.rad(-12.261), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -660,13 +632,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.73), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.505, -0.165, -0.095) * CFrame.Angles(math.rad(12.261), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.024), math.rad(-70.989), math.rad(-145.13)),
+						CFrame = CFrame.new(0.089, -0.197, -0.038) * CFrame.Angles(math.rad(-12.204), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -683,13 +654,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.787), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.504, -0.165, -0.095) * CFrame.Angles(math.rad(12.261), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.909), math.rad(-70.989), math.rad(-144.958)),
+						CFrame = CFrame.new(0.09, -0.197, -0.038) * CFrame.Angles(math.rad(-12.147), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -706,13 +676,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.844), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.504, -0.165, -0.094) * CFrame.Angles(math.rad(12.204), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.852), math.rad(-70.932), math.rad(-144.844)),
+						CFrame = CFrame.new(0.091, -0.197, -0.038) * CFrame.Angles(math.rad(-12.089), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -729,13 +698,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.901), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.503, -0.165, -0.094) * CFrame.Angles(math.rad(12.204), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.795), math.rad(-70.932), math.rad(-144.729)),
+						CFrame = CFrame.new(0.092, -0.197, -0.039) * CFrame.Angles(math.rad(-12.089), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -752,13 +720,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.959), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.503, -0.165, -0.094) * CFrame.Angles(math.rad(12.204), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.737), math.rad(-70.932), math.rad(-144.615)),
+						CFrame = CFrame.new(0.093, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -775,13 +742,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(5.959), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.503, -0.165, -0.094) * CFrame.Angles(math.rad(12.204), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.68), math.rad(-70.932), math.rad(-144.557)),
+						CFrame = CFrame.new(0.093, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -798,13 +764,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.094) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.5)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -821,13 +786,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.094) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.5)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -844,13 +808,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.094) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.5)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -867,13 +830,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.094) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.5)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -890,13 +852,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.165, -0.095) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.443)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -913,13 +874,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.916)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.166, -0.095) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.623), math.rad(-70.875), math.rad(-144.443)),
+						CFrame = CFrame.new(0.094, -0.196, -0.039) * CFrame.Angles(math.rad(-12.032), math.rad(-4.412), math.rad(-9.683)),
 					},
 				},
 			},
@@ -936,13 +896,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(64.973)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.166, -0.096) * CFrame.Angles(math.rad(12.147), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.68), math.rad(-70.875), math.rad(-144.443)),
+						CFrame = CFrame.new(0.094, -0.196, -0.038) * CFrame.Angles(math.rad(-12.032), math.rad(-4.412), math.rad(-9.683)),
 					},
 				},
 			},
@@ -959,13 +918,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(65.031)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.166, -0.096) * CFrame.Angles(math.rad(12.089), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.68), math.rad(-70.932), math.rad(-144.443)),
+						CFrame = CFrame.new(0.094, -0.196, -0.038) * CFrame.Angles(math.rad(-12.089), math.rad(-4.469), math.rad(-9.626)),
 					},
 				},
 			},
@@ -982,13 +940,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(65.088)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.166, -0.097) * CFrame.Angles(math.rad(12.089), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.737), math.rad(-70.932), math.rad(-144.385)),
+						CFrame = CFrame.new(0.094, -0.196, -0.038) * CFrame.Angles(math.rad(-12.089), math.rad(-4.469), math.rad(-9.626)),
 					},
 				},
 			},
@@ -1005,13 +962,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(65.145)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.167, -0.098) * CFrame.Angles(math.rad(12.089), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.795), math.rad(-70.932), math.rad(-144.385)),
+						CFrame = CFrame.new(0.094, -0.196, -0.037) * CFrame.Angles(math.rad(-12.147), math.rad(-4.526), math.rad(-9.626)),
 					},
 				},
 			},
@@ -1028,13 +984,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.824), math.rad(6.016), math.rad(65.203)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.167, -0.1) * CFrame.Angles(math.rad(12.032), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.795), math.rad(-70.932), math.rad(-144.385)),
+						CFrame = CFrame.new(0.094, -0.196, -0.036) * CFrame.Angles(math.rad(-12.204), math.rad(-4.526), math.rad(-9.626)),
 					},
 				},
 			},
@@ -1051,13 +1006,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(6.016), math.rad(65.26)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.502, -0.168, -0.101) * CFrame.Angles(math.rad(12.032), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.852), math.rad(-70.932), math.rad(-144.328)),
+						CFrame = CFrame.new(0.094, -0.196, -0.036) * CFrame.Angles(math.rad(-12.261), math.rad(-4.584), math.rad(-9.626)),
 					},
 				},
 			},
@@ -1074,13 +1028,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(6.016), math.rad(65.374)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.501, -0.168, -0.102) * CFrame.Angles(math.rad(11.975), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.909), math.rad(-70.932), math.rad(-144.271)),
+						CFrame = CFrame.new(0.095, -0.196, -0.035) * CFrame.Angles(math.rad(-12.319), math.rad(-4.641), math.rad(-9.626)),
 					},
 				},
 			},
@@ -1097,13 +1050,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.274, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(6.016), math.rad(65.489)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.501, -0.169, -0.104) * CFrame.Angles(math.rad(11.918), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-40.966), math.rad(-70.932), math.rad(-144.271)),
+						CFrame = CFrame.new(0.095, -0.196, -0.034) * CFrame.Angles(math.rad(-12.376), math.rad(-4.698), math.rad(-9.568)),
 					},
 				},
 			},
@@ -1120,13 +1072,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(6.016), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.501, -0.169, -0.106) * CFrame.Angles(math.rad(11.918), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.024), math.rad(-70.932), math.rad(-144.213)),
+						CFrame = CFrame.new(0.095, -0.196, -0.033) * CFrame.Angles(math.rad(-12.433), math.rad(-4.756), math.rad(-9.568)),
 					},
 				},
 			},
@@ -1143,13 +1094,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.881), math.rad(6.073), math.rad(65.718)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.501, -0.17, -0.108) * CFrame.Angles(math.rad(11.86), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.138), math.rad(-70.989), math.rad(-144.156)),
+						CFrame = CFrame.new(0.095, -0.195, -0.032) * CFrame.Angles(math.rad(-12.49), math.rad(-4.813), math.rad(-9.568)),
 					},
 				},
 			},
@@ -1166,13 +1116,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(6.073), math.rad(65.833)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.501, -0.171, -0.11) * CFrame.Angles(math.rad(11.803), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.196), math.rad(-70.989), math.rad(-144.099)),
+						CFrame = CFrame.new(0.095, -0.195, -0.031) * CFrame.Angles(math.rad(-12.548), math.rad(-4.927), math.rad(-9.568)),
 					},
 				},
 			},
@@ -1189,13 +1138,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(6.073), math.rad(65.947)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.5, -0.172, -0.112) * CFrame.Angles(math.rad(11.746), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.253), math.rad(-70.989), math.rad(-144.042)),
+						CFrame = CFrame.new(0.095, -0.195, -0.03) * CFrame.Angles(math.rad(-12.605), math.rad(-4.985), math.rad(-9.511)),
 					},
 				},
 			},
@@ -1212,13 +1160,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.277, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.938), math.rad(6.073), math.rad(66.062)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.5, -0.172, -0.115) * CFrame.Angles(math.rad(11.688), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.368), math.rad(-70.989), math.rad(-143.984)),
+						CFrame = CFrame.new(0.096, -0.195, -0.029) * CFrame.Angles(math.rad(-12.72), math.rad(-5.042), math.rad(-9.511)),
 					},
 				},
 			},
@@ -1235,13 +1182,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.277, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.71)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(6.073), math.rad(66.234)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.5, -0.173, -0.117) * CFrame.Angles(math.rad(11.631), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.425), math.rad(-70.989), math.rad(-143.927)),
+						CFrame = CFrame.new(0.096, -0.195, -0.028) * CFrame.Angles(math.rad(-12.777), math.rad(-5.157), math.rad(-9.511)),
 					},
 				},
 			},
@@ -1258,13 +1204,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.278, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.71)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(6.073), math.rad(66.406)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.5, -0.174, -0.12) * CFrame.Angles(math.rad(11.574), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.539), math.rad(-71.047), math.rad(-143.87)),
+						CFrame = CFrame.new(0.096, -0.195, -0.026) * CFrame.Angles(math.rad(-12.892), math.rad(-5.271), math.rad(-9.454)),
 					},
 				},
 			},
@@ -1281,13 +1226,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.278, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.71)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(8.995), math.rad(6.073), math.rad(66.52)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.499, -0.175, -0.123) * CFrame.Angles(math.rad(11.516), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.654), math.rad(-71.047), math.rad(-143.812)),
+						CFrame = CFrame.new(0.096, -0.195, -0.025) * CFrame.Angles(math.rad(-13.006), math.rad(-5.329), math.rad(-9.454)),
 					},
 				},
 			},
@@ -1304,13 +1248,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.279, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.767)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.053), math.rad(6.073), math.rad(66.692)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.499, -0.176, -0.126) * CFrame.Angles(math.rad(11.459), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.711), math.rad(-71.047), math.rad(-143.755)),
+						CFrame = CFrame.new(0.096, -0.195, -0.024) * CFrame.Angles(math.rad(-13.063), math.rad(-5.443), math.rad(-9.454)),
 					},
 				},
 			},
@@ -1327,13 +1270,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.279, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.767)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.053), math.rad(6.131), math.rad(66.864)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.499, -0.177, -0.129) * CFrame.Angles(math.rad(11.402), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.826), math.rad(-71.047), math.rad(-143.698)),
+						CFrame = CFrame.new(0.097, -0.195, -0.022) * CFrame.Angles(math.rad(-13.178), math.rad(-5.558), math.rad(-9.397)),
 					},
 				},
 			},
@@ -1350,13 +1292,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.28, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.767)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.053), math.rad(6.131), math.rad(67.093)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.499, -0.178, -0.132) * CFrame.Angles(math.rad(11.287), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-41.941), math.rad(-71.104), math.rad(-143.641)),
+						CFrame = CFrame.new(0.097, -0.194, -0.021) * CFrame.Angles(math.rad(-13.293), math.rad(-5.615), math.rad(-9.397)),
 					},
 				},
 			},
@@ -1373,13 +1314,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.281, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.824)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(6.131), math.rad(67.265)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.498, -0.179, -0.135) * CFrame.Angles(math.rad(11.23), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.055), math.rad(-71.104), math.rad(-143.583)),
+						CFrame = CFrame.new(0.097, -0.194, -0.019) * CFrame.Angles(math.rad(-13.407), math.rad(-5.73), math.rad(-9.397)),
 					},
 				},
 			},
@@ -1396,13 +1336,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.281, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.824)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(6.131), math.rad(67.437)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.498, -0.18, -0.139) * CFrame.Angles(math.rad(11.173), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.17), math.rad(-71.104), math.rad(-143.469)),
+						CFrame = CFrame.new(0.097, -0.194, -0.018) * CFrame.Angles(math.rad(-13.522), math.rad(-5.844), math.rad(-9.339)),
 					},
 				},
 			},
@@ -1419,13 +1358,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.282, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.11), math.rad(6.131), math.rad(67.609)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.498, -0.182, -0.142) * CFrame.Angles(math.rad(11.058), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.284), math.rad(-71.161), math.rad(-143.411)),
+						CFrame = CFrame.new(0.098, -0.194, -0.016) * CFrame.Angles(math.rad(-13.636), math.rad(-5.959), math.rad(-9.339)),
 					},
 				},
 			},
@@ -1442,13 +1380,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.283, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.167), math.rad(6.188), math.rad(67.838)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.497, -0.183, -0.145) * CFrame.Angles(math.rad(11.001), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.399), math.rad(-71.161), math.rad(-143.354)),
+						CFrame = CFrame.new(0.098, -0.194, -0.014) * CFrame.Angles(math.rad(-13.751), math.rad(-6.073), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1465,13 +1402,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.284, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.167), math.rad(6.188), math.rad(68.067)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.497, -0.184, -0.149) * CFrame.Angles(math.rad(10.943), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.571), math.rad(-71.161), math.rad(-143.239)),
+						CFrame = CFrame.new(0.098, -0.194, -0.013) * CFrame.Angles(math.rad(-13.866), math.rad(-6.188), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1488,13 +1424,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.284, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.225), math.rad(6.188), math.rad(68.239)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.497, -0.185, -0.153) * CFrame.Angles(math.rad(10.829), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.685), math.rad(-71.219), math.rad(-143.182)),
+						CFrame = CFrame.new(0.099, -0.193, -0.011) * CFrame.Angles(math.rad(-13.98), math.rad(-6.36), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1511,13 +1446,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.285, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.225), math.rad(6.188), math.rad(68.468)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.496, -0.186, -0.156) * CFrame.Angles(math.rad(10.772), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.8), math.rad(-71.219), math.rad(-143.068)),
+						CFrame = CFrame.new(0.099, -0.193, -0.009) * CFrame.Angles(math.rad(-14.095), math.rad(-6.474), math.rad(-9.225)),
 					},
 				},
 			},
@@ -1534,13 +1468,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.286, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.282), math.rad(6.188), math.rad(68.698)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.496, -0.188, -0.16) * CFrame.Angles(math.rad(10.657), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-42.915), math.rad(-71.219), math.rad(-143.01)),
+						CFrame = CFrame.new(0.099, -0.193, -0.007) * CFrame.Angles(math.rad(-14.209), math.rad(-6.589), math.rad(-9.225)),
 					},
 				},
 			},
@@ -1557,13 +1490,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.286, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.282), math.rad(6.245), math.rad(68.87)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.496, -0.189, -0.164) * CFrame.Angles(math.rad(10.6), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.086), math.rad(-71.276), math.rad(-142.896)),
+						CFrame = CFrame.new(0.1, -0.193, -0.005) * CFrame.Angles(math.rad(-14.381), math.rad(-6.704), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1580,13 +1512,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.287, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.282), math.rad(6.245), math.rad(69.099)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.495, -0.19, -0.167) * CFrame.Angles(math.rad(10.485), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.201), math.rad(-71.276), math.rad(-142.838)),
+						CFrame = CFrame.new(0.1, -0.193, -0.004) * CFrame.Angles(math.rad(-14.496), math.rad(-6.818), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1603,13 +1534,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.288, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.339), math.rad(6.245), math.rad(69.328)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.495, -0.192, -0.171) * CFrame.Angles(math.rad(10.428), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.316), math.rad(-71.276), math.rad(-142.724)),
+						CFrame = CFrame.new(0.1, -0.193, -0.002) * CFrame.Angles(math.rad(-14.61), math.rad(-6.99), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1626,13 +1556,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.289, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.339), math.rad(6.245), math.rad(69.557)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.495, -0.193, -0.175) * CFrame.Angles(math.rad(10.313), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.487), math.rad(-71.333), math.rad(-142.666)),
+						CFrame = CFrame.new(0.1, -0.192, 0) * CFrame.Angles(math.rad(-14.725), math.rad(-7.105), math.rad(-9.11)),
 					},
 				},
 			},
@@ -1649,13 +1578,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.29, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.397), math.rad(6.245), math.rad(69.786)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.494, -0.194, -0.179) * CFrame.Angles(math.rad(10.256), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.602), math.rad(-71.333), math.rad(-142.552)),
+						CFrame = CFrame.new(0.101, -0.192, 0.002) * CFrame.Angles(math.rad(-14.897), math.rad(-7.219), math.rad(-9.11)),
 					},
 				},
 			},
@@ -1672,13 +1600,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.29, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.397), math.rad(6.303), math.rad(70.015)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.494, -0.195, -0.183) * CFrame.Angles(math.rad(10.141), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-43.717), math.rad(-71.333), math.rad(-142.495)),
+						CFrame = CFrame.new(0.101, -0.192, 0.004) * CFrame.Angles(math.rad(-15.011), math.rad(-7.334), math.rad(-9.053)),
 					},
 				},
 			},
@@ -1695,13 +1622,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.289, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.568), math.rad(6.073), math.rad(69.786)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.492, -0.195, -0.182) * CFrame.Angles(math.rad(10.084), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.06), math.rad(-71.448), math.rad(-143.068)),
+						CFrame = CFrame.new(0.098, -0.192, 0.003) * CFrame.Angles(math.rad(-14.897), math.rad(-7.219), math.rad(-9.11)),
 					},
 				},
 			},
@@ -1718,13 +1644,12 @@ return {
 						CFrame = CFrame.new(0.24, -0.287, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.683), math.rad(5.844), math.rad(69.614)),
 					},
 					["Right Leg"] = {
-						CFrame = CFrame.new(0.489, -0.196, -0.181) * CFrame.Angles(math.rad(10.027), 0, 0),
+						CFrame = CFrame.new(0.489, -0.195, -0.181) * CFrame.Angles(math.rad(10.027), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.404), math.rad(-71.505), math.rad(-143.583)),
+						CFrame = CFrame.new(0.095, -0.191, 0.002) * CFrame.Angles(math.rad(-14.725), math.rad(-7.105), math.rad(-9.11)),
 					},
 				},
 			},
@@ -1741,13 +1666,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.285, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.798), math.rad(5.615), math.rad(69.385)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.487, -0.196, -0.18) * CFrame.Angles(math.rad(9.969), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-44.691), math.rad(-71.62), math.rad(-144.156)),
+						CFrame = CFrame.new(0.092, -0.191, 0.001) * CFrame.Angles(math.rad(-14.61), math.rad(-6.99), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1764,13 +1688,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.283, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.969), math.rad(5.443), math.rad(69.213)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.485, -0.196, -0.179) * CFrame.Angles(math.rad(9.912), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.034), math.rad(-71.677), math.rad(-144.729)),
+						CFrame = CFrame.new(0.089, -0.19, 0) * CFrame.Angles(math.rad(-14.496), math.rad(-6.818), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1787,13 +1710,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.282, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.084), math.rad(5.214), math.rad(69.041)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.483, -0.196, -0.178) * CFrame.Angles(math.rad(9.855), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.378), math.rad(-71.734), math.rad(-145.245)),
+						CFrame = CFrame.new(0.086, -0.19, -0.001) * CFrame.Angles(math.rad(-14.381), math.rad(-6.704), math.rad(-9.167)),
 					},
 				},
 			},
@@ -1810,13 +1732,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.28, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.199), math.rad(4.985), math.rad(68.812)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.481, -0.196, -0.177) * CFrame.Angles(math.rad(9.798), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-45.722), math.rad(-71.792), math.rad(-145.818)),
+						CFrame = CFrame.new(0.083, -0.189, -0.002) * CFrame.Angles(math.rad(-14.209), math.rad(-6.589), math.rad(-9.225)),
 					},
 				},
 			},
@@ -1833,13 +1754,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.278, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.111)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.371), math.rad(4.756), math.rad(68.64)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.479, -0.196, -0.176) * CFrame.Angles(math.rad(9.74), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.009), math.rad(-71.906), math.rad(-146.391)),
+						CFrame = CFrame.new(0.081, -0.189, -0.003) * CFrame.Angles(math.rad(-14.095), math.rad(-6.474), math.rad(-9.225)),
 					},
 				},
 			},
@@ -1856,13 +1776,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.276, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.485), math.rad(4.584), math.rad(68.468)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.477, -0.196, -0.176) * CFrame.Angles(math.rad(9.626), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.352), math.rad(-71.963), math.rad(-146.906)),
+						CFrame = CFrame.new(0.078, -0.188, -0.004) * CFrame.Angles(math.rad(-13.98), math.rad(-6.36), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1879,13 +1798,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.275, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.6), math.rad(4.354), math.rad(68.297)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.475, -0.196, -0.175) * CFrame.Angles(math.rad(9.568), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-46.696), math.rad(-72.021), math.rad(-147.479)),
+						CFrame = CFrame.new(0.075, -0.188, -0.005) * CFrame.Angles(math.rad(-13.866), math.rad(-6.188), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1902,13 +1820,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.273, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.714), math.rad(4.183), math.rad(68.067)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.473, -0.196, -0.174) * CFrame.Angles(math.rad(9.511), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.04), math.rad(-72.078), math.rad(-147.995)),
+						CFrame = CFrame.new(0.072, -0.188, -0.006) * CFrame.Angles(math.rad(-13.751), math.rad(-6.073), math.rad(-9.282)),
 					},
 				},
 			},
@@ -1925,13 +1842,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.272, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.829), math.rad(3.953), math.rad(67.895)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.471, -0.196, -0.173) * CFrame.Angles(math.rad(9.454), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.326), math.rad(-72.135), math.rad(-148.511)),
+						CFrame = CFrame.new(0.069, -0.187, -0.007) * CFrame.Angles(math.rad(-13.636), math.rad(-5.959), math.rad(-9.339)),
 					},
 				},
 			},
@@ -1948,13 +1864,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.27, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.943), math.rad(3.782), math.rad(67.781)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.469, -0.196, -0.172) * CFrame.Angles(math.rad(9.397), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.67), math.rad(-72.193), math.rad(-149.026)),
+						CFrame = CFrame.new(0.067, -0.187, -0.008) * CFrame.Angles(math.rad(-13.522), math.rad(-5.844), math.rad(-9.339)),
 					},
 				},
 			},
@@ -1971,13 +1886,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.269, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.058), math.rad(3.552), math.rad(67.609)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.467, -0.196, -0.171) * CFrame.Angles(math.rad(9.339), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-47.957), math.rad(-72.25), math.rad(-149.542)),
+						CFrame = CFrame.new(0.064, -0.186, -0.009) * CFrame.Angles(math.rad(-13.407), math.rad(-5.73), math.rad(-9.397)),
 					},
 				},
 			},
@@ -1994,13 +1908,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.267, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.173), math.rad(3.38), math.rad(67.437)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.465, -0.196, -0.171) * CFrame.Angles(math.rad(9.282), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.243), math.rad(-72.307), math.rad(-150.058)),
+						CFrame = CFrame.new(0.062, -0.186, -0.01) * CFrame.Angles(math.rad(-13.293), math.rad(-5.615), math.rad(-9.397)),
 					},
 				},
 			},
@@ -2017,13 +1930,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.266, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.287), math.rad(3.209), math.rad(67.265)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.463, -0.196, -0.17) * CFrame.Angles(math.rad(9.225), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.587), math.rad(-72.365), math.rad(-150.516)),
+						CFrame = CFrame.new(0.059, -0.186, -0.01) * CFrame.Angles(math.rad(-13.178), math.rad(-5.558), math.rad(-9.397)),
 					},
 				},
 			},
@@ -2040,13 +1952,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.264, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.402), math.rad(3.037), math.rad(67.151)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.462, -0.196, -0.169) * CFrame.Angles(math.rad(9.167), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.873), math.rad(-72.422), math.rad(-150.974)),
+						CFrame = CFrame.new(0.057, -0.185, -0.011) * CFrame.Angles(math.rad(-13.063), math.rad(-5.443), math.rad(-9.454)),
 					},
 				},
 			},
@@ -2063,13 +1974,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.263, -0.266) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-20.054)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.459), math.rad(2.865), math.rad(66.979)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.46, -0.196, -0.169) * CFrame.Angles(math.rad(9.167), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.16), math.rad(-72.479), math.rad(-151.433)),
+						CFrame = CFrame.new(0.055, -0.185, -0.012) * CFrame.Angles(math.rad(-13.006), math.rad(-5.329), math.rad(-9.454)),
 					},
 				},
 			},
@@ -2086,13 +1996,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.262, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.574), math.rad(2.693), math.rad(66.864)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.458, -0.196, -0.168) * CFrame.Angles(math.rad(9.11), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.389), math.rad(-72.536), math.rad(-151.891)),
+						CFrame = CFrame.new(0.053, -0.185, -0.013) * CFrame.Angles(math.rad(-12.892), math.rad(-5.271), math.rad(-9.454)),
 					},
 				},
 			},
@@ -2109,13 +2018,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.26, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.688), math.rad(2.578), math.rad(66.75)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.457, -0.196, -0.167) * CFrame.Angles(math.rad(9.053), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.675), math.rad(-72.536), math.rad(-152.292)),
+						CFrame = CFrame.new(0.051, -0.184, -0.013) * CFrame.Angles(math.rad(-12.777), math.rad(-5.157), math.rad(-9.511)),
 					},
 				},
 			},
@@ -2132,13 +2040,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.259, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.746), math.rad(2.406), math.rad(66.578)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.455, -0.196, -0.167) * CFrame.Angles(math.rad(8.995), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.905), math.rad(-72.594), math.rad(-152.693)),
+						CFrame = CFrame.new(0.049, -0.184, -0.014) * CFrame.Angles(math.rad(-12.72), math.rad(-5.042), math.rad(-9.511)),
 					},
 				},
 			},
@@ -2155,13 +2062,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.258, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.803), math.rad(2.235), math.rad(66.463)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.454, -0.196, -0.166) * CFrame.Angles(math.rad(8.995), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.191), math.rad(-72.651), math.rad(-153.094)),
+						CFrame = CFrame.new(0.047, -0.184, -0.015) * CFrame.Angles(math.rad(-12.605), math.rad(-4.985), math.rad(-9.511)),
 					},
 				},
 			},
@@ -2178,13 +2084,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.257, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.918), math.rad(2.12), math.rad(66.349)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.453, -0.196, -0.166) * CFrame.Angles(math.rad(8.938), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.42), math.rad(-72.651), math.rad(-153.438)),
+						CFrame = CFrame.new(0.045, -0.183, -0.015) * CFrame.Angles(math.rad(-12.548), math.rad(-4.927), math.rad(-9.568)),
 					},
 				},
 			},
@@ -2201,13 +2106,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.256, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.975), math.rad(2.005), math.rad(66.291)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.451, -0.196, -0.165) * CFrame.Angles(math.rad(8.881), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.592), math.rad(-72.708), math.rad(-153.782)),
+						CFrame = CFrame.new(0.043, -0.183, -0.016) * CFrame.Angles(math.rad(-12.49), math.rad(-4.813), math.rad(-9.568)),
 					},
 				},
 			},
@@ -2224,13 +2128,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.255, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.032), math.rad(1.891), math.rad(66.177)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.45, -0.196, -0.165) * CFrame.Angles(math.rad(8.881), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.821), math.rad(-72.708), math.rad(-154.126)),
+						CFrame = CFrame.new(0.042, -0.183, -0.016) * CFrame.Angles(math.rad(-12.433), math.rad(-4.756), math.rad(-9.568)),
 					},
 				},
 			},
@@ -2247,13 +2150,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.254, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.089), math.rad(1.776), math.rad(66.062)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.449, -0.196, -0.164) * CFrame.Angles(math.rad(8.824), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.993), math.rad(-72.766), math.rad(-154.412)),
+						CFrame = CFrame.new(0.04, -0.183, -0.017) * CFrame.Angles(math.rad(-12.376), math.rad(-4.698), math.rad(-9.568)),
 					},
 				},
 			},
@@ -2270,13 +2172,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.254, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.147), math.rad(1.662), math.rad(66.005)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.448, -0.196, -0.164) * CFrame.Angles(math.rad(8.824), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.165), math.rad(-72.766), math.rad(-154.699)),
+						CFrame = CFrame.new(0.039, -0.183, -0.017) * CFrame.Angles(math.rad(-12.319), math.rad(-4.641), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2293,13 +2194,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.253, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.204), math.rad(1.604), math.rad(65.947)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.196, -0.163) * CFrame.Angles(math.rad(8.766), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.337), math.rad(-72.823), math.rad(-154.928)),
+						CFrame = CFrame.new(0.038, -0.182, -0.018) * CFrame.Angles(math.rad(-12.261), math.rad(-4.584), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2316,13 +2216,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.252, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.261), math.rad(1.49), math.rad(65.833)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.196, -0.163) * CFrame.Angles(math.rad(8.766), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.509), math.rad(-72.823), math.rad(-155.157)),
+						CFrame = CFrame.new(0.037, -0.182, -0.018) * CFrame.Angles(math.rad(-12.204), math.rad(-4.526), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2333,19 +2232,18 @@ return {
 				["Torso"] = {
 					CFrame = CFrame.new(0, 0, 0.038) * CFrame.Angles(math.rad(2.75), math.rad(3.209), math.rad(-63.197)),
 					["Left Leg"] = {
-						CFrame = CFrame.new(0.494, -0.004, -0.188) * CFrame.Angles(math.rad(8.881), math.rad(24.58), math.rad(3.495)),
+						CFrame = CFrame.new(0.494, -0.003, -0.188) * CFrame.Angles(math.rad(8.881), math.rad(24.58), math.rad(3.495)),
 					},
 					["Right Arm"] = {
 						CFrame = CFrame.new(0.243, -0.252, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.261), math.rad(1.432), math.rad(65.776)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.196, -0.163) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.623), math.rad(-72.823), math.rad(-155.386)),
+						CFrame = CFrame.new(0.036, -0.182, -0.018) * CFrame.Angles(math.rad(-12.147), math.rad(-4.526), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2362,13 +2260,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.251, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.319), math.rad(1.375), math.rad(65.718)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.196, -0.162) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.738), math.rad(-72.88), math.rad(-155.558)),
+						CFrame = CFrame.new(0.035, -0.182, -0.019) * CFrame.Angles(math.rad(-12.089), math.rad(-4.469), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2385,13 +2282,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.251, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.318), math.rad(65.718)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.196, -0.162) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.795), math.rad(-72.88), math.rad(-155.673)),
+						CFrame = CFrame.new(0.034, -0.182, -0.019) * CFrame.Angles(math.rad(-12.089), math.rad(-4.469), math.rad(-9.626)),
 					},
 				},
 			},
@@ -2408,13 +2304,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.261), math.rad(65.661)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.91), math.rad(-72.88), math.rad(-155.787)),
+						CFrame = CFrame.new(0.034, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.412), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2431,13 +2326,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.967), math.rad(-72.88), math.rad(-155.902)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.412), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2454,13 +2348,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.433), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-155.959)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2477,13 +2370,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.433), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2500,13 +2392,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.433), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2523,13 +2414,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.433), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.162) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2546,13 +2436,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.433), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.161) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.033, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2569,13 +2458,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.996)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.161) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-52.025), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.032, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2592,13 +2480,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.161) * CFrame.Angles(math.rad(8.652), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.967), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.032, -0.182, -0.019) * CFrame.Angles(math.rad(-12.032), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2615,13 +2502,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.25, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.376), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.16) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.967), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.032, -0.182, -0.019) * CFrame.Angles(math.rad(-12.089), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2638,13 +2524,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.319), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.196, -0.16) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.91), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.032, -0.183, -0.019) * CFrame.Angles(math.rad(-12.089), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2661,13 +2546,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.939)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.319), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.195, -0.159) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.91), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.032, -0.183, -0.019) * CFrame.Angles(math.rad(-12.147), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2684,13 +2568,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.261), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.195, -0.158) * CFrame.Angles(math.rad(8.709), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.853), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.031, -0.183, -0.019) * CFrame.Angles(math.rad(-12.147), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2707,13 +2590,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.204), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.195, -0.157) * CFrame.Angles(math.rad(8.766), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.795), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.031, -0.184, -0.019) * CFrame.Angles(math.rad(-12.204), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2730,13 +2612,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.882)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.204), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.195, -0.156) * CFrame.Angles(math.rad(8.766), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.738), math.rad(-72.88), math.rad(-156.016)),
+						CFrame = CFrame.new(0.031, -0.184, -0.019) * CFrame.Angles(math.rad(-12.261), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2753,13 +2634,12 @@ return {
 						CFrame = CFrame.new(0.243, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.824)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.147), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.194, -0.155) * CFrame.Angles(math.rad(8.766), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.681), math.rad(-72.823), math.rad(-156.016)),
+						CFrame = CFrame.new(0.03, -0.185, -0.019) * CFrame.Angles(math.rad(-12.319), math.rad(-4.354), math.rad(-9.683)),
 					},
 				},
 			},
@@ -2776,13 +2656,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.249, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.824)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.089), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.194, -0.153) * CFrame.Angles(math.rad(8.824), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.566), math.rad(-72.823), math.rad(-156.016)),
+						CFrame = CFrame.new(0.03, -0.186, -0.019) * CFrame.Angles(math.rad(-12.319), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2799,13 +2678,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.248, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.767)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(12.032), math.rad(1.203), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.444, -0.194, -0.152) * CFrame.Angles(math.rad(8.824), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.509), math.rad(-72.823), math.rad(-156.016)),
+						CFrame = CFrame.new(0.03, -0.186, -0.019) * CFrame.Angles(math.rad(-12.376), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2822,13 +2700,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.248, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.767)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.975), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.193, -0.15) * CFrame.Angles(math.rad(8.881), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.452), math.rad(-72.823), math.rad(-156.016)),
+						CFrame = CFrame.new(0.029, -0.187, -0.019) * CFrame.Angles(math.rad(-12.49), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2845,13 +2722,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.248, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.71)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.918), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.193, -0.148) * CFrame.Angles(math.rad(8.881), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.337), math.rad(-72.823), math.rad(-156.016)),
+						CFrame = CFrame.new(0.029, -0.188, -0.019) * CFrame.Angles(math.rad(-12.548), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2868,13 +2744,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.248, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.71)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.803), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.192, -0.147) * CFrame.Angles(math.rad(8.938), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.222), math.rad(-72.766), math.rad(-155.959)),
+						CFrame = CFrame.new(0.028, -0.189, -0.019) * CFrame.Angles(math.rad(-12.605), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2891,13 +2766,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.247, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.652)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.746), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.192, -0.145) * CFrame.Angles(math.rad(8.938), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.165), math.rad(-72.766), math.rad(-155.959)),
+						CFrame = CFrame.new(0.027, -0.19, -0.019) * CFrame.Angles(math.rad(-12.662), math.rad(-4.354), math.rad(-9.74)),
 					},
 				},
 			},
@@ -2914,13 +2788,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.247, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.595)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.631), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.191, -0.143) * CFrame.Angles(math.rad(8.995), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-51.051), math.rad(-72.766), math.rad(-155.959)),
+						CFrame = CFrame.new(0.027, -0.191, -0.019) * CFrame.Angles(math.rad(-12.777), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -2937,13 +2810,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.247, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.574), math.rad(1.261), math.rad(65.604)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.445, -0.191, -0.14) * CFrame.Angles(math.rad(9.053), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.936), math.rad(-72.766), math.rad(-155.959)),
+						CFrame = CFrame.new(0.026, -0.192, -0.019) * CFrame.Angles(math.rad(-12.834), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -2960,13 +2832,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.246, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.538)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.459), math.rad(1.261), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.19, -0.138) * CFrame.Angles(math.rad(9.053), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.821), math.rad(-72.708), math.rad(-155.959)),
+						CFrame = CFrame.new(0.025, -0.193, -0.019) * CFrame.Angles(math.rad(-12.949), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -2983,13 +2854,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.246, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.481)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.402), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.19, -0.136) * CFrame.Angles(math.rad(9.11), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.649), math.rad(-72.708), math.rad(-155.959)),
+						CFrame = CFrame.new(0.025, -0.194, -0.019) * CFrame.Angles(math.rad(-13.063), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -3006,13 +2876,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.246, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.423)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.287), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.189, -0.133) * CFrame.Angles(math.rad(9.167), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.535), math.rad(-72.708), math.rad(-155.959)),
+						CFrame = CFrame.new(0.024, -0.195, -0.019) * CFrame.Angles(math.rad(-13.121), math.rad(-4.354), math.rad(-9.798)),
 					},
 				},
 			},
@@ -3029,13 +2898,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.245, -0.265) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.366)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.173), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.188, -0.13) * CFrame.Angles(math.rad(9.225), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.42), math.rad(-72.651), math.rad(-155.959)),
+						CFrame = CFrame.new(0.023, -0.197, -0.019) * CFrame.Angles(math.rad(-13.235), math.rad(-4.354), math.rad(-9.855)),
 					},
 				},
 			},
@@ -3052,13 +2920,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.245, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.309)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(11.058), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.446, -0.188, -0.128) * CFrame.Angles(math.rad(9.282), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.248), math.rad(-72.651), math.rad(-155.902)),
+						CFrame = CFrame.new(0.022, -0.198, -0.019) * CFrame.Angles(math.rad(-13.35), math.rad(-4.354), math.rad(-9.855)),
 					},
 				},
 			},
@@ -3072,16 +2939,15 @@ return {
 						CFrame = CFrame.new(0.498, 0.021, -0.2) * CFrame.Angles(math.rad(8.881), math.rad(24.58), math.rad(3.495)),
 					},
 					["Right Arm"] = {
-						CFrame = CFrame.new(0.242, -0.245, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.251)),
+						CFrame = CFrame.new(0.242, -0.244, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.251)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.943), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.187, -0.125) * CFrame.Angles(math.rad(9.282), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-50.134), math.rad(-72.594), math.rad(-155.902)),
+						CFrame = CFrame.new(0.021, -0.199, -0.019) * CFrame.Angles(math.rad(-13.465), math.rad(-4.297), math.rad(-9.855)),
 					},
 				},
 			},
@@ -3098,13 +2964,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.244, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.194)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.829), math.rad(1.318), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.186, -0.122) * CFrame.Angles(math.rad(9.339), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.962), math.rad(-72.594), math.rad(-155.902)),
+						CFrame = CFrame.new(0.02, -0.201, -0.019) * CFrame.Angles(math.rad(-13.579), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -3121,13 +2986,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.244, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.137)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.714), math.rad(1.375), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.186, -0.119) * CFrame.Angles(math.rad(9.397), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.79), math.rad(-72.594), math.rad(-155.902)),
+						CFrame = CFrame.new(0.019, -0.202, -0.019) * CFrame.Angles(math.rad(-13.694), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -3144,13 +3008,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.243, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.079)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.6), math.rad(1.375), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.447, -0.185, -0.115) * CFrame.Angles(math.rad(9.454), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.618), math.rad(-72.536), math.rad(-155.902)),
+						CFrame = CFrame.new(0.018, -0.204, -0.019) * CFrame.Angles(math.rad(-13.866), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -3167,13 +3030,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.243, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-19.022)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.428), math.rad(1.375), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.448, -0.184, -0.112) * CFrame.Angles(math.rad(9.511), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.446), math.rad(-72.536), math.rad(-155.902)),
+						CFrame = CFrame.new(0.017, -0.206, -0.019) * CFrame.Angles(math.rad(-13.98), math.rad(-4.297), math.rad(-9.912)),
 					},
 				},
 			},
@@ -3190,13 +3052,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.242, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.965)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.313), math.rad(1.375), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.448, -0.183, -0.108) * CFrame.Angles(math.rad(9.568), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.274), math.rad(-72.479), math.rad(-155.902)),
+						CFrame = CFrame.new(0.016, -0.207, -0.019) * CFrame.Angles(math.rad(-14.095), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -3213,13 +3074,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.242, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.908)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.141), math.rad(1.432), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.448, -0.182, -0.105) * CFrame.Angles(math.rad(9.683), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-49.102), math.rad(-72.479), math.rad(-155.902)),
+						CFrame = CFrame.new(0.015, -0.209, -0.019) * CFrame.Angles(math.rad(-14.267), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -3236,13 +3096,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.241, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.793)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(10.027), math.rad(1.432), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.449, -0.181, -0.101) * CFrame.Angles(math.rad(9.74), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.873), math.rad(-72.422), math.rad(-155.845)),
+						CFrame = CFrame.new(0.014, -0.211, -0.019) * CFrame.Angles(math.rad(-14.381), math.rad(-4.297), math.rad(-9.969)),
 					},
 				},
 			},
@@ -3259,13 +3118,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.241, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.736)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.855), math.rad(1.432), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.449, -0.18, -0.097) * CFrame.Angles(math.rad(9.798), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.701), math.rad(-72.422), math.rad(-155.845)),
+						CFrame = CFrame.new(0.013, -0.213, -0.019) * CFrame.Angles(math.rad(-14.553), math.rad(-4.297), math.rad(-10.027)),
 					},
 				},
 			},
@@ -3282,13 +3140,12 @@ return {
 						CFrame = CFrame.new(0.242, -0.24, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.678)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.683), math.rad(1.432), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.449, -0.179, -0.093) * CFrame.Angles(math.rad(9.855), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.472), math.rad(-72.365), math.rad(-155.845)),
+						CFrame = CFrame.new(0.011, -0.215, -0.019) * CFrame.Angles(math.rad(-14.725), math.rad(-4.297), math.rad(-10.027)),
 					},
 				},
 			},
@@ -3305,13 +3162,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.239, -0.264) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.564)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.568), math.rad(1.49), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.45, -0.178, -0.089) * CFrame.Angles(math.rad(9.912), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.3), math.rad(-72.365), math.rad(-155.845)),
+						CFrame = CFrame.new(0.01, -0.217, -0.019) * CFrame.Angles(math.rad(-14.84), math.rad(-4.297), math.rad(-10.084)),
 					},
 				},
 			},
@@ -3328,13 +3184,12 @@ return {
 						CFrame = CFrame.new(0.241, -0.239, -0.263) * CFrame.Angles(math.rad(-17.819), math.rad(-19.538), math.rad(-18.507)),
 					},
 					["Head"] = {
-						CFrame = CFrame.Angles(math.rad(9.397), math.rad(1.49), math.rad(65.546)),
 					},
 					["Right Leg"] = {
 						CFrame = CFrame.new(0.45, -0.177, -0.085) * CFrame.Angles(math.rad(10.027), 0, 0),
 					},
 					["Left Arm"] = {
-						CFrame = CFrame.new(-0.418, -0.548, -0.399) * CFrame.Angles(math.rad(-48.071), math.rad(-72.307), math.rad(-155.845)),
+						CFrame = CFrame.new(0.009, -0.219, -0.019) * CFrame.Angles(math.rad(-15.011), math.rad(-4.24), math.rad(-10.084)),
 					},
 				},
 			},

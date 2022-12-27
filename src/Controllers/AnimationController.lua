@@ -152,6 +152,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
             or Player.Landing
             or Player.FightMode:GetState()
             or Player.Slowing
+            or Player:GetState("Idling")
         )
         then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
@@ -445,7 +446,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Emoting:GetState() or 
                 Player.Landing or
                 Player.FightMode:GetState() or
-                Player.Slowing
+                Player.Slowing or
+                Player:GetState("Idling")
             )
         then
             local tiltFrame = CFrame.fromMatrix(
@@ -478,11 +480,11 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 			if v:IsA("Accessory") and not filterTable[v.Name] then
                 local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
                 local characterAttachment = Player.getNexoCharacter().Torso:FindFirstChild(accessoryAttachment.Name) 
-                    or Player.getCharacter().Head:FindFirstChild(accessoryAttachment.Name) 
-                    or Player.getCharacter()["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
-                    or Player.getCharacter()["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
-                    or Player.getCharacter()["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
-                    or Player.getCharacter()["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
+                    or Player.getNexoCharacter().Head:FindFirstChild(accessoryAttachment.Name) 
+                    or Player.getNexoCharacter()["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
+                    or Player.getNexoCharacter()["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
+                    or Player.getNexoCharacter()["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
+                    or Player.getNexoCharacter()["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
                 v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
 			end		
 		end
@@ -521,7 +523,6 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
         end
 		if kfA["Head"] and kfB["Head"] then
 			animateLimb(character["Head"], nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, interp, headCF)
-			animateHats(filterTable)
 		end
         if kfA["Right Arm"] and kfB["Right Arm"] then
             animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame, interp)
@@ -529,7 +530,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 		if kfA["Left Arm"] and kfB["Left Arm"] then
 			animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame, interp)
 		end
-        --playerIKControl(AnimationController.R6Legs)
+        animateHats(filterTable)
 	end
 
     lastFilterTable = filterTable
@@ -539,7 +540,8 @@ end
 function AnimationController:_animateStep(char, animation: Animation)
 
     local framerate = animation.Framerate
-    framerate *=  Player:GetAnimationSpeed()
+    framerate /=  Player:GetAnimationSpeed()
+    --animation.Speed *= Player:GetAnimationSpeed()
 
     local current_i = (animation:GetIndex() - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0

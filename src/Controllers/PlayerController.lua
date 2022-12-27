@@ -37,6 +37,8 @@ local tiltVector = Vector3.new(0, 1, 0)
 local tiltSpring = Spring.new(2, tiltVector)
 local moveSpring = Spring.new(2, moveVector)
 
+PlayerController.AttackPosition = Vector3.new()
+
 local posSpring = Spring.new(1, Vector3.new())
 
 local toggleFling = false
@@ -112,9 +114,6 @@ local function _R15ReanimLoad()
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
-					if E.Name == "HumanoidRootPart" then
-						E.Anchored = not (toggleFling or Player.Attacking:GetState())
-					end
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
@@ -388,22 +387,24 @@ local function _R15ReanimLoad()
 		local function q(D)
 			local r=Instance.new('BodyAngularVelocity')
 			local b=Instance.new('AngularVelocity')
-			r.AngularVelocity=Vector3.new(0,9e9,0)
-			r.MaxTorque=Vector3.new(0,9e9,0)
-			b.AngularVelocity = Vector3.new(0,9e9,0)
-			b.MaxTorque = 9e9
+			r.AngularVelocity=Vector3.new(2147483646,2147483646,2147483646)
+			r.MaxTorque=Vector3.new(2147483646,2147483646,2147483646)
+			b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
+			b.MaxTorque = 2147483646
 			b.Attachment0 = D["RootAttachment"]
 			b.Parent = D
 			r.Parent = D
 		end 
 		q(char.HumanoidRootPart)
 		k=plr:GetMouse()
+		
 		local s=Instance.new('BodyPosition')
 		s.P=9e9 
 		s.D=9e9 
 		s.MaxForce=Vector3.new(99999,99999,99999)
 		s.Position = char.HumanoidRootPart.Position
 		s.Parent = char.HumanoidRootPart
+		
 
 		local A 
 		d(c,rs.Heartbeat:Connect(function()
@@ -520,10 +521,6 @@ local function _NexoLoad(canClickFling)
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(-30,0,0)
-					if E.Name == "HumanoidRootPart" then
-						E.Velocity=Vector3.new(0,0,0)
-						E.Anchored = not (toggleFling or Player.Attacking:GetState())
-					end
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
@@ -673,21 +670,29 @@ local function _NexoLoad(canClickFling)
 	local l,m,n,o,p=false,false,false,false,false
 	local function q(D)
 		local r=Instance.new('BodyAngularVelocity')
-		r.AngularVelocity=Vector3.new(0,9e9,0)
-		r.MaxTorque=Vector3.new(0,9e9,0)
+		local b=Instance.new('AngularVelocity')
+		r.AngularVelocity=Vector3.new(2147483646,2147483646,2147483646)
+		r.P=math.huge
+		r.MaxTorque = Vector3.new(1,1,1) * math.huge
+		b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
+		b.MaxTorque = 2147483646
+		b.Attachment0 = D["RootAttachment"]
+		b.Parent = D
         r.Parent = D
 	end 
 	q(b.HumanoidRootPart)
 	k=a:GetMouse()
+	
 	local s=Instance.new('BodyPosition')
 	s.P=9e9 
     s.D=9e9 
     s.MaxForce=Vector3.new(99999,99999,99999)
 	s.Position = b.HumanoidRootPart.Position
     s.Parent = b.HumanoidRootPart
-
+	
 	local A 
 	d(c,x.Heartbeat:Connect(function()
+		if not b:FindFirstChild("HumanoidRootPart") then return end
 		if x:IsStudio() then 
 			b.HumanoidRootPart.Anchored = true
 		end
@@ -695,10 +700,24 @@ local function _NexoLoad(canClickFling)
 			s.Position=k.Hit.p 
             b.HumanoidRootPart.Position=k.Hit.p 
 		else
-			s.Position=y.Torso.Position 
+			local ground = Player:OnGround(1000)
+			local pos = ground and ground.Position.Y - 10 or -10
+			pos = toggleFling and y.Torso.Position.Y or pos
+			if Player.Attacking:GetState() then
+				s.Position = PlayerController.AttackPosition
+				b.HumanoidRootPart.Position = PlayerController.AttackPosition
+			else
+				s.Position=Vector3.new(y.Torso.Position.X, pos, y.Torso.Position.Z)
+				b.HumanoidRootPart.Position=Vector3.new(y.Torso.Position.X, pos, y.Torso.Position.Z)
+			end
+			--b.HumanoidRootPart.CanCollide = not toggleFling
+			if Player:GetFramerate() > 25 then
+				b.HumanoidRootPart.Anchored = not (toggleFling or Player.Attacking:GetState())
+			else
+				b.Humanoid.PlatformStand = true
+				b.HumanoidRootPart.Anchored = true
+			end
 		end 
-		b.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
-		b.HumanoidRootPart.Anchored = not (toggleFling or Player.Attacking:GetState())
 	end))
 
 	local B=Instance.new("SelectionBox")
@@ -1313,17 +1332,6 @@ function PlayerController:Update()
 
     local char = Player.getCharacter()
 	local nexoChar = Player.getNexoCharacter()
-
-	if char:FindFirstChild("HumanoidRootPart") then
-		if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-			char.HumanoidRootPart.Position=nexoChar.Torso.Position + (not toggleFling and 1 or 0)*Vector3.new(0,50,0)
-		else
-			char.HumanoidRootPart.Position=nexoChar.LowerTorso.Position + (not toggleFling and 1 or 0)*Vector3.new(0,50,0)
-		end
-		char.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(0,0,0)
-		--char.HumanoidRootPart.Anchored = not toggleFling
-		--char.HumanoidRootPart.CanCollide = toggleFling
-	end
 
 	self:Fly()
 

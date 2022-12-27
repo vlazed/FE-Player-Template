@@ -47,7 +47,7 @@ if RunService:IsStudio() then
     end    
 end
 
-local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
+local SelectedModule = require(script.Modules.R6.ElegantSword.ElegantSword)
 
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"
@@ -57,9 +57,9 @@ if getgenv then
     end
 end
 
-local success, error = pcall(function()
-    PlayerController:Init()
-    --SelectedModule:Init()
+local success, err = pcall(function()
+    --PlayerController:Init()
+    SelectedModule:Init()
     App:Init()
 end)
 
@@ -73,5 +73,5 @@ if not success then
     if getgenv then
         getgenv().Running = false
     end
-    print("An error has occurred while running this module:", error)
+    error("An error has occurred while running this module:", err)
 end

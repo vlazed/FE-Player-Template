@@ -116,18 +116,20 @@ end
 
 
 function Player:GetAnimationSpeed()
-	return ControllerSettings.GetSettings().DT * 100 * 60/framerate
+	return ControllerSettings.GetSettings().DT * 100 * 60 / framerate
 end
 
 
-function Player:OnGround()
+function Player:OnGround(length)
+	length = length or 7
+
 	local hrp = self.getNexoHumanoidRootPart()
 	local _hrp = self.getHumanoidRootPart()
 	local params = RaycastParams.new()
 	params.FilterDescendantsInstances = {hrp.Parent, Player.getCharacter()}
 	params.FilterType = Enum.RaycastFilterType.Blacklist
 	params.IgnoreWater = false
-	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-7,0), params)
+	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-length,0), params)
 	
 	return raycastResult
 end
@@ -332,9 +334,9 @@ end
 
 
 function Player:HookFramerate()
-	heartbeatConnection = RunService.Heartbeat:Connect(function(dt)
-		framerate = framerateSpring:Update(0.01, 1/dt)
-		--print(framerate)
+	heartbeatConnection = RunService.RenderStepped:Connect(function(dt)
+		framerate = framerateSpring:Update(dt, 1/dt)
+		print(framerate)
 	end)
 end
 
