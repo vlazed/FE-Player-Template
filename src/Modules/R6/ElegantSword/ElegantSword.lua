@@ -55,7 +55,8 @@ local Sword = ""
 
 local Animations = script.Parent.Animations
 local Emotes = Animations.Emotes
-local Equipped = Animations.Equipped
+local EquippedSword = Animations.EquippedSword
+local EquippedBow = Animations.EquippedBow
 local Unequipped = Animations.Unequipped
 local filterTable = {}
  
@@ -92,11 +93,13 @@ local UnequippedAnimations = {Emotes = {}}
 
 local EquippedAnimations = {Emotes = {}}
 
-local EquippedLightAttacks = {}
+local EquippedSwordAttacks = {}
+
+local EquippedBowAttacks = {}
+
+local EquippedKickAttacks = {}
 
 local UnequippedLightAttacks = {}
-
-local EquippedHeavyAttacks = {}
 
 local UnequippedHeavyAttacks = {}
 
@@ -129,13 +132,13 @@ local function populateAttackTable(inputTable: table, targetTable: table)
 end
 
 populateAnimationTable(Unequipped:GetChildren(), UnequippedAnimations)
-populateAnimationTable(Equipped:GetChildren(), EquippedAnimations)
+populateAnimationTable(EquippedSword:GetChildren(), EquippedAnimations)
 populateEmoteTable(Emotes:GetChildren(), EquippedAnimations.Emotes)
 populateEmoteTable(Emotes:GetChildren(), UnequippedAnimations.Emotes)
 populateAttackTable(Unequipped.LightAttacks:GetChildren(), UnequippedLightAttacks)
 populateAttackTable(Unequipped.HeavyAttacks:GetChildren(), UnequippedHeavyAttacks)
-populateAttackTable(Equipped.LightAttacks:GetChildren(), EquippedLightAttacks)
-populateAttackTable(Equipped.HeavyAttacks:GetChildren(), EquippedHeavyAttacks)
+populateAttackTable(EquippedSword.Attacks:GetChildren(), EquippedSwordAttacks)
+populateAttackTable(EquippedSword.Kicks:GetChildren(), EquippedKickAttacks)
 
 local Unequipp = EquippedAnimations.Unequip
 local Equipp = UnequippedAnimations.Equip
