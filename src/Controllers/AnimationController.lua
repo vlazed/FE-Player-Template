@@ -540,16 +540,17 @@ end
 function AnimationController:_animateStep(char, animation: Animation)
 
     local framerate = animation.Framerate
+    local speed = animation.Speed
+    speed *= Player:GetAnimationSpeed()
     framerate /=  Player:GetAnimationSpeed()
-    --animation.Speed *= Player:GetAnimationSpeed()
 
     local current_i = (animation:GetIndex() - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0
 
     if animation.Increment >= 1 then
-        offset = (animation.Increment * animation.Speed) % animation.UpperBound
+        offset = (animation.Increment * speed) % animation.UpperBound
     elseif animation.Increment < 0 then
-        offset = -(animation.UpperBound - (animation.Increment * animation.Speed) % animation.UpperBound)
+        offset = -(animation.UpperBound - (animation.Increment * speed) % animation.UpperBound)
     end
 
     local next_i = (animation:GetIndex() - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
@@ -574,12 +575,12 @@ function AnimationController:_animateStep(char, animation: Animation)
         end
     end
     
-    animation.TimeDiff = math.abs(animation.KeyframeSequence[next_i]["Time"] - animation.KeyframeSequence[current_i]["Time"]) / animation.Speed
+    animation.TimeDiff = math.abs(animation.KeyframeSequence[next_i]["Time"] - animation.KeyframeSequence[current_i]["Time"]) / speed
 
     if not Player.Transitioning then
-        animation.Time += 1/framerate * animation.Speed
+        animation.Time += 1/framerate * speed
     else
-        animation.Time += 1/framerate/2 * animation.Speed
+        animation.Time += 1/framerate/2 * speed
     end
 
     if current_i > next_i then

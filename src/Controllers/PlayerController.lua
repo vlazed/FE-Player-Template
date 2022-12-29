@@ -1053,6 +1053,11 @@ function PlayerController:Idle()
 	FastTween(humA, tweenInfo, {WalkSpeed = 0})
 	FastTween(humB, tweenInfo, {WalkSpeed = 0})
 
+	if Player.Landing then
+		humA.WalkSpeed = 0
+		humB.WalkSpeed = 0
+	end
+
 	if Player.Dancing then return end
 	
 	if Player.Flying then
