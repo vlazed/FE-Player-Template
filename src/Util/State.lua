@@ -5,7 +5,6 @@ else
 	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
 end
 
-
 local Signal = require(Project.Packages.Signal)
 
 local State = {}

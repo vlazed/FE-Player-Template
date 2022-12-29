@@ -37,6 +37,7 @@ end
 local RunService = game:GetService("RunService")
 
 local Player = require(Project.Player)
+local Mouse = Player.getPlayer():GetMouse()
 
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
@@ -55,6 +56,7 @@ local nextUpdateTime = tick() + 1 / updateAccessoriesPollRate
     or somehow lose the accessory.
 --]]
 local Sword = "Angel Sword"
+local Bow = "Meshes/CompoundBowAccessory"
 local Capes = {
     ["GreenCape"] = CFrame.new(0, 1.75, 0)
 }
@@ -76,7 +78,8 @@ local Keybinds = {
     Enum.KeyCode.Z,    -- Dodging
 }
 
-local EquipButton = Enum.KeyCode.Q
+local EquipSwordButton = Enum.KeyCode.Q
+local EquipBowButton = Enum.KeyCode.E
 local LightAttackButton = Enum.KeyCode.F
 local HeavyAttackButton = Enum.KeyCode.G
 local DodgeButton = Enum.KeyCode.Z
@@ -98,7 +101,8 @@ local SitButton = Enum.KeyCode.C
 
 local UnequippedAnimations = {Emotes = {}}
 
-local EquippedAnimations = {Emotes = {}}
+local EquippedSwordAnimations = {Emotes = {}}
+local EquippedBowAnimations = {Emotes = {}}
 
 local EquippedSwordAttacks = {}
 
@@ -109,6 +113,9 @@ local EquippedKickAttacks = {}
 local UnequippedLightAttacks = {}
 
 local UnequippedHeavyAttacks = {}
+
+local bowStretchConnection
+local bowReleaseConnection
 
 
 local function populateEmoteTable(inputTable: table, targetTable: table)
@@ -140,32 +147,52 @@ local function populateAttackTable(inputTable: table, targetTable: table)
 end
 
 populateAnimationTable(Unequipped:GetChildren(), UnequippedAnimations)
-populateAnimationTable(EquippedSword:GetChildren(), EquippedAnimations)
-populateEmoteTable(Emotes:GetChildren(), EquippedAnimations.Emotes)
+populateAnimationTable(EquippedSword:GetChildren(), EquippedSwordAnimations)
+populateAnimationTable(EquippedBow:GetChildren(), EquippedBowAnimations)
+populateEmoteTable(Emotes:GetChildren(), EquippedSwordAnimations.Emotes)
+populateEmoteTable(Emotes:GetChildren(), EquippedBowAnimations.Emotes)
 populateEmoteTable(Emotes:GetChildren(), UnequippedAnimations.Emotes)
 populateAttackTable(Unequipped.Punches:GetChildren(), UnequippedLightAttacks)
 populateAttackTable(Unequipped.Kicks:GetChildren(), UnequippedHeavyAttacks)
 populateAttackTable(EquippedSword.Slashes:GetChildren(), EquippedSwordAttacks)
 populateAttackTable(EquippedSword.Kicks:GetChildren(), EquippedKickAttacks)
+populateAttackTable(EquippedBow.Attacks:GetChildren(), EquippedBowAttacks)
 
-local Unequipp = EquippedAnimations.Unequip
-local Equipp = UnequippedAnimations.Equip
+local UnequippSword = EquippedSwordAnimations.Unequip
+local UnequippBow = EquippedBowAnimations.UnequipBow
+local StretchBow = EquippedBowAnimations.BowStretchA
+local ShootBow = EquippedBowAttacks[1]
+local EquippSword = UnequippedAnimations.Equip
+local EquippBow = UnequippedAnimations.EquipBow
+
+print(EquippedBowAttacks)
+
+local connections = {}
 
 function ElegantSword:_InitializeAnimations()
     PlayerController.LayerA:LoadAnimation(Sit)
-    PlayerController.LayerB:LoadAnimation(Equipp)
-    PlayerController.LayerB:LoadAnimation(Unequipp)
+    PlayerController.LayerB:LoadAnimation(EquippSword)
+    PlayerController.LayerB:LoadAnimation(EquippBow)
+    PlayerController.LayerB:LoadAnimation(StretchBow)
+    PlayerController.LayerB:LoadAnimation(ShootBow)
+    PlayerController.LayerB:LoadAnimation(UnequippSword)
+    PlayerController.LayerB:LoadAnimation(UnequippBow)
 
-    Unequipp.Stopped:Connect(self.OnStopAnimation)
-    Equipp.Stopped:Connect(self.OnStopAnimation)
-    EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
-    UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
+    UnequippSword:ConnectStop(self.OnStopAnimation)
+    EquippSword:ConnectStop(self.OnStopAnimation)
+    EquippedSwordAnimations["Roll"]:ConnectStop(self.OnStopAnimation)
+    EquippedBowAnimations["Roll"]:ConnectStop(self.OnStopAnimation)
+    UnequippedAnimations["Roll"]:ConnectStop(self.OnStopAnimation)
 
-    EquippedAnimations["LandSoft"].Stopped:Connect(self.OnStopAnimation)
-    UnequippedAnimations["LandSoft"].Stopped:Connect(self.OnStopAnimation)
+    StretchBow:ConnectStop(self.OnStopAnimation)
+
+    EquippedSwordAnimations["LandSoft"]:ConnectStop(self.OnStopAnimation)
+    EquippedBowAnimations["LandSoft"]:ConnectStop(self.OnStopAnimation)
+    UnequippedAnimations["LandSoft"]:ConnectStop(self.OnStopAnimation)
     
-    EquippedAnimations["LandHard"].Stopped:Connect(self.OnStopAnimation)
-    UnequippedAnimations["LandHard"].Stopped:Connect(self.OnStopAnimation)
+    EquippedSwordAnimations["LandHard"]:ConnectStop(self.OnStopAnimation)
+    EquippedBowAnimations["LandHard"]:ConnectStop(self.OnStopAnimation)
+    UnequippedAnimations["LandHard"]:ConnectStop(self.OnStopAnimation)
 
     for i,v in ipairs(UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
@@ -183,11 +210,63 @@ local AttackIndex = 1
 local Equipping = false
 local Unequipping = false
 
-local Equipped = false
+local EquippedSword = false
+local EquippedBow = false
 local Sitting = false
 
 local attack
 local prevAttack
+
+function ElegantSword:EquipSword()
+    Unequipping = false
+    Equipping = true
+    EquippSword:Stop()
+    EquippSword:Play()
+    task.delay(25/30, function() self:Equip(Sword) end)
+end
+
+function ElegantSword:UnequipSword()
+    Equipping = false
+    Unequipping = true
+    UnequippSword:Stop()
+    UnequippSword:Play()
+    task.delay(25/30, function() self:Unequip(Sword) end)
+end
+
+local function stretchBow()
+    Player.Attacking:SetState(true)
+    if not StretchBow:IsPlaying() then
+        StretchBow:Play()
+    end
+end
+
+
+local function releaseArrow()
+    Player.Attacking:SetState(false)
+    StretchBow:Stop()
+    ShootBow:Play()
+end
+
+
+function ElegantSword:EquipBow()
+    Unequipping = false
+    Equipping = true
+    EquippBow:Stop()
+    EquippBow:Play()
+    bowStretchConnection = Mouse.Button1Down:Connect(stretchBow)
+    bowReleaseConnection = Mouse.Button1Up:Connect(releaseArrow)
+    task.delay(25/30, function() self:Equip(Bow) end)
+end
+
+function ElegantSword:UnequipBow()
+    Equipping = false
+    Unequipping = true
+    UnequippBow:Stop()
+    UnequippBow:Play()
+    bowStretchConnection:Disconnect()
+    bowReleaseConnection:Disconnect()
+    task.delay(25/30, function() self:Unequip(Bow) end)
+end
 
 --[[
     An example of an input processing function. Ideally, one should provide some debounce
@@ -196,20 +275,18 @@ local prevAttack
 function ElegantSword:ProcessInputs()
     if Player.Focusing or Player.Emoting:GetState() then return end
 
-    if ActionHandler.IsKeyDownBool(EquipButton) then
+    if ActionHandler.IsKeyDownBool(EquipSwordButton) then
         --print("EquipButton")
-        if not Equipped and not Equipping then
-            Unequipping = false
-            Equipping = true
-            Equipp:Stop()
-            Equipp:Play()
-            task.delay(25/30, function() self:Equip() end)
-        elseif Equipped and not Unequipping then
-            Equipping = false
-            Unequipping = true
-            Unequipp:Stop()
-            Unequipp:Play()
-            task.delay(25/30, function() self:Unequip() end)
+        if not (EquippedSword or EquippedBow) and not Equipping then
+            self:EquipSword()
+        elseif EquippedSword and not Unequipping then
+            self:UnequipSword()
+        end
+    elseif ActionHandler.IsKeyDownBool(EquipBowButton) then
+        if not (EquippedSword or EquippedBow) and not Equipping then
+            self:EquipBow()
+        elseif (EquippedSword or EquippedBow) and not Unequipping then
+            self:UnequipBow()
         end
     elseif ActionHandler.IsKeyDownBool(SitButton) then
         --print("SitButotn")
@@ -269,6 +346,10 @@ function ElegantSword.OnStopAnimation(animation: Animation)
         Player.Landing = false
     elseif animation.Name:find("Stop") then
         Player.Slowing = false
+    elseif animation.Name == "BowStretchA" and Player.Attacking:GetState() then
+        animation:Play()
+        animation:SetIndex(animation.Length)
+        animation:Freeze()
     end
 end
 
@@ -276,30 +357,48 @@ end
 --[[
     An example of a state processing function. 
 --]]
-function ElegantSword:ProcessStates(char, Accessory)
-    if not RunService:IsStudio() then
+function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
+  --  if not RunService:IsStudio() then
 
-        if Equipped and Accessory then
-            local nexoAccessory = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
+        if EquippedSword and AccessorySword then
+            local nexoAccessorySword = Player.getNexoCharacter():FindFirstChild(AccessorySword.Name)
+            local swordOffset = CFrame.fromOrientation(0, -0, math.rad(29.01))
+            * CFrame.fromOrientation(math.rad(-90), 0, 0)
+            * CFrame.fromOrientation(0, math.rad(90), 0)
+            * CFrame.new(0,-3,-0.3)
 
-            Accessory.Handle.CFrame = 
+            AccessorySword.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-                    * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-                    * CFrame.fromOrientation(0, -0, math.rad(29.01))
-                    * CFrame.fromOrientation(math.rad(-90), 0, 0)
-                    * CFrame.fromOrientation(0, math.rad(90), 0)
-                    * CFrame.new(0,-3,-0.3)
+                    * nexoAccessorySword.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * swordOffset
             
-            nexoAccessory.Handle.CFrame = 
+            nexoAccessorySword.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
-                    * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
-                    * CFrame.fromOrientation(0, -0, math.rad(29.01))
-                    * CFrame.fromOrientation(math.rad(-90), 0, 0)
-                    * CFrame.fromOrientation(0, math.rad(90), 0)
-                    * CFrame.new(0,-3,-0.3)
+                    * nexoAccessorySword.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                    * swordOffset
         
             LightAttacks = EquippedSwordAttacks
             HeavyAttacks = EquippedKickAttacks
+        elseif EquippedBow and AccessoryBow then
+            local nexoAccessoryBow = Player.getNexoCharacter():FindFirstChild(AccessoryBow.Name)
+            local bowOffset = CFrame.fromOrientation(0, -0, math.rad(29.01))
+            * CFrame.fromOrientation(math.rad(-90), 0, 0)
+            * CFrame.fromOrientation(0, math.rad(-90), 0)
+            * CFrame.new(0,0,-0.2)
+
+            AccessoryBow.Handle.CFrame = 
+            char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
+                * nexoAccessoryBow.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                * bowOffset
+        
+            nexoAccessoryBow.Handle.CFrame = 
+            char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
+                * nexoAccessoryBow.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
+                * bowOffset
+
+            LightAttacks = UnequippedLightAttacks
+            HeavyAttacks = EquippedKickAttacks
+
         else
             LightAttacks = UnequippedLightAttacks
             HeavyAttacks = UnequippedHeavyAttacks
@@ -333,13 +432,22 @@ function ElegantSword:ProcessStates(char, Accessory)
                 nexoCape.Handle.CFrame = Cape.Handle.CFrame 
             --]]
         end
+    --end
+
+    if not EquippedBowAnimations.Hold:IsPlaying() and EquippedBow and not Equipping then
+        EquippedBowAnimations.Hold:Play()
+    elseif not EquippedBow then
+        EquippedBowAnimations.Hold:Stop()
+        EquippedBowAnimations.Idle:Stop()
     end
 
 
     if Player.Attacking:GetState() then
         if char:FindFirstChild("HumanoidRootPart") then
-            if Equipped and Accessory then
-                PlayerController.AttackPosition = Vector3.new(Accessory.Handle.Position.X, char.Torso.Position.Y, Accessory.Handle.Position.Z) 
+            if EquippedSword and AccessorySword then
+                PlayerController.AttackPosition = Vector3.new(AccessorySword.Handle.Position.X, char.Torso.Position.Y, AccessorySword.Handle.Position.Z)
+            elseif EquippedBow and AccessoryBow then 
+                PlayerController.AttackPosition = Mouse.Hit.Position
             else
                 PlayerController.AttackPosition =  Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
@@ -348,11 +456,17 @@ function ElegantSword:ProcessStates(char, Accessory)
 end
 
 
-function ElegantSword:Unequip()
-    Equipped = false
-    filterTable[Sword] = nil
+function ElegantSword:Unequip(accessory)
+    if accessory == Sword then
+        EquippedSword = false
+        filterTable[Sword] = nil
+    elseif accessory == Bow then
+        EquippedBow = false
+        filterTable[Bow] = nil
+    end
     Player:SetAnimationModule(UnequippedAnimations)
     PlayerController.LayerA.FilterTable = filterTable
+    PlayerController.LayerB.FilterTable = filterTable
     for i,v in ipairs(UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
@@ -363,21 +477,33 @@ function ElegantSword:Unequip()
 end
 
 
-function ElegantSword:Equip()
-    Equipped = true
-    local AccessorySword = Player.getCharacter():FindFirstChild(Sword)
-    if AccessorySword then
-        filterTable[Sword] = AccessorySword
+function ElegantSword:Equip(accessory)
+    if accessory == Sword then
+        EquippedSword = true
+        Player:SetAnimationModule(EquippedSwordAnimations)
+        for i,v in ipairs(EquippedSwordAttacks) do
+            PlayerController.LayerA:LoadAnimation(v)
+        end
+        for i,v in ipairs(EquippedKickAttacks) do
+            PlayerController.LayerA:LoadAnimation(v)
+        end
+    elseif  accessory == Bow then
+        EquippedBow = true
+        Player:SetAnimationModule(EquippedBowAnimations)
+        for i,v in ipairs(EquippedBowAttacks) do
+            PlayerController.LayerA:LoadAnimation(v)
+        end
+        for i,v in ipairs(EquippedKickAttacks) do
+            PlayerController.LayerA:LoadAnimation(v)
+        end
     end
-    Player:SetAnimationModule(EquippedAnimations)
+    local Accessory = Player.getCharacter():FindFirstChild(accessory)
+    if Accessory then
+        filterTable[accessory] = Accessory
+    end
+    
     PlayerController.LayerA.FilterTable = filterTable
     PlayerController.LayerB.FilterTable = filterTable
-    for i,v in ipairs(EquippedSwordAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
-    for i,v in ipairs(EquippedKickAttacks) do
-        PlayerController.LayerA:LoadAnimation(v)
-    end
     AttackIndex = 1
 end
 
@@ -402,11 +528,12 @@ end
 function ElegantSword:Update()
     --print("Update")
     local AccessorySword = Player.getCharacter():FindFirstChild(Sword)
+    local AccessoryBow = Player.getCharacter():FindFirstChild(Bow)
     local char = Player.getCharacter()
 
     self:ProcessInputs()
 
-    self:ProcessStates(char, AccessorySword)
+    self:ProcessStates(char, AccessorySword, AccessoryBow)
 
     if tick() > nextUpdateTime then
         nextUpdateTime = tick() + 1 / updateAccessoriesPollRate
@@ -429,6 +556,10 @@ end
 
 function ElegantSword:Stop()
     Player:ResetAnimationModule()
+    if EquippedBow then
+        bowStretchConnection:Disconnect()
+        bowReleaseConnection:Disconnect()
+    end
     PlayerController.Modules[self] = nil
     self.Initialized = false
 end

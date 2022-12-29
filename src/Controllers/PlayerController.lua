@@ -75,6 +75,8 @@ local moduleExecuteTime = tick() + 1/updateModuleRate
 
 local previousVelocity = Vector3.new()
 
+local animationConnections = {}
+
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
 	if RunService:IsStudio() then return end
@@ -888,6 +890,11 @@ local function detectFling(threshold: number, dt)
 end
 
 
+local function addAnimationConnection(connection: Signal)
+	table.insert(animationConnections, connection)
+end
+
+-- TODO: Use Maid or Trove to automate cleanup of animation connections at respawn
 function PlayerController:_InitializeStates()	
 	Player:GetStateClass("Idling").OnTrue:Connect(self.OnIdle)
 	Player:GetStateClass("Falling").OnTrue:Connect(self.OnFall)
@@ -899,18 +906,18 @@ function PlayerController:_InitializeStates()
 
 	Player:GetStateClass("Walking").OnFalse:Connect(self.StoppedState)
 
-	Player:GetAnimation("Roll").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("Slide").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("FrontFlip").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("BackFlip").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("RightFlip").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("LeftFlip").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("Roll"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("Slide"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("FrontFlip"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("BackFlip"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("RightFlip"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("LeftFlip"):ConnectStop(self.OnStopAnimation)
 
-	Player:GetAnimation("LandSoft").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("LandHard").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("SprintStop").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("RunStop").Stopped:Connect(self.OnStopAnimation)
-	Player:GetAnimation("WalkStop").Stopped:Connect(self.OnStopAnimation)
+	Player:GetAnimation("LandSoft"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("LandHard"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("SprintStop"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("RunStop"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("WalkStop"):ConnectStop(self.OnStopAnimation)
 	
 	Player.FightMode.OnFalse:Connect(self.StoppedState)
 	Player.Attacking.OnFalse:Connect(self.StoppedState)
@@ -1584,6 +1591,12 @@ function PlayerController:Init(canClickFling)
 
 	self.Initialized = true
 end
+
+
+function PlayerController:CleanConnections()
+
+end
+
 
 function PlayerController:Respawn()
     local char = game:GetService("Players").LocalPlayer.Character

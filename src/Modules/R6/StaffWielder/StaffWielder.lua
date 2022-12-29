@@ -145,10 +145,10 @@ function StaffWielder:_InitializeAnimations()
     PlayerController.LayerB:LoadAnimation(self.Equipp)
     PlayerController.LayerB:LoadAnimation(self.Unequipp)
 
-    self.Unequipp.Stopped:Connect(self.OnStopAnimation)
-    self.Equipp.Stopped:Connect(self.OnStopAnimation)
-    self.EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
-    self.UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
+    self.Unequipp:ConnectStop(self.OnStopAnimation)
+    self.Equipp:ConnectStop(self.OnStopAnimation)
+    self.EquippedAnimations["Roll"]:ConnectStop(self.OnStopAnimation)
+    self.UnequippedAnimations["Roll"]:ConnectStop(self.OnStopAnimation)
 
     for i,v in ipairs(self.UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)

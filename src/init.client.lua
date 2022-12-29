@@ -57,11 +57,11 @@ if getgenv then
     end
 end
 
-local success, err = pcall(function()
+--local success, err = pcall(function()
     PlayerController:Init()
     SelectedModule:Init()
     App:Init()
-end)
+--end)
 
 if getgenv then
     if not getgenv().Running and success then
@@ -73,5 +73,5 @@ if not success then
     if getgenv then
         getgenv().Running = false
     end
-    error("An error has occurred while running this module:", err)
+    error("An error has occurred while running this module: \n" .. tostring(err))
 end

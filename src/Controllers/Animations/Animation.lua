@@ -6,6 +6,7 @@ else
 end
 
 local Signal = require(Project.Packages.Signal)
+local Maid = require(Project.Packages.Maid)
 
 local Animation = {}
 Animation.__index = Animation
@@ -81,6 +82,8 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
         self.TimeLength = 1
     end
 
+    self._maid = Maid.new()
+
     self.Stopped = Signal.new()
     self.Looped = Signal.new()
 
@@ -132,6 +135,22 @@ end
 
 
 function Animation:Pause()
+    self._playing = false
+end
+
+
+function Animation:ConnectStop(callback)
+    self._maid:GiveTask(self.Stopped:Connect(callback))
+end
+
+
+function Animation:ConnectLoop(callback)
+    self._maid:GiveTask(self.Looped:Connect(callback))
+end
+
+
+function Animation:Destroy()
+    self._maid:Destroy()
     self._playing = false
 end
 

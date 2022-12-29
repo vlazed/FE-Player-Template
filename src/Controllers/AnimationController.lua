@@ -230,9 +230,10 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
 		end
 	end
 
-	local kfB = self.lastKF["HumanoidRootPart"] and self.lastKF["HumanoidRootPart"]["LowerTorso"] or self.lastKF["LowerTorso"]
+	
     local kfA = keyframe["HumanoidRootPart"] and keyframe["HumanoidRootPart"]["LowerTorso"] or keyframe["LowerTorso"]
-
+    local kfB = self.lastKF["HumanoidRootPart"] and self.lastKF["HumanoidRootPart"]["LowerTorso"] or self.lastKF["LowerTorso"] or kfA
+    
     --print(kfA)
 
     local headCF, torsoCF
@@ -645,7 +646,7 @@ end
 
 function AnimationController:UnloadAnimations()
     for priority,table in pairs(self.AnimationTable) do
-        for _, anim in ipairs(table) do
+        for _, anim in pairs(table) do
             self:UnloadAnimation(anim)
         end
     end
@@ -653,7 +654,7 @@ end
 
 
 function AnimationController:UnloadAnimation(animation: Animation)
-    self.AnimationTable[animation.Priority][animation.Name] = nil
+    self.AnimationTable[animation.Priority][animation.Name]:Destroy()
 end
 
 
