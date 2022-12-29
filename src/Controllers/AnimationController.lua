@@ -643,8 +643,10 @@ end
 
 
 function AnimationController:UnloadAnimations()
-    for priority,v in pairs(self.AnimationTable) do
-        self.AnimationTable[priority] = {}
+    for priority,table in pairs(self.AnimationTable) do
+        for _, anim in ipairs(table) do
+            self:UnloadAnimation(anim)
+        end
     end
 end
 

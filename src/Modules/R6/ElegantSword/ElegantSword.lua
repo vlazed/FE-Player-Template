@@ -47,11 +47,18 @@ ElegantSword.Name = "Elegant Sword"
 
 ElegantSword.Initialized = false
 
+local updateAccessoriesPollRate = 5
+local nextUpdateTime = tick() + 1 / updateAccessoriesPollRate
+
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
     or somehow lose the accessory.
 --]]
 local Sword = "Angel Sword"
+local Capes = {
+    ["GreenCape"] = CFrame.new(0, 1.75, 0)
+}
+local Cape = nil
 
 local Animations = script.Parent.Animations
 local Emotes = Animations.Emotes
@@ -154,6 +161,12 @@ function ElegantSword:_InitializeAnimations()
     EquippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
     UnequippedAnimations["Roll"].Stopped:Connect(self.OnStopAnimation)
 
+    EquippedAnimations["LandSoft"].Stopped:Connect(self.OnStopAnimation)
+    UnequippedAnimations["LandSoft"].Stopped:Connect(self.OnStopAnimation)
+    
+    EquippedAnimations["LandHard"].Stopped:Connect(self.OnStopAnimation)
+    UnequippedAnimations["LandHard"].Stopped:Connect(self.OnStopAnimation)
+
     for i,v in ipairs(UnequippedLightAttacks) do
         PlayerController.LayerA:LoadAnimation(v)
     end
@@ -250,6 +263,12 @@ function ElegantSword.OnStopAnimation(animation: Animation)
         Unequipping = false
     elseif animation.Name == "Roll" then
         Player.Dodging = false
+    elseif animation.Name == "LandSoft" or animation.Name == "LandHard" then
+        Player.Landing = false
+    elseif animation.Name:find("Land") then
+        Player.Landing = false
+    elseif animation.Name:find("Stop") then
+        Player.Slowing = false
     end
 end
 
@@ -258,10 +277,11 @@ end
     An example of a state processing function. 
 --]]
 function ElegantSword:ProcessStates(char, Accessory)
-    if Equipped and Accessory then
-        local nexoAccessory = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
+    if not RunService:IsStudio() then
 
-        if not RunService:IsStudio() then
+        if Equipped and Accessory then
+            local nexoAccessory = Player.getNexoCharacter():FindFirstChild(Accessory.Name)
+
             Accessory.Handle.CFrame = 
                 char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
                     * Accessory.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
@@ -277,19 +297,49 @@ function ElegantSword:ProcessStates(char, Accessory)
                     * CFrame.fromOrientation(math.rad(-90), 0, 0)
                     * CFrame.fromOrientation(0, math.rad(90), 0)
                     * CFrame.new(0,-3,-0.3)
-        end
         
-        LightAttacks = EquippedSwordAttacks
-        HeavyAttacks = EquippedKickAttacks
-    else
-        LightAttacks = UnequippedLightAttacks
-        HeavyAttacks = UnequippedHeavyAttacks
+            LightAttacks = EquippedSwordAttacks
+            HeavyAttacks = EquippedKickAttacks
+        else
+            LightAttacks = UnequippedLightAttacks
+            HeavyAttacks = UnequippedHeavyAttacks
+        end
+
+        if Cape then
+            local hrp = Player.getNexoHumanoidRootPart()
+            local velocity = Vector3.new()
+            local angularVelocity = Vector3.new()
+            if hrp then
+                velocity = hrp.AssemblyLinearVelocity
+                angularVelocity = char.Torso.AssemblyAngularVelocity
+            end
+            
+            --print("Moving cape")
+            local nexoChar = Player.getNexoCharacter()
+            local nexoCape = Player.getNexoCharacter():FindFirstChild(Cape.Name)
+
+            Cape.Handle.PivotOffset = Capes[Cape.Name]
+            nexoCape.Handle.PivotOffset = Capes[Cape.Name]
+            local currentPivot = Cape.Handle:GetPivot()
+
+            --[[]]
+            Cape.Handle:PivotTo(currentPivot * 
+                CFrame.Angles(
+                    math.clamp(math.rad(-velocity.Magnitude / 4 - angularVelocity.Y / 2), math.rad(-30), 0),
+                    0, 
+                    math.clamp(math.rad(-angularVelocity.Y), math.rad(-30), 30)
+                    )
+                )
+                nexoCape.Handle.CFrame = Cape.Handle.CFrame 
+            --]]
+        end
     end
+
 
     if Player.Attacking:GetState() then
         if char:FindFirstChild("HumanoidRootPart") then
             if Equipped and Accessory then
-                PlayerController.AttackPosition = Accessory.Handle.Position
+                PlayerController.AttackPosition = Vector3.new(Accessory.Handle.Position.X, char.Torso.Position.Y, Accessory.Handle.Position.Z) 
             else
                 PlayerController.AttackPosition =  Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
@@ -331,6 +381,21 @@ function ElegantSword:Equip()
     AttackIndex = 1
 end
 
+
+local function findCape()
+    local char = Player.getCharacter()
+    for _,v in ipairs(char:GetChildren()) do
+        if Capes[v.Name] then 
+            --print("Found cape")
+            Cape = v
+            filterTable[Cape.Name] = Cape
+            PlayerController.LayerA.FilterTable = filterTable
+            PlayerController.LayerB.FilterTable = filterTable
+            return
+        end
+    end
+end
+
 --[[
     An update function. Generally, this function should only contain the processInputs or processStates function.
 --]]
@@ -342,13 +407,20 @@ function ElegantSword:Update()
     self:ProcessInputs()
 
     self:ProcessStates(char, AccessorySword)
+
+    if tick() > nextUpdateTime then
+        nextUpdateTime = tick() + 1 / updateAccessoriesPollRate
+        findCape()
+    end
 end
+
 
 function ElegantSword:Init()
     if self.Initialized then return end
     Player:SetAnimationModule(UnequippedAnimations)
     PlayerController.LayerA:UpdateModule(UnequippedAnimations)
     self:_InitializeAnimations()
+    findCape()
     PlayerController.Modules[self] = self
     PlayerController:Init()
     self.Initialized = true

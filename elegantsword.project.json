@@ -1,0 +1,6 @@
+{
+    "name": "Elegant Sword",
+    "tree": {
+      "$path": "src/Modules/R6/ElegantSword"
+    }
+  }

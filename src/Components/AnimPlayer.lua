@@ -6,7 +6,6 @@ else
 	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
 end
 
-local Thread = require(Project.Util.Thread)
 local PlayerController = require(Project.Controllers.PlayerController)
 local FastTween = require(Project.Util.FastTween)
 
@@ -29,6 +28,8 @@ local currentAnimation = {}
 local canDrag = false
 local clicking = false
 
+local pollRate = 10
+local nextTime = tick() + 1/pollRate
 
 local function tweenAllGuis(guis, properties)
     local function hasProperty(object, propertyName)
@@ -176,6 +177,9 @@ end
 
 
 function AnimPlayer:Update(frame)
+    if tick() <= nextTime then return end
+    nextTime = tick() + 1 / pollRate
+
     if canDrag and clicking then
         changeFramePosition()
     end
@@ -307,13 +311,11 @@ function AnimPlayer:Init(playerFrame: Frame)
             end
         end
     end)
-
-    connection = Thread.DelayRepeat(0.1, self.Update, self, playerFrame)
 end
 
 
 function AnimPlayer:Remove()
-    connection:Disconnect()
+    --connection:Disconnect()
 end
 
 

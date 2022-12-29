@@ -15,6 +15,7 @@ local Player = require(Project.Player)
 local FastDraggable = require(Project.Util.FastDraggable)
 local Sidebar = require(Project.Components.Sidebar)
 local AnimPlayer = require(Project.Components.AnimPlayer)
+local Framerate = require(Project.Components.Framerate)
 local Thread = require(Project.Util.Thread)
 
 local gui = Project.Assets.ScreenGui
@@ -39,6 +40,7 @@ function App:Init()
 
     Sidebar:Init(gui.AnimList)
     AnimPlayer:Init(gui.Player)
+    Framerate:Init(gui.Framerate)
 
     connection = Thread.DelayRepeat(0.1, App.Update)
 end
@@ -55,12 +57,15 @@ end
 
 
 function App.Update()
-    --print("App update")
-    --print(PlayerHelper.Respawning)
+    Framerate:Update()
+    Sidebar:Update()
+    AnimPlayer:Update(gui.Player)
+
     if Player:GetState("Respawning") then
         print("Removing App")
         AnimPlayer:Remove()
         Sidebar:Remove()
+        Framerate:Remove()
         App:Remove()
     end
 end

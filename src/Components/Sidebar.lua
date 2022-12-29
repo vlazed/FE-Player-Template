@@ -30,6 +30,9 @@ local minimized = false
 
 local connection
 
+local pollRate = 1 -- Update every 5 seconds
+local nextTime = tick() + 1/pollRate
+
 Sidebar.SelectedModule = nil
 
 function Sidebar:CreateAnimationElement(filePath)
@@ -96,9 +99,25 @@ end
 
 function Sidebar:CreateModuleElement(file)
 
+    local fileModule = rbxmSuite.launch(file, {
+        runscripts = false,
+        deferred = true,
+        nocache = false,
+        nocirculardeps = true,
+        -- TODO: Remove unused packages 
+        debug = true,
+        verbose = false
+    })
+    if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
+        fileModule.Parent = Project.Modules.R15
+    else
+        fileModule.Parent = Project.Modules.R6
+    end
+    local moduleScript = fileModule:FindFirstChildOfClass("ModuleScript")
+
     local element = modtemplate:Clone()
-    element.Name = file.Name
-    element.Title.Text = file.Name
+    element.Name = file
+    element.Title.Text = moduleScript.Name
 
     element.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -135,6 +154,11 @@ end
 
 
 function Sidebar:Update()
+    if tick() <= nextTime then return end
+    if RunService:IsStudio() then return end
+
+    nextTime = tick() + 1/pollRate
+    
     --print("Checking for new files")
     local animfiles 
     local internalmodfiles
@@ -181,40 +205,12 @@ function Sidebar:Update()
         end
     end
 
-    --[[
-    for _,folder in ipairs(internalmodfiles) do
-        if not modbar:FindFirstChild(folder) then
-            local file = folder:FindFirstChildOfClass("ModuleScript")
-            if file then
-                self:CreateModuleElement(file)
-            end
-        end
-    end
-    --]]
-
-    -- TODO: Figure out how to support external animation modules
     if not RunService:IsStudio() then
     
         for _,filePath in ipairs(externalmodfiles) do
             if not modbar:FindFirstChild(filePath) then
-                local fileModule = rbxmSuite.launch(filePath, {
-                    runscripts = false,
-                    deferred = true,
-                    nocache = false,
-                    nocirculardeps = true,
-                    -- TODO: Remove unused packages 
-                    debug = true,
-                    verbose = false
-                })
-                if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
-                    fileModule.Parent = Project.Modules.R15
-                else
-                    fileModule.Parent = Project.Modules.R6
-                end
-                local moduleScript = fileModule:FindFirstChildOfClass("ModuleScript")
-                if moduleScript then
-                    self:CreateModuleElement(moduleScript)
-                end
+                --print("Clearing")
+                self:CreateModuleElement(filePath)
             end
         end
     end
@@ -307,14 +303,11 @@ function Sidebar:Init(frame)
     modtemplate = modbar.Module
     modtemplate.Parent = nil
 
-    if not RunService:IsStudio() then
-        connection = Thread.DelayRepeat(1, self.Update, self)
-        self:Update()
-    end
+    self:Update()
 end
 
 function Sidebar:Remove()
-    connection:Disconnect()
+    --connection:Disconnect()
 end
 
 return Sidebar

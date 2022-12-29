@@ -13,7 +13,7 @@ else
 end
 
 print("FE Player Template v1.0")
-task.wait(0.5)
+task.wait(0.25)
 
 local RunService = game:GetService("RunService")
 
@@ -58,7 +58,7 @@ if getgenv then
 end
 
 local success, err = pcall(function()
-    --PlayerController:Init()
+    PlayerController:Init()
     SelectedModule:Init()
     App:Init()
 end)

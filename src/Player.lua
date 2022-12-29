@@ -47,6 +47,7 @@ Player.Landing = false
 Player.Slowing = false
 Player.DodgeMoving = false
 Player.Flipping = false
+Player.SetCFrame = true
 
 Player.AnimationModule = PlayerAnimations
 
@@ -125,6 +126,9 @@ function Player:OnGround(length)
 
 	local hrp = self.getNexoHumanoidRootPart()
 	local _hrp = self.getHumanoidRootPart()
+
+	if not hrp then return end
+
 	local params = RaycastParams.new()
 	params.FilterDescendantsInstances = {hrp.Parent, Player.getCharacter()}
 	params.FilterType = Enum.RaycastFilterType.Blacklist
@@ -148,32 +152,49 @@ end
 
 
 function Player:ApplyImpulse(direction)
-	self.getNexoHumanoidRootPart():ApplyImpulse(self.getHumanoidRootPart().Position + direction)
+	local hrp = self.getNexoHumanoidRootPart()
+	if not hrp then return end
+	
+	hrp:ApplyImpulse(hrp.Position + direction)
 end
 
 
 function Player:CFrameLerpToPosition(pos, alpha)
-	self.getNexoHumanoidRootPart().CFrame:Lerp(CFrame.new(pos), alpha)
+	local hrp = self.getNexoHumanoidRootPart()
+	if not hrp then return end
+	
+	hrp.CFrame:Lerp(CFrame.new(pos), alpha)
 end
 
 
 function Player.getHumanoid()
-	return Player.getCharacter():FindFirstChildOfClass("Humanoid")
+	local char = Player.getCharacter()
+	if not char then return end
+
+	return char:FindFirstChildOfClass("Humanoid")
 end
 
 
 function Player.getNexoHumanoid()
-	return Player.getNexoCharacter():FindFirstChildOfClass("Humanoid")
+	local char = Player.getNexoCharacter()
+	if not char then return end
+
+	return char:FindFirstChildOfClass("Humanoid")
 end
 
 
 function Player.getHumanoidRootPart()
-	return Player.getCharacter():FindFirstChild("HumanoidRootPart")
+	local char = Player.getCharacter()
+	if not char then return end
+
+	return char:FindFirstChild("HumanoidRootPart")
 end
 
 
 function Player.getNexoHumanoidRootPart()
-	return Player.getNexoCharacter():FindFirstChild("HumanoidRootPart")
+	local char = Player.getNexoCharacter()
+	if not char then return end
+	return char:FindFirstChild("HumanoidRootPart")
 end
 
 
@@ -236,33 +257,30 @@ function Player:_SetStateThroughValue(states, value, duration)
 		local state = states
 
 		if self[state] ~= nil then
-			self.Locked = true
-			if self[state].GetState then
-				self[state]:SetState(value)
-			else
-				self[state] = value
-			end
-
-			task.delay(duration, function()
-				self.Locked = false
+			self.Locked = task.spawn(function()
+				if self[state].GetState then
+					self[state]:SetState(value)
+				else
+					self[state] = value
+				end
+				task.wait(duration)
 				if self[state].GetState then
 					self[state]:SetState(not value)
 				else
 					self[state] = not value
 				end
 			end)
-
+		
 		end
 	elseif typeof(states) == "table" then
-		self.Locked = true
+		self.Locked = task.spawn(function()
 
-		for i,state in pairs(states) do
-			if self[state] ~= nil then
-				self[state] = value
-			end 
-		end
-
-		task.delay(duration, function()
+			for i,state in pairs(states) do
+				if self[state] ~= nil then
+					self[state] = value
+				end 
+			end
+			task.wait(duration)
 			self.Locked = false
 			for i,state in pairs(states) do
 				if self[state] ~= nil then
@@ -279,24 +297,21 @@ function Player:_SetStateThroughTable(states, values, duration)
 		local state = states[1]
 
 		if self[state] ~= nil then
-			self.Locked = true
-			self[state] = values[1]
-
-			task.delay(duration, function()
+			self.Locked = task.spawn(function()
+				self[state] = values[1]
+				task.wait(duration)
 				self.Locked = false
 				self[state] = not values[1]
 			end)
 		end
 	elseif typeof(states) == "table" then
-		self.Locked = true
-
-		for i,state in pairs(states) do
-			if self[state] ~= nil then
-				self[state] = values[i]
-			end 
-		end
-
-		task.delay(duration, function()
+		self.Locked = task.spawn(function()
+			for i,state in pairs(states) do
+				if self[state] ~= nil then
+					self[state] = values[i]
+				end 
+			end
+			task.wait(duration)
 			self.Locked = false
 			for i,state in pairs(states) do
 				if self[state] ~= nil then
@@ -309,7 +324,7 @@ end
 
 
 function Player:SetStateForDuration(states: any, value: any, duration: number)
-	if self.Locked then return end
+	if self.Locked then task.cancel(self.Locked) end
 	
 	if typeof(value) == "boolean" then
 		self:_SetStateThroughValue(states, value, duration)
@@ -336,7 +351,7 @@ end
 function Player:HookFramerate()
 	heartbeatConnection = RunService.RenderStepped:Connect(function(dt)
 		framerate = framerateSpring:Update(dt, 1/dt)
-		print(framerate)
+		--print(framerate)
 	end)
 end
 
@@ -348,7 +363,10 @@ end
 
 function Player:UpdateMass()
 	local mass = 0
-	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
+	local char = self.getNexoCharacter()
+	if not char then return end
+
+	for i,instance in ipairs(char:GetDescendants()) do
 		if instance:IsA("BasePart") then
 			if instance.Massless then continue end
 			mass += instance.Mass
@@ -361,7 +379,10 @@ end
 
 
 function Player:_initializeMass()
-	for i,instance in ipairs(self.getNexoCharacter():GetDescendants()) do
+	local char = self.getNexoCharacter()
+	if not char then return end
+
+	for i,instance in ipairs(char:GetDescendants()) do
 		if instance:IsA("BasePart") then
 			if instance.Massless then continue end
 			self.Mass += instance.Mass
