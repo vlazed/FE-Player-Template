@@ -86,7 +86,7 @@ local function setPhysicsOptimizations()
 	settings()["Physics"].ForceCSGv2 = false
 	settings()["Physics"].DisableCSGv2 = true
 	settings()["Physics"].UseCSGv2 = false
-	settings()["Physics"].ThrottleAdjustTime = math.huge
+	settings()["Physics"].ThrottleAdjustTime = math.huge - math.huge
 
 	sethiddenproperty(workspace,"PhysicsSteppingMethod",Enum.PhysicsSteppingMethod.Fixed)
 	--sethiddenproperty(workspace,"PhysicsSimulationRate",Enum.PhysicsSimulationRate.Fixed240Hz)
@@ -522,10 +522,10 @@ local function _NexoLoad(canClickFling)
 		if E:IsA("BasePart")then 
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
-					E.Velocity=Vector3.new(-30,0,0)
+					E.Velocity=Vector3.new(1,0,0) * -25.1
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
-						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
+						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",1000)
 					end
 					game.Players.LocalPlayer.ReplicationFocus=workspace 
 				end)
@@ -923,6 +923,12 @@ function PlayerController:_InitializeStates()
 	Player.Attacking.OnFalse:Connect(self.StoppedState)
 	Player.Sprinting.OnFalse:Connect(self.StoppedState)
 	Player.Running.OnFalse:Connect(self.StoppedState)
+
+	Player:getNexoHumanoid():SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+	Player:getHumanoid():SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+
+	Player:getNexoHumanoid():SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+	Player:getHumanoid():SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 end
 
 
@@ -1081,7 +1087,7 @@ function PlayerController:Fly()
 	local Settings = ControllerSettings:GetSettings()
 	local Camera = workspace.CurrentCamera
 
-	local humanoid = Player.getHumanoid()
+	local humanoid = Player.getNexoHumanoid()
 	local hrp = Player.getNexoHumanoidRootPart()
 	local float = hrp:FindFirstChild("Float")
 	local alignRot = hrp:FindFirstChild("FaceForward")
@@ -1252,7 +1258,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player:GetStateClass("Falling"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Falling", true)
 		fallingSpeed = hrp.AssemblyLinearVelocity.Y
-		threshold *= 1.25
+		threshold *= 1.75
 		self:Fall()
 	elseif Player.Running:GetState() or Player.Sprinting:GetState() then
 		Player.Running:SetPreviousState(Player:GetEnabledLocomotionState())
@@ -1341,6 +1347,13 @@ function PlayerController:ProcessInputs()
 			--print("LerpEnabled:", self.LerpEnabled)
 			task.delay(0.2, function() debounce = false end)
 		end
+	end
+end
+
+
+function PlayerController:StopAllModules()
+	for i, module in pairs(self.Modules) do
+		module:Stop()
 	end
 end
 
@@ -1617,7 +1630,13 @@ function PlayerController:Respawn()
 		char:FindFirstChildOfClass("Humanoid"):ChangeState(15) 
 	end
 
-	table.clear(self.Modules)
+	ActionHandler:Stop()
+	EmoteController:Stop()
+	self.LayerA:Destroy()
+	self.LayerB:Destroy()
+	self.DanceLayer:Destroy()
+
+	self:StopAllModules()
 	
 	char:ClearAllChildren()
 	local newChar = Instance.new("Model")
@@ -1626,12 +1645,6 @@ function PlayerController:Respawn()
 	task.wait()
 	game:GetService("Players").LocalPlayer.Character = char
 	newChar:Destroy()	
-
-	ActionHandler:Stop()
-	EmoteController:Stop()
-	self.LayerA:Destroy()
-	self.LayerB:Destroy()
-	self.DanceLayer:Destroy()
 
 	local spawnLocation = Instance.new("SpawnLocation")
 	spawnLocation.CFrame = oldCFrame

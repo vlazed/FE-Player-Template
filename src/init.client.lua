@@ -24,6 +24,7 @@ local Settings = {
     crouchButton = Enum.KeyCode.LeftControl,
     ascendButton = Enum.KeyCode.Space,
     dodgeButton = Enum.KeyCode.Z,
+    copyButton = Enum.KeyCode.M,
 
     DT = 0.01,
     runSpeed = 50,
@@ -40,6 +41,7 @@ local PlayerController = require(script.Controllers.PlayerController)
 local ControllerSettings = require(script.Controllers.ControllerSettings)
 ControllerSettings.SetSettings(Settings)
 local App = require(script.Components.App)
+local Mimic = require(script.Modules.Mimic)
 
 if RunService:IsStudio() then
     if script.Parent.Name == "NexoPD" then
@@ -57,11 +59,12 @@ if getgenv then
     end
 end
 
---local success, err = pcall(function()
+local success, err = pcall(function()
     PlayerController:Init()
     SelectedModule:Init()
+    Mimic:Init()
     App:Init()
---end)
+end)
 
 if getgenv then
     if not getgenv().Running and success then

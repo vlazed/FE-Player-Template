@@ -543,7 +543,7 @@ function AnimationController:_animateStep(char, animation: Animation)
     local framerate = animation.Framerate
     local speed = animation.Speed
     speed *= Player:GetAnimationSpeed()
-    framerate /=  Player:GetAnimationSpeed()
+    --framerate /=  Player:GetAnimationSpeed()
 
     local current_i = (animation:GetIndex() - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0
@@ -709,6 +709,8 @@ function AnimationController.new(animationModule)
     }
 
     self.CurrentModule = animationModule
+
+    self.Playing = true
 
     if animationModule then
         self:_InitializeAnimations(animationModule)

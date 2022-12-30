@@ -42,6 +42,7 @@ local Mouse = Player.getPlayer():GetMouse()
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local Animation = require(Project.Controllers.Animations.Animation)
+local Spring = require(Project.Util.Spring)
 
 local ElegantSword = {}
 ElegantSword.Name = "Elegant Sword"
@@ -50,6 +51,8 @@ ElegantSword.Initialized = false
 
 local updateAccessoriesPollRate = 5
 local nextUpdateTime = tick() + 1 / updateAccessoriesPollRate
+
+local capeSpring = Spring.new(4, 0)
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
@@ -140,7 +143,7 @@ local function populateAttackTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
         if v:IsA("ModuleScript") then
             local animation = require(v)
-            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, true))
+            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, false))
             table.sort(targetTable, function(k2, k1) return k1.Name > k2.Name end)             
         end
     end
@@ -162,6 +165,8 @@ local UnequippSword = EquippedSwordAnimations.Unequip
 local UnequippBow = EquippedBowAnimations.UnequipBow
 local StretchBow = EquippedBowAnimations.BowStretchA
 local ShootBow = EquippedBowAttacks[1]
+StretchBow.Looking = false
+ShootBow.Looking = false
 local EquippSword = UnequippedAnimations.Equip
 local EquippBow = UnequippedAnimations.EquipBow
 
@@ -285,7 +290,7 @@ function ElegantSword:ProcessInputs()
     elseif ActionHandler.IsKeyDownBool(EquipBowButton) then
         if not (EquippedSword or EquippedBow) and not Equipping then
             self:EquipBow()
-        elseif (EquippedSword or EquippedBow) and not Unequipping then
+        elseif EquippedBow and not Unequipping then
             self:UnequipBow()
         end
     elseif ActionHandler.IsKeyDownBool(SitButton) then
@@ -417,14 +422,16 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
             local nexoChar = Player.getNexoCharacter()
             local nexoCape = Player.getNexoCharacter():FindFirstChild(Cape.Name)
 
+            local totalVelocity = capeSpring:Update(0.01, -velocity.Magnitude / 4 - angularVelocity.Y / 2)
+
             Cape.Handle.PivotOffset = Capes[Cape.Name]
             nexoCape.Handle.PivotOffset = Capes[Cape.Name]
             local currentPivot = Cape.Handle:GetPivot()
-
+            
             --[[]]
             Cape.Handle:PivotTo(currentPivot * 
                 CFrame.Angles(
-                    math.clamp(math.rad(-velocity.Magnitude / 4 - angularVelocity.Y / 2), math.rad(-30), 0),
+                    math.clamp(math.rad(totalVelocity), math.rad(-30), 0),
                     0, 
                     math.clamp(math.rad(-angularVelocity.Y), math.rad(-30), 30)
                     )
@@ -435,6 +442,7 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
     --end
 
     if not EquippedBowAnimations.Hold:IsPlaying() and EquippedBow and not Equipping then
+        EquippedBowAnimations.Hold.Looking = false
         EquippedBowAnimations.Hold:Play()
     elseif not EquippedBow then
         EquippedBowAnimations.Hold:Stop()
@@ -546,6 +554,7 @@ function ElegantSword:Init()
     if self.Initialized then return end
     Player:SetAnimationModule(UnequippedAnimations)
     PlayerController.LayerA:UpdateModule(UnequippedAnimations)
+    PlayerController.LayerB.Looking = false
     self:_InitializeAnimations()
     findCape()
     PlayerController.Modules[self] = self

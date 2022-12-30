@@ -183,6 +183,11 @@ function Player.getNexoHumanoid()
 end
 
 
+function Player:GetRigType()
+	return Player.getHumanoid().RigType
+end
+
+
 function Player.getHumanoidRootPart()
 	local char = Player.getCharacter()
 	if not char then return end
