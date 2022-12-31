@@ -25,6 +25,7 @@ local Settings = {
     ascendButton = Enum.KeyCode.Space,
     dodgeButton = Enum.KeyCode.Z,
     copyButton = Enum.KeyCode.M,
+    invisButton = Enum.KeyCode.N,
 
     DT = 0.01,
     runSpeed = 50,

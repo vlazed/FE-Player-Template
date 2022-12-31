@@ -102,6 +102,8 @@ function ActionHandler:Update()
         Settings.flightButton, 
         Settings.crouchButton,
         Settings.dodgeButton,
+        Enum.KeyCode.Space,
+        Settings.invisButton,
         table.unpack(ActionHandler.Keybinds)
     )
 end
@@ -151,6 +153,8 @@ function ActionHandler.Listen(an, is, io)
                 local anim = Player:GetAnimation("Flip")
                 anim.UpperBound = anim.Length - contraction
             end
+        elseif io.KeyCode == prevSettings.invisButton then
+            Player.Invisible = not Player.Invisible
         end
     elseif is == Enum.UserInputState.End then
         if io.KeyCode == prevSettings.sprintButton then
@@ -191,6 +195,7 @@ function ActionHandler:Init()
         Settings.crouchButton,
         Settings.dodgeButton,
         Enum.KeyCode.Space,
+        Settings.invisButton,
         table.unpack(ActionHandler.Keybinds)
     )
 end

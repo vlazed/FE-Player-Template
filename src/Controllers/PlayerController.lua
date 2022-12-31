@@ -11,6 +11,8 @@ local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local EmoteController = require(Project.Controllers.EmoteController)
 
+local Network = require(Project.Util.Network)
+
 -- TODO: Determine CFrame-based implementation for R6 IK Foot Placement 
 --local R6IKController = require(Project.Controllers.R6IKController)
 
@@ -520,9 +522,10 @@ local function _NexoLoad(canClickFling)
 	
     for D,E in next,b:GetDescendants()do 
 		if E:IsA("BasePart")then 
+			Network:RetainPart(E)
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
-					E.Velocity=Vector3.new(1,0,0) * -25.1
+					E.Velocity=Vector3.new(1,1,1) * 17.325
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",1000)
@@ -533,6 +536,7 @@ local function _NexoLoad(canClickFling)
 		end 
 	end 
 	
+
     local function f(D,E,F)
 		game.StarterGui:SetCore("SendNotification",{Title=D;Text=E;Duration=F or 5;})
 	end 
@@ -710,17 +714,17 @@ local function _NexoLoad(canClickFling)
 				hrp.Position = PlayerController.AttackPosition
 			else
 				s.Position=y.Torso.Position
-				b.HumanoidRootPart.Position=y.Torso.Position
+				b.HumanoidRootPart.Position=y.HumanoidRootPart.Position
 			end
 			--b.HumanoidRootPart.CanCollide = not toggleFling
 			if Player:GetFramerate() > 25 then
-				hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+				hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
 				hrp.AngularVelocity.Enabled = toggleFling
 			else
 				s.Position=y.Torso.Position
 				hrp.Position=y.Torso.Position
 				hrp.AngularVelocity.Enabled = false
-				hrp.BodyAngularVelocity.AngularVelocity = Vector3.new()
+				hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
 			end
 		end 
 	end))
@@ -741,70 +745,7 @@ local function _NexoLoad(canClickFling)
 			A=false 
 		end))
 	end 
-	
-	--[[
-	d(c,k.KeyDown:Connect(function(D)
-		if D==' 'then
-			p=true 
-		end 
-		if D=='w'then 
-			l=true 
-		end 
-		if D=='s'then 
-			m=true 
-		end 
-		if D=='a'then 
-			n=true 
-		end 
-		if D=='d'then 
-			o=true 
-		end 
-	end))
 
-	d(c,k.KeyUp:Connect(function(D)
-		if D==' 'then 
-			p=false 
-        end 
-		if D=='w'then 
-			l=false 
-		end 
-		if D=='s'then 
-			m=false 
-		end 
-		if D=='a'then 
-			n=false 
-		end 
-		if D=='d'then 
-			o=false 
-		end 
-	end))
-
-	local function C(D,E,F)
-		z.CFrame=z.CFrame*CFrame.new(-D,E,-F)
-		y.Humanoid.WalkToPoint=z.Position 
-	end 
-
-	d(c,x.RenderStepped:Connect(function()
-		if l==true then 
-			C(0,0,1e4)
-		end 
-		if m==true then 
-			C(0,0,-1e4)
-        end 
-		if n==true then 
-			C(1e4,0,0)
-		end 
-		if o==true then 
-			C(-1e4,0,0)
-		end 
-		if p==true then 
-			y.Humanoid.Jump=true 
-		end 
-		if l~=true and n~=true and m~=true and o~=true then 
-			y.Humanoid.WalkToPoint=y.HumanoidRootPart.Position 
-		end 
-	end))
-	--]]
 	workspace.CurrentCamera.CameraSubject=y.Humanoid 
 
 	nexoConnections = c
@@ -1101,7 +1042,7 @@ function PlayerController:Fly()
 	local ascent = (ActionHandler.IsKeyDown(Settings.ascendButton) - ActionHandler.IsKeyDown(Settings.crouchButton)) * Settings.ascentSpeed * Vector3.new(0,1,0)
 
 	alignRot.CFrame = CFrame.fromMatrix(hrp.CFrame.Position, Camera.CFrame.XVector, Camera.CFrame.YVector)
-	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * humanoid.JumpPower/50
+	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * humanoid.JumpPower / 50
 end
 
 
@@ -1124,6 +1065,24 @@ function PlayerController:Slide()
 		slide:Play()
 		Player.DodgeMoving = true
 		task.delay(slideDelay, function() Player.DodgeMoving = false Player.Transition(2) end)
+	end
+end
+
+
+function PlayerController:Invisible()
+	if not Player.Invisible then 
+		self.LayerA.Playing = true 
+		self.LayerB.Playing = true 
+		self.DanceLayer.Playing = true 
+		return 
+	end
+
+	local nexoEquivalent
+			
+	for i,v in ipairs(Player.getCharacter():GetDescendants()) do
+		if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+			v.CFrame = CFrame.new(0,1000,0)
+		end
 	end
 end
 
@@ -1365,6 +1324,11 @@ function PlayerController:RunUpdateTable()
 end
 
 
+function PlayerController:ProcessAfterStates()
+	self:Invisible()
+end
+
+
 function PlayerController:Update()
 
     local char = Player.getCharacter()
@@ -1387,6 +1351,7 @@ function PlayerController:Update()
 
 	self:RunUpdateTable()
 	
+	self:ProcessAfterStates()
 end    
 
 
@@ -1625,6 +1590,7 @@ function PlayerController:Respawn()
 	end 
 
 	table.clear(nexoConnections)
+	Network:RemoveParts()
 
 	if char:FindFirstChildOfClass("Humanoid") then
 		char:FindFirstChildOfClass("Humanoid"):ChangeState(15) 

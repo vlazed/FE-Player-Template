@@ -49,6 +49,8 @@ Player.DodgeMoving = false
 Player.Flipping = false
 Player.SetCFrame = true
 
+Player.Invisible = false
+
 Player.AnimationModule = PlayerAnimations
 
 Player.Locked = false

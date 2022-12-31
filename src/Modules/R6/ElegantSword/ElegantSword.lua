@@ -278,7 +278,7 @@ end
     implementation to prevent inputs from processing on the update step
 --]]
 function ElegantSword:ProcessInputs()
-    if Player.Focusing or Player.Emoting:GetState() then return end
+    if Player.Focusing or Player.Emoting:GetState() or Player.ChatEmoting:GetState() then return end
 
     if ActionHandler.IsKeyDownBool(EquipSwordButton) then
         --print("EquipButton")
@@ -433,7 +433,7 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
                 CFrame.Angles(
                     math.clamp(math.rad(totalVelocity), math.rad(-30), 0),
                     0, 
-                    math.clamp(math.rad(-angularVelocity.Y), math.rad(-30), 30)
+                    0
                     )
                 )
                 nexoCape.Handle.CFrame = Cape.Handle.CFrame 

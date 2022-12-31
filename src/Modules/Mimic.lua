@@ -20,6 +20,7 @@ local Copying = false
 local CopyButton = Enum.KeyCode.M
 
 local targetCharacter = nil
+local targetName = ""
 local debounce = false
 
 local clickConnection
@@ -68,6 +69,7 @@ local function getUserFromClick()
 
 	if potentialModel then
 		if potentialModel:FindFirstChildOfClass("Humanoid") then
+            targetName = targetCharacter.Name
 			SendNotification("Found character", targetCharacter.Name, "Close", 1)
 		else
 			SendNotification(part.Name .. " is a parent of " .. potentialModel.Name)
@@ -165,19 +167,27 @@ function Mimic:CopyCharacterPose(character)
 end
 
 
-function Mimic:Update()
+local function processInputs()
+    if Player.Focusing or Player.Emoting:GetState() or Player.ChatEmoting:GetState() then return end
     if ActionHandler.IsKeyDownBool(CopyButton) and not debounce then
         Copying = not Copying
         debounce = true
         SendNotification("Mimic Enabled", tostring(Copying), "Close", 2)
         task.delay(1, function() debounce = false end)
     end
+end
 
-    if Copying and targetCharacter then
+
+function Mimic:Update()
+    processInputs()
+
+    local character = workspace:FindFirstChild(targetName)
+
+    if Copying and character then
         PlayerController.LayerA.Playing = false
         PlayerController.LayerB.Playing = false
         PlayerController.DanceLayer.Playing = false
-        self:CopyCharacterPose(targetCharacter)
+        self:CopyCharacterPose(character)
         animateHats()
     else
         PlayerController.LayerA.Playing = true
