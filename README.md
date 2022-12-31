@@ -1,7 +1,7 @@
 # FE-Player-Template
 An open-source, code-based, rbxm-suite package that provides a framework for experienced scripters or animators of any level or both to reanimate a character or their accessories and a system to switch between different reanimations nonintrusively.
 
-This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15.
+This framework uses the Nexo Animator as a base for R6, with 4eyes's Network Ownership Library as an additive, and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15.
 
 ## Note
 This framework is currently in alpha. Thus, the information provided below and the source code may change at any given point. 
@@ -85,6 +85,7 @@ Script documentation is work-in-progress. Generally, the user of this template s
 # Acknowledgements
 - A friend who introduced me to their cool FE Bike script. This would not exist if not for them.
 - Nexo for their implementation of filtering enabled reanimation. I do not have the animator itself, but I have seen how the script works, and that propagated the development of this framework.
+- 4eyedfool for their network ownership library (https://v3rmillion.net/showthread.php?tid=1172007)
 - kuraga for the R15 reanimation. I'm glad that they released the source code for their reanimation, as I was able to achieve R6 and R15 support for this template
 - R6 Dance+emote Animations from Club Boates, Midnight Horrors, R6 Dances, Royal Hillcrest, Midnight Horrors. I've only hand-selected a few animations from there for testing purposes.
 - richie0866 for rbxm-suite and Rostruct and MidiPlayer. Their method of loading models allowed me to design the UI without having to touch code. The framework here is inspired by Rostruct and MidiPlayer (I made the UI just by looking at MidiPlayer). 
