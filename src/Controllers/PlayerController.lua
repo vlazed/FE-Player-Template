@@ -523,6 +523,8 @@ local function _NexoLoad(canClickFling)
     for D,E in next,b:GetDescendants()do 
 		if E:IsA("BasePart")then 
 			Network:RetainPart(E)
+			Network:FollowPart(E)
+	
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(1,1,1) * 17.325
@@ -533,6 +535,7 @@ local function _NexoLoad(canClickFling)
 					game.Players.LocalPlayer.ReplicationFocus=workspace 
 				end)
 			end))
+			
 		end 
 	end 
 	

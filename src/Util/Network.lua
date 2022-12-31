@@ -21,6 +21,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/your4eyes/RobloxScrip
 
     I added a function to remove everything from baseparts tbale
 
+    I also added another function for network ownership
+    https://v3rmillion.net/showthread.php?tid=1180572
+
     Thank you for the release!
     - Vlazed
 --]]
@@ -118,5 +121,54 @@ Network["PartOwnership"]["Disable"] = coroutine.create(function()
         Network["PartOwnership"]["Enabled"] = false
     end
 end)
+
+
+-- https://v3rmillion.net/showthread.php?tid=1180572
+local GetFamily = function(ins, reverseorder)
+    local Pathway = {}
+
+    function _GetFamily(v)
+        if v.Parent ~= nil then
+            if reverseorder then
+                table.insert(Pathway, v)
+            else
+                table.insert(Pathway, 1, v)
+            end
+            _GetFamily(v.Parent)
+        else
+            if reverseorder then
+                table.insert(Pathway, v)
+            else
+                table.insert(Pathway, 1, v)
+            end
+         end
+    end
+
+    _GetFamily(ins)
+    return Pathway    
+end
+
+function Network:FollowPart(part)
+    if part:IsA("BasePart") and not isnetworkowner(part) then
+        local p = Instance.new("Part", part)
+        p.Size = Vector3.new()
+        p.Transparency = 1
+        local Disconnect = false
+        local followfunc = game.RunService.Heartbeat:connect(function()
+            p.CFrame = part.CFrame
+            if part.CFrame.Y < workspace.FallenPartsDestroyHeight or GetFamily(part)[1] ~= game then
+                part:Destroy()
+                Disconnect = true
+            end
+        end)
+
+        coroutine.resume(coroutine.create(function()
+            repeat wait() until Disconnect == true
+            followfunc:Disconnect()
+        end))
+        
+        return p
+    end
+end
 
 return Network
