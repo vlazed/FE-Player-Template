@@ -11,7 +11,7 @@ local Maid = require(Project.Packages.Maid)
 local Animation = {}
 Animation.__index = Animation
 
-function Animation.new(name: string, keyframeSequence: table, framerate: number, looking: boolean) : Animation
+function Animation.new(name: string, keyframeSequence: table, framerate: number, looking: boolean, reflected: boolean) : Animation
     local self = setmetatable({}, Animation)
 
     self.Name = name or ""
@@ -23,12 +23,18 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
 
     self.Increment = 1
     self.Speed = 1
+    self.Weight = 1
+
+    self.Reflected = reflected or false
+    self.Offset = CFrame.new()
 
     self.IsInterpolating = true
 
     self.FilterTable = {}
 
     self.Looking = looking or false
+
+    self._weightThread = nil
 
     -- Check if modulescript or keyframesequence instance
     self.Properties = {}
@@ -86,8 +92,29 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
 
     self.Stopped = Signal.new()
     self.Looped = Signal.new()
+    self.ReachedWeight = Signal.new()
 
     return self
+end
+
+
+function Animation:AdjustWeight(weight, fadeTime)
+    fadeTime = fadeTime or 0.1
+    local t = 0
+
+    if self._weightThread then return end
+    if math.abs(self.Weight - weight) < 1e-3 then return end
+
+    self._weightThread = task.spawn(function()
+        while math.abs(fadeTime-t) > 1e-3 do
+            self.Weight = (1 - t)*self.Weight + t*weight
+            t += 0.01
+            task.wait(0.01)
+        end
+        self._weightThread = nil
+        self.ReachedWeight:Fire()
+        print("Done fading")
+    end)
 end
 
 
@@ -149,8 +176,14 @@ function Animation:ConnectLoop(callback)
 end
 
 
+function Animation:ConnectReachedWeight(callback)
+    self._maid:GiveTask(self.ReachedWeight:Connect(callback))
+end
+
+
 function Animation:Destroy()
     self._maid:Destroy()
+    if self._weightThread then self._weightThread:Cancel() end 
     self._playing = false
 end
 

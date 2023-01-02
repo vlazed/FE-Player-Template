@@ -134,7 +134,7 @@ local function populateAnimationTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
         if v:IsA("ModuleScript") then
             local animation = require(v)
-            targetTable[v.Name] = Animation.new(v.Name, animation, animation.Properties.Framerate, true)                
+            targetTable[v.Name] = Animation.new(v.Name, animation, animation.Properties.Framerate, true, true)                
         end
     end
 end
@@ -143,7 +143,7 @@ local function populateAttackTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
         if v:IsA("ModuleScript") then
             local animation = require(v)
-            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, false))
+            table.insert(targetTable, Animation.new(v.Name, animation, animation.Properties.Framerate, false, true))
             table.sort(targetTable, function(k2, k1) return k1.Name > k2.Name end)             
         end
     end
@@ -373,12 +373,12 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
             * CFrame.new(0,-3,-0.3)
 
             AccessorySword.Handle.CFrame = 
-                char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
+                char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
                     * nexoAccessorySword.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                     * swordOffset
             
             nexoAccessorySword.Handle.CFrame = 
-                char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
+                char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
                     * nexoAccessorySword.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                     * swordOffset
         
@@ -392,12 +392,12 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
             * CFrame.new(0,0,-0.2)
 
             AccessoryBow.Handle.CFrame = 
-            char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
+            char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
                 * nexoAccessoryBow.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                 * bowOffset
         
             nexoAccessoryBow.Handle.CFrame = 
-            char["Left Arm"].CFrame * char["Left Arm"].LeftGripAttachment.CFrame 
+            char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
                 * nexoAccessoryBow.Handle:FindFirstChildOfClass("Attachment").CFrame:Inverse()
                 * bowOffset
 

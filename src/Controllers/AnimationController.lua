@@ -409,24 +409,32 @@ function AnimationController:Flip(xDir, zDir, dt)
 end
 
 
-function AnimationController:_poseR6(character, keyframe, interp, filterTable, looking)
+function AnimationController:_poseR6(character, keyframe, interp, filterTable, looking, reflected, weight, offset)
     interp = interp or 1
+
+    weight = math.clamp(weight, 0, 1)
 
     local nexoCharacter = Player.getNexoCharacter()
 
-	local function animateTorso(cf, lastCF, alpha)
+	local function animateTorso(cf, lastCF)
         lastCF = lastCF or CFrame.new()
 		cf = cf or lastCF
 
         local hrp = Player.getNexoCharacter().HumanoidRootPart
 		local C0 = hrp["RootJoint"].C0
 		local C1 = hrp["RootJoint"].C1
+
+        if reflected then
+            local x, y, z = cf:ToOrientation()
+            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
+                * CFrame.fromOrientation(x, -y, -z)
+        end
 		
-        local cfLerp = lastCF:Lerp(cf, alpha)
+        local cfLerp = CFrame.identity:Lerp(cf * offset, weight)
 
         local angle = VectorUtil.AngleBetweenSigned(self.MoveVector, Vector3.new(0,0,1), Vector3.new(0,1,0))
-        
-        FastTween(hrp["RootJoint"], {0.1}, {Transform = cf})
+    
+        FastTween(hrp["RootJoint"], {0.1}, {Transform = cfLerp})
 
         local lookAt = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
         if Player.Flipping then
@@ -460,16 +468,22 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
         end
 	end
 
-	local function animateLimb(limb, motor, cf, lastCF, alpha, lookCF) -- Local to torso
+	local function animateLimb(limb, motor, cf, lastCF, lookCF) -- Local to torso
         lastCF = lastCF or CFrame.new()
         cf = cf or lastCF
         lookCF = lookCF or CFrame.new()
 		
-        local cfLerp = lastCF:Lerp(cf, alpha)
+        if reflected then
+            local x, y, z = cf:ToOrientation()
+            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
+                * CFrame.fromOrientation(x, -y, -z)
+        end
+
+        local cfLerp = CFrame.identity:Lerp(cf, weight)
 
         local nexoLimb = nexoCharacter:FindFirstChild(limb.Name)
         
-        FastTween(motor, {0.1}, {Transform = cf * lookCF})
+        FastTween(motor, {0.1}, {Transform = cfLerp * lookCF})
 
         limb.CFrame = character.Torso.CFrame * (motor.C0 * motor.Transform * motor.C1:inverse())
 	end
@@ -514,22 +528,38 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 			animateTorso(kfA.CFrame, kfB.CFrame, interp)
 		end
 		if kfA["Right Leg"] and kfB["Right Leg"] then
-			animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame, interp)
+            if reflected then
+                animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
+            else
+                animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
+            end
 		end
 		if kfA["Left Leg"] and kfB["Left Leg"] then
-			animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame, interp)
+            if reflected then
+                animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
+            else
+                animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
+            end
 		end
         if looking then
             headCF = lookAtMouse(character["Torso"]) 
         end
 		if kfA["Head"] and kfB["Head"] then
-			animateLimb(character["Head"], nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, interp, headCF)
+			animateLimb(character["Head"], nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, headCF)
 		end
         if kfA["Right Arm"] and kfB["Right Arm"] then
-            animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame, interp)
+            if reflected then
+                animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
+            else
+                animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
+            end
 		end
 		if kfA["Left Arm"] and kfB["Left Arm"] then
-			animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame, interp)
+            if reflected then
+                animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
+            else
+                animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
+            end
 		end
         animateHats(filterTable)
 	end
@@ -611,9 +641,27 @@ function AnimationController:_animateStep(char, animation: Animation)
     local interp = math.clamp((animation.IsInterpolating and animation.Time/animation.TimeDiff or 1), 0, 1)
 
     if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-        self:_poseR6(char, animation.KeyframeSequence[animation:GetIndex()], interp, self.FilterTable, animation.Looking)
+        self:_poseR6(
+            char, 
+            animation.KeyframeSequence[animation:GetIndex()], 
+            interp, 
+            self.FilterTable, 
+            animation.Looking, 
+            animation.Reflected,
+            animation.Weight,
+            animation.Offset
+        )
     else 
-        self:_poseR15(char, animation.KeyframeSequence[animation:GetIndex()], interp, self.FilterTable, animation.Looking)
+        self:_poseR15(
+            char, 
+            animation.KeyframeSequence[animation:GetIndex()], 
+            interp, 
+            self.FilterTable, 
+            animation.Looking, 
+            animation.Reflected,
+            animation.Weight,
+            animation.Offset
+        )
     end
 
     

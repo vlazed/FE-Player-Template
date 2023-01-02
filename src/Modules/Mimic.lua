@@ -9,6 +9,7 @@ local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local PlayerController = require(Project.Controllers.PlayerController)
 local SendNotification = require(Project.Util.SendNotification)
+local FastTween = require(Project.Util.FastTween)
 local Player = require(Project.Player)
 
 local Mimic = {}
@@ -158,7 +159,9 @@ function Mimic:CopyCharacterPose(character)
 
         if myPart and instance:IsA("BasePart") then
             local nexoPart = myNexo:FindFirstChild(myPart.Name)
-            myPart.CFrame = CFrame.new(theirPart.CFrame.Position):ToWorldSpace(offset) * theirPart.CFrame.Rotation * partOffset
+            local resultantFrame = CFrame.new(theirPart.CFrame.Position):ToWorldSpace(offset) * theirPart.CFrame.Rotation * partOffset
+            
+            myPart.CFrame = resultantFrame
             nexoPart.CFrame = myPart.CFrame
         end
 
@@ -198,6 +201,8 @@ end
 
 
 function Mimic:Init()
+    if Initialized then return end
+    
     Initialized = true
     clickConnection = Mouse.Button1Down:Connect(getUserFromClick)
     SendNotification("Mimic Loaded", "Press M to mimic a clicked humanoid", "Close", 2)
@@ -206,6 +211,8 @@ end
 
 
 function Mimic:Stop()
+    if not Initialized then return end 
+    
     SendNotification("Mimic Stopped", "", "Close", 2)
     clickConnection:Disconnect()
     PlayerController.Modules[self] = nil

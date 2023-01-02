@@ -149,6 +149,8 @@ local GetFamily = function(ins, reverseorder)
 end
 
 function Network:FollowPart(part)
+    if not isnetworkowner then return end
+
     if part:IsA("BasePart") and not isnetworkowner(part) then
         local p = Instance.new("Part", part)
         p.Size = Vector3.new()

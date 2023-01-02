@@ -524,7 +524,7 @@ local function _NexoLoad(canClickFling)
 		if E:IsA("BasePart")then 
 			Network:RetainPart(E)
 			Network:FollowPart(E)
-	
+			
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
 					E.Velocity=Vector3.new(1,1,1) * 17.325
@@ -913,9 +913,11 @@ function PlayerController:Sprint()
 
 		if Player.Dancing then return end
 		if Player.Running:GetState() then
+			Player:GetAnimation("Run"):AdjustWeight(1, 1)
 			Player:GetAnimation("Run"):Play()
 			Player:GetAnimation("Run").Framerate = 30 / (humA.WalkSpeed/32)
 		elseif Player.Sprinting:GetState() then
+			Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
 			Player:GetAnimation("Sprint"):Play()
 		end
 		Player.Transition()
@@ -1001,7 +1003,7 @@ function PlayerController:Idle()
 	local Settings = ControllerSettings:GetSettings()
 	local tweenInfo = {0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 
-	tiltSpring.f = 8 * Player:GetAnimationSpeed()
+	--tiltSpring.f = 8 * Player:GetAnimationSpeed()
 
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
@@ -1411,12 +1413,14 @@ function PlayerController:OnIdle()
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Jump"):Stop()
 		Player:GetAnimation("Walk"):Pause()
+		Player:GetAnimation("Walk").Weight = 0
 
 		if Player.FightMode:GetState() then
 			Player:GetAnimation("Idle"):Stop()
 			Player:GetAnimation("FightIdle"):Play()
 		else
 			Player:GetAnimation("Idle"):Play()
+			Player:GetAnimation("Idle"):AdjustWeight(1, 1)
 			Player:GetAnimation("FightIdle"):Stop()
 		end
 		
@@ -1471,10 +1475,12 @@ function PlayerController.StoppedState(state)
 	if state:GetName() == "Sprinting" then
 		--print("Skidded HARD")
 		Player:GetAnimation("Sprint"):Stop()
+		Player:GetAnimation("Sprint").Weight = 0
 		task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
 	elseif state:GetName() == "Running" then
 		--print("Skidded")
 		Player:GetAnimation("Run"):Stop()
+		Player:GetAnimation("Run").Weight = 0
 		task.delay(0.05, delayStopAnim, Player:GetAnimation("RunStop"))
 	elseif state:GetName() == "Walking" then
 		--print("Skidded")
@@ -1488,7 +1494,7 @@ function PlayerController.StoppedState(state)
 		Player:GetAnimation("Idle"):Play()
 	elseif state:GetName() == "Attacking" then
 		if Player.FightMode:GetState() then
-			Player:GetAnimation("FightIdle"):Play()
+			Player:GetAnimation("FightIdle"):Play()		
 			Player:GetAnimation("Idle"):Stop()
 		else
 			Player:GetAnimation("FightIdle"):Stop()
@@ -1508,9 +1514,10 @@ function PlayerController:OnWalk()
 		Player:GetAnimation("CrouchJump"):Stop()
 		Player:GetAnimation("CrouchWalk"):Play()		
 	else
+		Player:GetAnimation("Walk"):AdjustWeight(1, 1)
 		Player:GetAnimation("Fall"):Pause()
 		Player:GetAnimation("Jump"):Stop()
-		Player:GetAnimation("Walk"):Play()	
+		Player:GetAnimation("Walk"):Play()
 	end
 end
 
@@ -1561,6 +1568,8 @@ function PlayerController:Init(canClickFling)
 		--AnimationController.R6Legs = R6Legs
 	end
 
+	coroutine.resume(Network["PartOwnership"]["Enable"])
+	
 	initializeControls()
 	previousCFrame = Player.getNexoHumanoidRootPart().CFrame
 
@@ -1594,6 +1603,7 @@ function PlayerController:Respawn()
 
 	table.clear(nexoConnections)
 	Network:RemoveParts()
+	coroutine.resume(Network["PartOwnership"]["Disable"])
 
 	if char:FindFirstChildOfClass("Humanoid") then
 		char:FindFirstChildOfClass("Humanoid"):ChangeState(15) 

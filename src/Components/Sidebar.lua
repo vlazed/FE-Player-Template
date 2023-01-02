@@ -108,7 +108,7 @@ function Sidebar:CreateModuleElement(file)
         debug = true,
         verbose = false
     })
-    if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
+    if Player:GetRigType() == Enum.HumanoidRigType.R15 then
         fileModule.Parent = Project.Modules.R15
     else
         fileModule.Parent = Project.Modules.R6
