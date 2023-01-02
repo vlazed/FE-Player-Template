@@ -26,6 +26,7 @@ local Settings = {
     dodgeButton = Enum.KeyCode.Z,
     copyButton = Enum.KeyCode.M,
     invisButton = Enum.KeyCode.N,
+    debugButton = Enum.KeyCode.F2,
 
     DT = 0.01,
     runSpeed = 50,

@@ -33,6 +33,7 @@ local FALLEN_PARTS_THRESHOLD = 0.25
 local respawnConnection
 
 local EPSILON = 1e-4
+local DEBUG = false
 
 local moveVector = Vector3.new(1, 0, 0)
 local tiltVector = Vector3.new(0, 1, 0)
@@ -1029,6 +1030,17 @@ function PlayerController:Idle()
 end
 
 
+function PlayerController:HoldTool(tool)
+	local char = Player.getCharacter()
+	local handle = tool:FindFirstChild("Handle")
+	local rightGrip = CFrame.new(-Vector3.yAxis) * CFrame.fromOrientation(-90, 0, 0)
+	if handle then
+		handle.Velocity = Vector3.new(17.5, 17.5, 17.5)
+		handle.CFrame = char["Right Arm"].CFrame * rightGrip * tool.Grip:Inverse()
+	end
+end
+
+
 function PlayerController:Fly()
 	local Settings = ControllerSettings:GetSettings()
 	local Camera = workspace.CurrentCamera
@@ -1048,6 +1060,11 @@ function PlayerController:Fly()
 
 	alignRot.CFrame = CFrame.fromMatrix(hrp.CFrame.Position, Camera.CFrame.XVector, Camera.CFrame.YVector)
 	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * humanoid.JumpPower / 50
+end
+
+
+function PlayerController:ToggleDebug()
+	DEBUG = not DEBUG
 end
 
 
@@ -1193,6 +1210,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 	local nexoHum = Player.getNexoHumanoid()
 	local hum = Player.getHumanoid()
 	local height = nexoChar.HumanoidRootPart.CFrame.Position.Y 
+	local tool = char:FindFirstChildOfClass("Tool")
 
 	local hrp = nexoChar:FindFirstChild("HumanoidRootPart")
 	if not hrp then return end
@@ -1239,6 +1257,13 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player:SetState("Idling", true)
 		--hrp.AssemblyLinearVelocity = Vector3.new()
 		self:Idle()
+	end
+
+	if tool then
+		Player:GetAnimation("ToolHold"):Play()
+		self:HoldTool(tool)
+	else
+		Player:GetAnimation("ToolHold"):Stop()
 	end
 
 	if not (Player:GetState("Falling") or Player:GetState("Jumping") or Player.Flying or Player.Swimming) and Player.SetCFrame then
@@ -1300,6 +1325,8 @@ end
 
 
 function PlayerController:ProcessInputs()
+	local Settings = ControllerSettings:GetSettings()
+
 	if not debounce then
 		if ActionHandler.IsKeyDownBool(Enum.KeyCode.Equals) then
 			toggleFling = not toggleFling
@@ -1309,6 +1336,9 @@ function PlayerController:ProcessInputs()
 			self.LerpEnabled = not self.LerpEnabled
 			debounce = true
 			--print("LerpEnabled:", self.LerpEnabled)
+			task.delay(0.2, function() debounce = false end)
+		elseif ActionHandler.IsKeyDownBool(Settings.debugButton) then
+			self:ToggleDebug()
 			task.delay(0.2, function() debounce = false end)
 		end
 	end
@@ -1357,6 +1387,8 @@ function PlayerController:Update()
 	self:RunUpdateTable()
 	
 	self:ProcessAfterStates()
+
+	Network:Debug(DEBUG)
 end    
 
 

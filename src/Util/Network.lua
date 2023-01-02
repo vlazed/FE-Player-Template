@@ -94,7 +94,7 @@ Network["PartOwnership"]["Enable"] = coroutine.create(function() --creating a th
                     if Part:IsDescendantOf(workspace) then
                         Part.Velocity = Network["Velocity"]+Vector3.new(0,math.cos(tick()*50),0)
                         if not isnetworkowner(Part) then --lag parts my ownership is contesting but dont have network over to spite the people who have ownership of stuff i want >:(
-                            --print("[NETWORK] Part "..Part:GetFullName().." is not owned. Contesting ownership...") --you can comment this out if you dont want console spam lol
+                            print("[NETWORK] Part "..Part:GetFullName().." is not owned. Contesting ownership...") --you can comment this out if you dont want console spam lol
                             sethiddenproperty(Part,"NetworkIsSleeping",true)
                         else
                             sethiddenproperty(Part,"NetworkIsSleeping",false)
@@ -127,7 +127,7 @@ end)
 local GetFamily = function(ins, reverseorder)
     local Pathway = {}
 
-    function _GetFamily(v)
+    local function _GetFamily(v)
         if v.Parent ~= nil then
             if reverseorder then
                 table.insert(Pathway, v)
@@ -172,5 +172,31 @@ function Network:FollowPart(part)
         return p
     end
 end
+
+
+function Network:Debug(DEBUG)
+    if not isnetworkowner then return end
+
+    for i,v in ipairs(Network["BaseParts"]) do
+        local highlight = v:FindFirstChild("NetworkHighlight")
+        if not DEBUG then highlight:Destroy() end
+
+        if not highlight then
+            local _ = Instance.new("SelectionBox")
+            _.Name = "NetworkHighlight"
+            _.Color = Color3.new()
+            _.Adornee = v
+            _.Transparency = 0.5
+            _.Parent = v
+        else
+            highlight.Color = 
+                if isnetworkowner(v) then 
+                    Color3.new(0,1,0)
+                else
+                    Color3.new(1,0,0)
+        end
+    end
+end
+
 
 return Network
