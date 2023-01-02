@@ -183,7 +183,7 @@ end
 
 function Animation:Destroy()
     self._maid:Destroy()
-    if self._weightThread then self._weightThread:Cancel() end 
+    if self._weightThread then self._weightThread = nil end 
     self._playing = false
 end
 

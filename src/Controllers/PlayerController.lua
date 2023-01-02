@@ -35,7 +35,7 @@ local respawnConnection
 local EPSILON = 1e-4
 local DEBUG = false
 
-local moveVector = Vector3.new(1, 0, 0)
+local moveVector = Player.getHumanoidRootPart().CFrame.LookVector
 local tiltVector = Vector3.new(0, 1, 0)
 local tiltSpring = Spring.new(2, tiltVector)
 local moveSpring = Spring.new(2, moveVector)

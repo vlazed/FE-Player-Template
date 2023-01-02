@@ -92,6 +92,7 @@ Network["PartOwnership"]["Enable"] = coroutine.create(function() --creating a th
             for _,Part in pairs(Network["BaseParts"]) do --loop through parts and do network stuff
                 coroutine.wrap(function()
                     if Part:IsDescendantOf(workspace) then
+                        print("Apply velocity")
                         Part.Velocity = Network["Velocity"]+Vector3.new(0,math.cos(tick()*50),0)
                         if not isnetworkowner(Part) then --lag parts my ownership is contesting but dont have network over to spite the people who have ownership of stuff i want >:(
                             print("[NETWORK] Part "..Part:GetFullName().." is not owned. Contesting ownership...") --you can comment this out if you dont want console spam lol
@@ -179,21 +180,21 @@ function Network:Debug(DEBUG)
 
     for i,v in ipairs(Network["BaseParts"]) do
         local highlight = v:FindFirstChild("NetworkHighlight")
-        if not DEBUG then highlight:Destroy() end
 
-        if not highlight then
+        if not highlight and DEBUG then
             local _ = Instance.new("SelectionBox")
             _.Name = "NetworkHighlight"
-            _.Color = Color3.new()
+            _.Color3 = Color3.new()
             _.Adornee = v
             _.Transparency = 0.5
             _.Parent = v
         else
-            highlight.Color = 
-                if isnetworkowner(v) then 
-                    Color3.new(0,1,0)
-                else
-                    Color3.new(1,0,0)
+            if not DEBUG then highlight:Destroy() end
+            if isnetworkowner(v) then 
+                highlight.Color3 = Color3.new(0,1,0)
+            else
+                highlight.Color3 = Color3.new(1,0,0)
+            end
         end
     end
 end
