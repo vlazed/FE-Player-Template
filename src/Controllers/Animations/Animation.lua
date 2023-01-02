@@ -26,7 +26,7 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.Weight = 1
 
     self.Reflected = reflected or false
-    self.Offset = CFrame.new()
+    self.Offset = CFrame.identity
 
     self.IsInterpolating = true
 
@@ -43,13 +43,21 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.Looping = false
     self.Framerate = 30
     
-    if self.KeyframeSequence.Keyframes then
+    if typeof(keyframeSequence) == 'table' then
         --print("Module script")
-        self.KeyframeSequence = keyframeSequence.Keyframes
-        self.Properties = keyframeSequence.Properties
-        self.Priority = keyframeSequence.Properties.Priority
-        self.Looping = keyframeSequence.Properties.Looping
-        self.Framerate = keyframeSequence.Properties.Framerate or 30
+        --print(self.Name)
+        self.KeyframeSequence = keyframeSequence.Keyframes or {}
+        if keyframeSequence.Properties then
+            self.Properties = keyframeSequence.Properties
+            self.Priority = keyframeSequence.Properties.Priority
+            self.Looping = keyframeSequence.Properties.Looping
+            self.Framerate = keyframeSequence.Properties.Framerate or 30
+        else
+            self.Properties = {}
+            self.Priority = Enum.AnimationPriority.Core
+            self.Looping = false
+            self.Framerate = 30
+        end
     elseif typeof(keyframeSequence) == 'Instance' then
         --print("Keyframe sequence")
         self.KeyframeSequence = keyframeSequence:GetChildren()
@@ -95,6 +103,30 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.ReachedWeight = Signal.new()
 
     return self
+end
+
+
+function Animation.fromID(name: string, assetID: string, looking: boolean, reflected: boolean)
+    assetID = assetID:gsub("%D", "")
+
+    local InsertService = game:GetService("InsertService")
+    print(assetID)
+    local success, keyframeSequence = pcall(function()
+        return unpack(game:GetObjects("rbxassetid://" .. assetID))
+    end)
+
+    if not success then
+        print("Animation not created: ", tostring(keyframeSequence))
+        return
+    end
+
+    if typeof(keyframeSequence) == 'Instance' then
+        if not keyframeSequence:IsA("KeyframeSequence") then
+            return
+        end
+    end
+
+    return Animation.new(name, keyframeSequence, 30, looking, reflected)
 end
 
 

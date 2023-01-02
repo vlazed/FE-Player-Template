@@ -7,7 +7,9 @@
         "getgenv",
         "Drawing",
         "loadfile",
-        "listfiles"
+        "listfiles",
+        "isnetworkowner",
+        "gethiddenproperty"
     ],
     "robloxLsp.workspace.ignoreDir": [
         ".vscode",

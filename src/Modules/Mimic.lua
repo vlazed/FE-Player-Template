@@ -123,7 +123,7 @@ function Mimic:CopyCharacterPose(character)
     local myPart
     local theirPart
     local partName = ""
-    local partOffset = CFrame.new()
+    local partOffset = CFrame.identity
 
     for _,instance in ipairs(character:GetChildren()) do
         
@@ -212,7 +212,7 @@ end
 
 function Mimic:Stop()
     if not Initialized then return end 
-    
+
     SendNotification("Mimic Stopped", "", "Close", 2)
     clickConnection:Disconnect()
     PlayerController.Modules[self] = nil

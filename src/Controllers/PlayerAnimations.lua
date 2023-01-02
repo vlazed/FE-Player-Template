@@ -21,6 +21,8 @@ for i,v in ipairs(directory:GetChildren()) do
     if v:IsA("ModuleScript") then
         --print(v)
         PlayerAnimations[v.Name] = Animation.new(v.Name, require(v), 24, true)
+    elseif v:IsA("KeyframeSequence") then
+        PlayerAnimations[v.Name] = Animation.new(v.Name, v, 24, true)
     end
 end
 

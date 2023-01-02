@@ -127,7 +127,7 @@ function Sidebar:CreateModuleElement(file)
                 self.SelectedModule:Stop()
                 self.SelectedModule = nil
             else
-                self.SelectedModule = require(file)
+                self.SelectedModule = require(moduleScript)
                 self.SelectedModule:Init()
             end
         end

@@ -48,6 +48,7 @@ Player.Slowing = false
 Player.DodgeMoving = false
 Player.Flipping = false
 Player.SetCFrame = true
+Player.Climbing = State.new("Climbing", false)
 
 Player.Invisible = false
 

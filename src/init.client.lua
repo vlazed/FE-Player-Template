@@ -63,7 +63,7 @@ end
 
 local success, err = pcall(function()
     PlayerController:Init()
-    SelectedModule:Init()
+    --SelectedModule:Init()
     Mimic:Init()
     App:Init()
 end)

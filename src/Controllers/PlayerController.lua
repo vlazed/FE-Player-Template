@@ -42,6 +42,26 @@ local moveSpring = Spring.new(2, moveVector)
 
 PlayerController.AttackPosition = Vector3.new()
 
+local Mouse = Player.getMouse()
+
+local IKArmController
+local IKLegController
+
+if Player:GetRigType() == Enum.HumanoidRigType.R6 then
+	IKArmController = require(Project.Controllers.IKB.R6.Arm)
+	IKLegController = require(Project.Controllers.IKB.R6.Leg)
+else
+	IKArmController = require(Project.Controllers.IKB.R15.Arm)
+	IKLegController = require(Project.Controllers.IKB.R15.Leg)
+end
+
+PlayerController.LeftArm = nil 
+PlayerController.RightArm = nil
+PlayerController.LeftLeg = nil 
+PlayerController.RightLeg = nil
+
+PlayerController.ResetTransform = false
+
 local posSpring = Spring.new(1, Vector3.new())
 
 local toggleFling = false
@@ -50,7 +70,7 @@ local debounce = false
 local fallingSpeed = 0
 local currentFlipDelay = 0
 
-local previousCFrame = CFrame.new()
+local previousCFrame = CFrame.identity
 
 PlayerController.Animation = Animation.new("Blank", {}, 30, false)
 PlayerController.Framerate = 30
@@ -869,6 +889,9 @@ function PlayerController:_InitializeStates()
 	Player.Sprinting.OnFalse:Connect(self.StoppedState)
 	Player.Running.OnFalse:Connect(self.StoppedState)
 
+	Player.Climbing.OnTrue:Connect(self.OnClimb)
+	Player.Climbing.OnFalse:Connect(self.StoppedState)
+
 	Player:getNexoHumanoid():SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
 	Player:getHumanoid():SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
 
@@ -1202,7 +1225,10 @@ function PlayerController:LeanCharacter(char)
 end
 
 
-
+function PlayerController:Climb()
+	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
+	Player:GetAnimation("Climb").Speed = humB.WalkSpeed / 16
+end
 
 
 function PlayerController:ProcessStates(char, nexoChar)
@@ -1229,6 +1255,16 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	if Player.Dancing and not self.Animation:IsPlaying() then
 		self.Animation:Play()
+	end
+
+	if 
+		hum:GetState() == Enum.HumanoidStateType.Climbing 
+		or nexoHum:GetState() == Enum.HumanoidStateType.Climbing 
+	then
+		self:Climb()
+		Player.Climbing:SetState(true)
+	else
+		Player.Climbing:SetState(false)
 	end
 
 	if Player:GetState("Jumping") and not Player.Dodging then
@@ -1384,6 +1420,26 @@ function PlayerController:Update()
 
 	self.LayerB:Animate()
 
+	if self.ResetTransform then
+		self.RightArm:ResetTransform()
+		self.LeftArm:ResetTransform()
+	end
+
+	--self.RightArm:Destroy()
+	--self.LeftArm:Destroy()
+
+--	self.ResetTransform = true
+
+	if EmoteController.PointRight then
+		self.RightArm:Solve(Mouse.Hit.Position, CFrame.Angles(0, 0, math.pi / 2))
+	end
+	if EmoteController.PointLeft then
+		self.LeftArm:Solve(Mouse.Hit.Position, CFrame.Angles(0, 0, -math.pi / 2))
+	end
+--	self.RightArm:Solve(self.AttackPosition)
+--	self.LeftArm:Solve(self.AttackPosition)
+
+
 	self:RunUpdateTable()
 	
 	self:ProcessAfterStates()
@@ -1423,6 +1479,11 @@ function PlayerController:StoppedCrouch()
 			Player:GetAnimation("Sprint"):Play()
 		end
 	end
+end
+
+
+function PlayerController:OnClimb()
+	Player:GetAnimation("Climb"):Play()
 end
 
 
@@ -1474,6 +1535,11 @@ end
 
 function PlayerController:GetMoveVector()
 	return moveVector
+end
+
+
+function PlayerController:SetMoveVector(vector: Vector3)
+	moveVector = vector
 end
 
 
@@ -1532,6 +1598,8 @@ function PlayerController.StoppedState(state)
 			Player:GetAnimation("FightIdle"):Stop()
 			Player:GetAnimation("Idle"):Play()
 		end
+	elseif state:GetName() == "Climbing" then
+		Player:GetAnimation("Climb"):Pause()
 	end
 end
 
@@ -1599,6 +1667,11 @@ function PlayerController:Init(canClickFling)
 		--R6Legs, LeftLeg, RightLeg = R6IKController.givePlayerIK()
 		--AnimationController.R6Legs = R6Legs
 	end
+
+	PlayerController.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right")
+	PlayerController.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left")
+	PlayerController.LeftLeg = IKLegController.new(Player.getNexoCharacter(), "Left")
+	PlayerController.RightLeg = IKLegController.new(Player.getNexoCharacter(), "Right")
 
 	coroutine.resume(Network["PartOwnership"]["Enable"])
 	

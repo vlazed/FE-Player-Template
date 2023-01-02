@@ -82,6 +82,8 @@ local function lookAtMouse(torso)
     local camera = workspace.CurrentCamera
 
 	local mouse = Player.getMouse()
+
+    local hrp = Player.getNexoHumanoidRootPart()
 	
 	local head = Player.getCharacter():FindFirstChild("Head")
 	local look = lookSpring:Update(Settings.DT, mouse.Hit.Position - head.CFrame.Position)
@@ -106,9 +108,10 @@ local function lookAtMouse(torso)
         )
         headCF = CFrame.fromOrientation(
             math.clamp(angleX, -math.pi/16, math.pi/4), 
-            math.clamp(-angleY, -math.pi/8, math.pi/8),
+            math.clamp(-angleY, -math.pi/16, math.pi/16),
             math.clamp(-angleY, -math.pi/2.5, math.pi/2.5)
         )
+        --]]
     else
         torsoCF *= CFrame.fromOrientation(
             math.clamp(-angleX, -math.pi/32, math.pi/32), 
@@ -129,7 +132,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
     interp = interp or 1
 
 	local function animateTorso(cf, lastCF, alpha)
-        lastCF = lastCF or CFrame.new()
+        lastCF = lastCF or CFrame.identity
 		cf = cf or lastCF
 
         local hrp = Player.getNexoCharacter().HumanoidRootPart
@@ -164,10 +167,10 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
 	end
 
 	local function animateLimb(limb, parent, motor, cf, lastCF, alpha, lookCF) -- Local to parent
-        lastCF = lastCF or CFrame.new()
+        lastCF = lastCF or CFrame.identity
         cf = cf or lastCF
 		
-        lookCF = lookCF or CFrame.new()
+        lookCF = lookCF or CFrame.identity
 
         local cfLerp = lastCF:Lerp(cf, alpha)
         motor.Transform = cfLerp
@@ -403,9 +406,7 @@ function AnimationController:Flip(xDir, zDir, dt)
 	local torso = Player.getCharacter().Torso
     local nexoTorso = Player.getNexoCharacter().HumanoidRootPart
     local dtheta = CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
-	--torso.CFrame *= CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
     FastTween(nexoTorso, {0.1}, {CFrame = nexoTorso.CFrame*dtheta})
-    --nexoTorso.CFrame *= CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
 end
 
 
@@ -417,7 +418,7 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
     local nexoCharacter = Player.getNexoCharacter()
 
 	local function animateTorso(cf, lastCF)
-        lastCF = lastCF or CFrame.new()
+        lastCF = lastCF or CFrame.identity
 		cf = cf or lastCF
 
         local hrp = Player.getNexoCharacter().HumanoidRootPart
@@ -456,7 +457,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Landing or
                 Player.FightMode:GetState() or
                 Player.Slowing or
-                Player:GetState("Idling")
+                Player:GetState("Idling") or
+                Player.Climbing:GetState()
             )
         then
             local tiltFrame = CFrame.fromMatrix(
@@ -469,9 +471,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 	end
 
 	local function animateLimb(limb, motor, cf, lastCF, lookCF) -- Local to torso
-        lastCF = lastCF or CFrame.new()
+        lastCF = lastCF or CFrame.identity
         cf = cf or lastCF
-        lookCF = lookCF or CFrame.new()
 		
         if reflected then
             local x, y, z = cf:ToOrientation()
@@ -483,9 +484,13 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 
         local nexoLimb = nexoCharacter:FindFirstChild(limb.Name)
         
-        FastTween(motor, {0.1}, {Transform = cfLerp * lookCF})
+        FastTween(motor, {0.1}, {Transform = cfLerp})
 
-        limb.CFrame = character.Torso.CFrame * (motor.C0 * motor.Transform * motor.C1:inverse())
+        if lookCF then
+            limb.CFrame = character.Torso.CFrame * (motor.C0 * CFrame.new(motor.Transform.Position) * lookCF * motor.C1:inverse())
+        else
+            limb.CFrame = character.Torso.CFrame * (motor.C0 * motor.Transform * motor.C1:inverse())
+        end
 	end
 
 	local function animateHats(filterTable)
@@ -523,9 +528,9 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 
     local headCF
 
-	if kfA then
+	if kfA and kfB then
         if kfA.CFrame then
-			animateTorso(kfA.CFrame, kfB.CFrame, interp)
+			animateTorso(kfA.CFrame, kfB.CFrame)
 		end
 		if kfA["Right Leg"] and kfB["Right Leg"] then
             if reflected then

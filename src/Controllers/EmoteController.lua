@@ -20,6 +20,9 @@ local PlayerGui = Player.getPlayerGui()
 
 local EmoteLayer = AnimationController.new()
 
+EmoteController.PointRight = false
+EmoteController.PointLeft = false
+
 local Emote = {}
 local ChatEmote = {}
 
@@ -99,6 +102,12 @@ function EmoteController:Chatted(message)
         animation = Player:GetAnimation(emote)
     else
         animation = self:ChooseChatAnim(message)
+    end
+
+    if emote == "pointright" then
+        self.PointRight = not self.PointRight
+    elseif emote == "pointleft" then
+        self.PointLeft = not self.PointLeft
     end
 
     if animation and emote then

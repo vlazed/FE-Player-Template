@@ -37,7 +37,7 @@ end
 local RunService = game:GetService("RunService")
 
 local Player = require(Project.Player)
-local Mouse = Player.getPlayer():GetMouse()
+local Mouse = Player.getMouse()
 
 local PlayerController = require(Project.Controllers.PlayerController)
 local ActionHandler = require(Project.Controllers.ActionHandler)
@@ -250,6 +250,7 @@ local function releaseArrow()
     Player.Attacking:SetState(false)
     StretchBow:Stop()
     ShootBow:Play()
+    PlayerController.ResetTransform = false
 end
 
 
@@ -354,6 +355,7 @@ function ElegantSword.OnStopAnimation(animation: Animation)
     elseif animation.Name == "BowStretchA" and Player.Attacking:GetState() then
         animation:Play()
         animation:SetIndex(animation.Length)
+        PlayerController.ResetTransform = true
         animation:Freeze()
     end
 end
@@ -364,6 +366,7 @@ end
 --]]
 function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
   --  if not RunService:IsStudio() then
+    local hrp = Player.getNexoHumanoidRootPart()
 
         if EquippedSword and AccessorySword then
             local nexoAccessorySword = Player.getNexoCharacter():FindFirstChild(AccessorySword.Name)
@@ -389,7 +392,7 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
             local bowOffset = CFrame.fromOrientation(0, -0, math.rad(29.01))
             * CFrame.fromOrientation(math.rad(-90), 0, 0)
             * CFrame.fromOrientation(0, math.rad(-90), 0)
-            * CFrame.new(0,0,-0.2)
+            * CFrame.new(0,0,0.4)
 
             AccessoryBow.Handle.CFrame = 
             char["Right Arm"].CFrame * char["Right Arm"].RightGripAttachment.CFrame 
@@ -410,7 +413,6 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
         end
 
         if Cape then
-            local hrp = Player.getNexoHumanoidRootPart()
             local velocity = Vector3.new()
             local angularVelocity = Vector3.new()
             if hrp then
@@ -456,6 +458,11 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
                 PlayerController.AttackPosition = Vector3.new(AccessorySword.Handle.Position.X, char.Torso.Position.Y, AccessorySword.Handle.Position.Z)
             elseif EquippedBow and AccessoryBow then 
                 PlayerController.AttackPosition = Mouse.Hit.Position
+                PlayerController:SetMoveVector((Mouse.Hit.Position - hrp.Position).Unit)
+                if PlayerController.ResetTransform then
+                    PlayerController.RightArm:Solve(PlayerController.AttackPosition, CFrame.Angles(0, 0, math.pi / 2))
+                    PlayerController.LeftArm:Solve(PlayerController.AttackPosition, CFrame.Angles(math.pi / 2, 0, -math.pi / 2))
+                end
             else
                 PlayerController.AttackPosition =  Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
