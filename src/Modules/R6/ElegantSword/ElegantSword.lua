@@ -576,6 +576,8 @@ function ElegantSword:Stop()
         bowStretchConnection:Disconnect()
         bowReleaseConnection:Disconnect()
     end
+    PlayerController.LayerA.FilterTable = {}
+    PlayerController.LayerB.FilterTable = {}
     PlayerController.Modules[self] = nil
     self.Initialized = false
 end

@@ -578,7 +578,7 @@ function AnimationController:_animateStep(char, animation: Animation)
     local framerate = animation.Framerate
     local speed = animation.Speed
     speed *= Player:GetAnimationSpeed()
-    --framerate /=  Player:GetAnimationSpeed()
+    framerate *=  Player:GetAnimationSpeed()
 
     local current_i = (animation:GetIndex() - 1 + animation.UpperBound) % animation.UpperBound + animation.LowerBound
     local offset = 0
@@ -587,6 +587,16 @@ function AnimationController:_animateStep(char, animation: Animation)
         offset = (animation.Increment * speed) % animation.UpperBound
     elseif animation.Increment < 0 then
         offset = -(animation.UpperBound - (animation.Increment * speed) % animation.UpperBound)
+    end
+
+    if speed >= 1 then
+        offset = math.floor(offset)
+    elseif speed >= 0 then
+        offset = math.ceil(offset)
+    elseif speed < 0 then
+        offset = math.ceil(offset)
+    elseif speed <= -1 then
+        offset = math.floor(offset)
     end
 
     local next_i = (animation:GetIndex() - 1 + math.ceil(offset) + animation.UpperBound) % animation.UpperBound + animation.LowerBound
