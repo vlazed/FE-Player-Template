@@ -10,20 +10,22 @@ This framework is partially plug-and-play: external animation modules can be ins
 
 ## Features
 * Player movement enhancements: leaning, looking around, dodging, flying, running, and sprinting
-* A CFrame animation controller that can load any animation in a module script or keyframe sequecne format 
-* A dance/emote player with adjustable speed and pause and play capabilities.
+* A CFrame animation controller that can load any animation in a module script or keyframe sequence format 
+* A dance/emote player with adjustable speed and pause and play capabilities and many dance animations.
 * Nonintrusive switching between different reanimation modules
-* An example sword wielding module 
+* Example modules which demonstrate the capabilities of the template
 
 ## Keybinds
 * "-" - Respawn
 * "=" - Toggle Fling at torso
 * "LeftShift" - Run
-* "Z" - Dodge
+* "Z" - Roll (on ground) or Flip (in air) or Slide (while running or sprinting)
 * "Ctrl" - Descend / Crouch
-* "Space" - Ascend
+* "Space" - Ascend / Jump
 * Double tap "Space" - Toggle flight
 * Double tap "LeftShift" - Sprint
+* N - Toggle character visibility
+* M - Mimic a target's animations
 
 
 ## Usage
@@ -35,14 +37,6 @@ This framework has been programmed to be plug-and-play. This framework requires 
 Results may vary depending on the Roblox experience. You should test this in a place that lacks anti-cheats.
 
 
-### Installing Internal Animation Modules
-The easiest way for one to install animation modules is by cloning this repository into your machine and using Rojo to synchronize needed changes. The steps to install an animation module into the framework source code is the following:;
-1. Locate the "Modules" folder. This should be located directly under the source code. In Roblox Studio, its one of the root folders under the local script.
-2. Place the animation module inside R6 or R15, depending on the rig it supports
-3. Compile the binary: run Roblox Studio with the Rojo plugin and synchronize your Rojo environment with the Roblox Studio environment. Save the resultant local script that appears in your StarterPlayer/StarterCharacterScripts folder into an rbxm file.
-4. Run the framework and see if the module appears in the "Modules" tab of the gui.
-
-
 ### Installing External Animation Modules
 Installing and running animation modules are also simple:
 1. Ensure the directory "fe-player-template/modules/R6" or "fe-player-template/modules/R15" is located in your executor workspace. The gui will try to locate your animation modules in this directory.
@@ -51,6 +45,7 @@ Installing and running animation modules are also simple:
 4. Click on the animation module and observe the animation change on your character, as well as any additional keybinds added from the script.
 If an animation change does not occur, it may be due to a typo in the script itself. 
 To facilitate this, I've included the fe-player-template folder on this repository. This folder also includes dances for R6 and R15. The method of installing new dance animations has a similar process.
+
 
 ## For Developers
 There are two ways to modify the source code and provide your own animation modules: the Rojo method and the Roblox Studio method. I recommend the former, as the template was developed in Rojo, and the source code can be directly used in your own Rojo projects. If you use Roblox Studio, you will need to download the rbxm file in order to import the script directory and edit its contents. 
@@ -65,10 +60,15 @@ module-name/
 |     ├── Run.rbxm (KeyframeSequence)
 |     ├── Sprint.rbxm (KeyframeSequence) 
 └──   └── Jump.lua (etc.)
+module-name.project.json
 ```
-Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers. Developers should use the framework to test their animation modules before distribution. To test the external animation module using the framework, export the module-name folder (not the modulescript) into an rbxm binary (e.g. ```rojo build --output 'StaffWielder.rbxm'  staffwielder.project.json``` an example is included in the repository) and place this file in the appropriate directory (see **Installing External Animation Modules**)
+Module source code must exist directly under the module folder. I provided an example Staff Wielder module that interfaces with the controllers. Developers should use the framework to test their animation modules before distribution. To test the external animation module using the framework, export the module-name folder (not the modulescript) into an rbxm binary (e.g. ```rojo build --output 'module-name.rbxm'  module-name.project.json``` an example is included in the repository) and place this file in the appropriate directory (see **Installing External Animation Modules**) of your rigtype.
 
 Generally, one should distribute their modules through a Github release (as per the design philosophy of richie0866's rbxm-suite).
+
+
+### General Modules
+In addition to animation modules, the framework also supports modules that provide general functionality for the user. An example of such a module is Mimic, which is installed internally into FE-Player-Template by default. Users should install general modules in lieu of modifying existing FE-Player-Template code if one wants to add additional player functions. See Mimic.lua under the Modules for an example.
 
 ### Animations
 This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
@@ -78,9 +78,10 @@ This process involves using Roblox Studio. To make your own animation files, you
 - Copy and paste the module script contents into a .lua folder under the Animations directory above
 Generally, animations should have a lot of complete keyframes (a keyframe with animation data on all player parts). Moon Animator 2 has a way of generating many intermediary keyframes. In addition, if there are too many keyframes, the modified Animation Converter prints the source into the command bar. Make sure to paste it in a Roblox module script to ensure that there are no issues with the animation data. 
 
-In additoin, the plugin has other utilities (R15-to-R6, remodified ModuleScript-to-KeyframeSequence code) to aid in development.
+In addition, the plugin has other utilities (R15-to-R6, remodified ModuleScript-to-KeyframeSequence code) to aid in development and to take advantage of innovative technologies (e.g. Live Video Animation).
 
-Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of the animation module.
+Script documentation is work-in-progress. Generally, the user of this template should only modify the contents of their animation module.
+
 
 # Acknowledgements
 - A friend who introduced me to their cool FE Bike script. This would not exist if not for them.
