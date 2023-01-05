@@ -1,7 +1,7 @@
 # FE-Player-Template
 An open-source, code-based, rbxm-suite package that provides a framework for experienced scripters or animators of any level or both to reanimate a character or their accessories and a system to switch between different reanimations nonintrusively.
 
-This framework uses the Nexo Animator as a base for R6, with 4eyes's Network Ownership Library as an additive, and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15.
+This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15, with 4eyes's Network Ownership Library as an additive layer for ownership.
 
 ## Note
 This framework is currently in alpha. Thus, the information provided below and the source code may change at any given point. 
@@ -24,8 +24,8 @@ This framework is partially plug-and-play: external animation modules can be ins
 * "Space" - Ascend / Jump
 * Double tap "Space" - Toggle flight
 * Double tap "LeftShift" - Sprint
-* N - Toggle character visibility
-* M - Mimic a target's animations
+* "N" - Toggle character visibility
+* "M" - Mimic a target's animations
 
 
 ## Usage
@@ -66,9 +66,8 @@ Module source code must exist directly under the module folder. I provided an ex
 
 Generally, one should distribute their modules through a Github release (as per the design philosophy of richie0866's rbxm-suite).
 
-
 ### General Modules
-In addition to animation modules, the framework also supports modules that provide general functionality for the user. An example of such a module is Mimic, which is installed internally into FE-Player-Template by default. Users should install general modules in lieu of modifying existing FE-Player-Template code if one wants to add additional player functions. See Mimic.lua under the Modules for an example.
+In addition to animation modules, the framework also supports modules that provide general functionality for the user. An example of such a module is Mimic, which is installed internally into FE-Player-Template by default. Users should install general modules in lieu of modifying existing FE-Player-Template code if one wants to add additional player functions (such as a camera module or a gravity controller, to come up with examples). See Mimic.lua under the Modules for a coding template.
 
 ### Animations
 This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
