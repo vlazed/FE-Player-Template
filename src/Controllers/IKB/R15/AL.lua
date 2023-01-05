@@ -22,17 +22,35 @@ type ALIKType = {
 local ALIK = {}
 ALIK.__index = ALIK
 
-function ALIK.new(character, side: "Left" | "Right", bodyType: "Arm" | "Leg")
-	local self = setmetatable({} :: ALIKType, ALIK)
+function ALIK.new(character, side, bodyType)
+	local self = setmetatable({}, ALIK)
 
-	local upperTorso = character.UpperTorso :: BasePart
-	local upper = character[side.. "Upper".. bodyType] :: BasePart
-	local lower = character[side.. "Lower".. bodyType] :: BasePart
-	local tip = character[side.. if bodyType == "Arm" then "Hand" else "Foot"] :: BasePart
+	local upperTorso = character.UpperTorso 
+	local upper = character[side.. "Upper".. bodyType] 
+	local lower = character[side.. "Lower".. bodyType] 
+	local tip
+	
+	-- Vlazed
+	if bodyType == "Arm" then
+		tip = character[side.."Hand"]
+	else
+		tip = character[side.."Foot"]
+	end
 
-	local upperJoint = upper[side.. if bodyType == "Arm" then "Shoulder" else "Hip"] :: Motor6D
-	local lowerJoint = lower[side.. if bodyType == "Arm" then "Elbow" else "Knee"] :: Motor6D
-	local tipJoint = tip[side.. if bodyType == "Arm" then "Wrist" else "Ankle"] :: Motor6D
+	local upperJoint 
+	local lowerJoint
+	local tipJoint
+
+	-- Vlazed
+	if bodyType == "Arm" then
+		upperJoint = upper[side.."Shoulder"]
+		lowerJoint = lower[side.."Elbow"]
+		tipJoint = tip[side.."Wrist"]
+	else
+		upperJoint = upper[side.."Hip"]
+		lowerJoint = lower[side.."Knee"]
+		tipJoint = tip[side.."Ankle"]
+	end
 
 	local upperJointC0Cache = upperJoint.C0
 	local lowerJointC0Cache = lowerJoint.C0
@@ -40,12 +58,14 @@ function ALIK.new(character, side: "Left" | "Right", bodyType: "Arm" | "Leg")
 	local upperLength = math.abs(upperJoint.C1.Y) + math.abs(lowerJoint.C0.Y)
 	local lowerLength = math.abs(lowerJoint.C1.Y) + math.abs(tipJoint.C0.Y) + math.abs(tipJoint.C1.Y)
 
+	--[[
 	self._TransformResetLoop = RunService.Stepped:Connect(function()
 		upperJoint.Transform = CFrame.identity
 		lowerJoint.Transform = CFrame.identity
 		tipJoint.Transform = CFrame.identity
 	end)
-	
+	--]]
+
 	self.ExtendWhenUnreachable = false
 	
 	self._UpperTorso = upperTorso
@@ -61,7 +81,7 @@ function ALIK.new(character, side: "Left" | "Right", bodyType: "Arm" | "Leg")
 	return self
 end
 
-function ALIK:Solve(targetPosition: Vector3): ()
+function ALIK:Solve(targetPosition: Vector3)
 	local upperCFrame = self._UpperTorso.CFrame * self._UpperJointC0Cache
 	local planeCF, upperAngle, lowerAngle = Helper:Solve(upperCFrame, targetPosition, self._UpperLength, self._LowerLength, self.ExtendWhenUnreachable)
 
@@ -69,11 +89,11 @@ function ALIK:Solve(targetPosition: Vector3): ()
 	self._LowerJoint.C0 = self._LowerJointC0Cache * CFrame.Angles(lowerAngle, 0, 0)
 end
 
-function ALIK:Destroy(): ()
+function ALIK:Destroy()
 	self._UpperJoint.C0 = self._UpperJointC0Cache
 	self._LowerJoint.C0 = self._LowerJointC0Cache
 	
-	self._TransformResetLoop:Disconnect()
+	--self._TransformResetLoop:Disconnect()
 end
 
 return ALIK

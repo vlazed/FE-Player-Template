@@ -51,8 +51,8 @@ if Player:GetRigType() == Enum.HumanoidRigType.R6 then
 	IKArmController = require(Project.Controllers.IKB.R6.Arm)
 	IKLegController = require(Project.Controllers.IKB.R6.Leg)
 else
-	IKArmController = require(Project.Controllers.IKB.R15.Arm)
-	IKLegController = require(Project.Controllers.IKB.R15.Leg)
+	IKArmController = require(Project.Controllers.IKB.R15.AL)
+	IKLegController = require(Project.Controllers.IKB.R15.AL)
 end
 
 PlayerController.LeftArm = nil 
@@ -133,12 +133,16 @@ local function _R15ReanimLoad()
 
 	-- Grabbed from Nexo
 	local c={}
+	nexoConnections = c
 	local d=table.insert 
     for D,E in next,char:GetDescendants()do 
 		if E:IsA("BasePart")then 
+			Network:RetainPart(E)
+			Network:FollowPart(E)
+
 			d(c,game:GetService("RunService").Heartbeat:connect(function()
 				pcall(function()
-					E.Velocity=Vector3.new(-30,0,0)
+					E.Velocity=Vector3.new(1,1,1) * 17.325
 					if RunService:IsClient() then
 						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
 						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
@@ -190,6 +194,7 @@ local function _R15ReanimLoad()
 	char.Humanoid.WalkSpeed = 0
 	char.Humanoid.JumpPower = 0
 	anchorAllParts(true)
+	char.Animate.Disabled = true
 	SendNotification('R15 Reanimation','Reanimating...\nPlease wait '..h..' seconds.')
 	wait(h)
 	anchorAllParts(false)
@@ -252,6 +257,12 @@ local function _R15ReanimLoad()
 
 			-- Noclipping
 		table.insert(connections, rs.Stepped:Connect(function()
+			for i,v in ipairs(char:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+				end
+			end
+			--[[
 			fakechar:FindFirstChild("Head").CanCollide = false
 			fakechar:FindFirstChild("UpperTorso").CanCollide = false
 			fakechar:FindFirstChild("LowerTorso").CanCollide = false
@@ -284,8 +295,15 @@ local function _R15ReanimLoad()
 			char.LeftHand.CanCollide = false
 			char.RightFoot.CanCollide = false
 			char.LeftFoot.CanCollide = false
+			]]
 		end))
 		table.insert(connections, rs.Heartbeat:Connect(function()
+			for i,v in ipairs(char:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+				end
+			end
+			--[[
 			fakechar:FindFirstChild("Head").CanCollide = false
 			fakechar:FindFirstChild("UpperTorso").CanCollide = false
 			fakechar:FindFirstChild("LowerTorso").CanCollide = false
@@ -318,8 +336,15 @@ local function _R15ReanimLoad()
 			char.LeftHand.CanCollide = false
 			char.RightFoot.CanCollide = false
 			char.LeftFoot.CanCollide = false
+			]]
 		end))
 		table.insert(connections, rs.RenderStepped:Connect(function()
+			for i,v in ipairs(char:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v.CanCollide = false
+				end
+			end
+			--[[
 			fakechar:FindFirstChild("Head").CanCollide = false
 			fakechar:FindFirstChild("UpperTorso").CanCollide = false
 			fakechar:FindFirstChild("LowerTorso").CanCollide = false
@@ -352,6 +377,7 @@ local function _R15ReanimLoad()
 			char.LeftHand.CanCollide = false
 			char.RightFoot.CanCollide = false
 			char.LeftFoot.CanCollide = false
+			]]
 		end))
 
 		-- using the align function to prevent body parts from falling
@@ -416,7 +442,7 @@ local function _R15ReanimLoad()
 			r.MaxTorque=Vector3.new(2147483646,2147483646,2147483646)
 			b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
 			b.MaxTorque = 2147483646
-			b.Attachment0 = D["RootAttachment"]
+			b.Attachment0 = Player.getCharacterRootAttachment()
 			b.Parent = D
 			r.Parent = D
 		end 
@@ -433,11 +459,33 @@ local function _R15ReanimLoad()
 
 		local A 
 		d(c,rs.Heartbeat:Connect(function()
-			if A==true then  
-				char.HumanoidRootPart.Position=k.Hit.p 
-			else 
-				char.HumanoidRootPart.Position=fakechar.LowerTorso.Position 
-			end 
+			if not char:FindFirstChild("HumanoidRootPart") then return end
+			local hrp = char:FindFirstChild("HumanoidRootPart")
+			if rs:IsStudio() then 
+				hrp.Anchored = true
+			end
+			if A==true then 
+				s.Position=k.Hit.p 
+				hrp.Position=k.Hit.p 
+			else
+				if Player.Attacking:GetState() then
+					s.Position = PlayerController.AttackPosition
+					hrp.Position = PlayerController.AttackPosition
+				else
+					s.Position=fakechar.UpperTorso.Position
+					hrp.Position=fakechar.HumanoidRootPart.Position
+				end
+				--b.HumanoidRootPart.CanCollide = not toggleFling
+				if Player:GetFramerate() > 25 then
+					hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
+					hrp.AngularVelocity.Enabled = toggleFling
+				else
+					s.Position=fakechar.UpperTorso.Position
+					hrp.Position=fakechar.UpperTorso.Position
+					hrp.AngularVelocity.Enabled = false
+					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
+				end
+			end
 		end))
 
 		local B=Instance.new("SelectionBox")
@@ -446,81 +494,16 @@ local function _R15ReanimLoad()
 		B.Color3=Color3.fromRGB(250,0,0)
 		B.Parent=char.HumanoidRootPart 
 		B.Name="RAINBOW"
-	
-		local t = B 
-		
-		d(c,k.KeyDown:Connect(function(D)
-			if D==' 'then
-				p=true 
-			end 
-			if D=='w'then 
-				l=true 
-			end 
-			if D=='s'then 
-				m=true 
-			end 
-			if D=='a'then 
-				n=true 
-			end 
-			if D=='d'then 
-				o=true 
-			end 
-		end))
-	
-		d(c,k.KeyUp:Connect(function(D)
-			if D==' 'then 
-				p=false 
-			end 
-			if D=='w'then 
-				l=false 
-			end 
-			if D=='s'then 
-				m=false 
-			end 
-			if D=='a'then 
-				n=false 
-			end 
-			if D=='d'then 
-				o=false 
-			end 
-		end))
-	
-		local function C(D,E,F)
-			z.CFrame=z.CFrame*CFrame.new(-D,E,-F)
-			fakechar.Humanoid.WalkToPoint=z.Position 
-		end 
-	
-		d(c,rs.RenderStepped:Connect(function()
-			if l==true then 
-				C(0,0,1e4)
-			end 
-			if m==true then 
-				C(0,0,-1e4)
-			end 
-			if n==true then 
-				C(1e4,0,0)
-			end 
-			if o==true then 
-				C(-1e4,0,0)
-			end 
-			if p==true then 
-				fakechar.Humanoid.Jump=true 
-			end 
-			if l~=true and n~=true and m~=true and o~=true then 
-				fakechar.Humanoid.WalkToPoint=fakechar.HumanoidRootPart.Position 
-			end 
-		end))
 
-		nexoConnections = c
 	end)
 
 	if fail then
 		warn(fail)
-		plr.Character = char
-		char:BreakJoints()
-		fakechar:Destroy()
+		--plr.Character = char
+		--char:BreakJoints()
+		--fakechar:Destroy()
 
-		kill = true
+		PlayerController:Respawn()
 		return
 	end
 
@@ -1253,8 +1236,11 @@ function PlayerController:ProcessStates(char, nexoChar)
 		hrp.AssemblyLinearVelocity = Vector3.new()
 	end
 
-	if Player.Dancing and not self.Animation:IsPlaying() then
-		self.Animation:Play()
+	if Player.Dancing then
+		threshold *= 2
+		if not self.Animation:IsPlaying() then
+			self.Animation:Play()
+		end
 	end
 
 	if 
@@ -1668,10 +1654,11 @@ function PlayerController:Init(canClickFling)
 		--AnimationController.R6Legs = R6Legs
 	end
 
-	PlayerController.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right")
-	PlayerController.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left")
-	PlayerController.LeftLeg = IKLegController.new(Player.getNexoCharacter(), "Left")
-	PlayerController.RightLeg = IKLegController.new(Player.getNexoCharacter(), "Right")
+
+	PlayerController.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
+	PlayerController.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left", "Arm")
+	PlayerController.LeftLeg = IKLegController.new(Player.getNexoCharacter(), "Left", "Leg")
+	PlayerController.RightLeg = IKLegController.new(Player.getNexoCharacter(), "Right", "Leg")
 
 	coroutine.resume(Network["PartOwnership"]["Enable"])
 	
@@ -1700,7 +1687,9 @@ function PlayerController:Respawn()
 
 	SendNotification("Respawning")
 
-	connection:Disconnect()
+	if connection then
+		connection:Disconnect()
+	end
 
 	for i, conn in pairs(nexoConnections)do 
 		conn:Disconnect()
@@ -1739,8 +1728,11 @@ function PlayerController:Respawn()
 
 	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function()
 		task.wait()
-		Player.getCharacter().HumanoidRootPart.CFrame = oldCFrame
-		Player.getCharacter():SetPrimaryPartCFrame(oldCFrame)
+		local hrp = Player.getHumanoidRootPart()
+		if hrp then
+			hrp.CFrame = oldCFrame			
+			Player.getCharacter():SetPrimaryPartCFrame(oldCFrame)
+		end
 		spawnLocation:Destroy()
 		respawnConnection:Disconnect()
 	end)

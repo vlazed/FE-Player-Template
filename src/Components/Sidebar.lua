@@ -58,6 +58,9 @@ function Sidebar:CreateAnimationElement(filePath)
             
             animTable = loadfile(filePath)()
             keyframes = Animation.new(name, animTable, animTable.Properties.Framerate, true)
+            if not animTable.Properties.Framerate then
+                keyframes.Framerate = 60                
+            end
             table.sort(keyframes.KeyframeSequence, function(k1, k2) 
                 return k1["Time"] < k2["Time"] 
             end)

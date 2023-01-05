@@ -113,7 +113,7 @@ local function lookAtMouse(torso)
         )
         --]]
     else
-        torsoCF *= CFrame.fromOrientation(
+        torso.CFrame *= CFrame.fromOrientation(
             math.clamp(-angleX, -math.pi/32, math.pi/32), 
             math.clamp(-angleY, -math.pi/16, math.pi/16), 
             math.clamp(-angleY, -math.pi/16, math.pi/16) 
@@ -128,7 +128,7 @@ local function lookAtMouse(torso)
     return headCF
 end
 
-function AnimationController:_poseR15(character, keyframe, interp, filterTable, looking)
+function AnimationController:_poseR15(character, keyframe, interp, filterTable, looking, reflected, weight, offset)
     interp = interp or 1
 
 	local function animateTorso(cf, lastCF, alpha)
@@ -136,16 +136,29 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
 		cf = cf or lastCF
 
         local hrp = Player.getNexoCharacter().HumanoidRootPart
+        local lowerTorso = Player.getNexoCharacter().LowerTorso
 		local C0 = Player.getNexoCharacter().LowerTorso["Root"].C0
 		local C1 = Player.getNexoCharacter().LowerTorso["Root"].C1
 		
-        local cfLerp = lastCF:Lerp(cf, alpha)
-        --print(alpha)
-        local angle = VectorUtil.AngleBetweenSigned(self.MoveVector, Vector3.new(0,0,-1), Vector3.new(0,1,0))
-        --print(math.deg(angle))
-        Player.getNexoCharacter().LowerTorso["Root"].Transform = cfLerp
-        hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
+        if reflected then
+            local x, y, z = cf:ToOrientation()
+            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
+                * CFrame.fromOrientation(x, -y, -z)
+        end
+
+        local cfLerp = CFrame.identity:Lerp(cf * offset, weight)
+
+        FastTween(lowerTorso["Root"], {0.1}, {Transform = cfLerp})
+
+        local lookAt = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
+        if Player.Flipping then
+            self:Flip(self.XDirection, self.ZDirection)
+        else
+            FastTween(hrp, {0.1}, {CFrame = lookAt})
+        end
+
 		character.LowerTorso.CFrame = hrp.CFrame * (C0 * cfLerp * C1:Inverse())
+
         if 
         not (
             Player.Dancing 
@@ -166,15 +179,25 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
         end
 	end
 
-	local function animateLimb(limb, parent, motor, cf, lastCF, alpha, lookCF) -- Local to parent
+	local function animateLimb(limb, parent, motor, cf, lastCF, lookCF) -- Local to parent
         lastCF = lastCF or CFrame.identity
         cf = cf or lastCF
-		
-        lookCF = lookCF or CFrame.identity
 
-        local cfLerp = lastCF:Lerp(cf, alpha)
-        motor.Transform = cfLerp
-        limb.CFrame = parent.CFrame * (motor.C0 * cfLerp * lookCF * motor.C1:inverse())
+        if reflected then
+            local x, y, z = cf:ToOrientation()
+            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
+                * CFrame.fromOrientation(x, -y, -z)
+        end
+
+        local cfLerp = CFrame.identity:Lerp(cf, weight)
+
+        FastTween(motor, {0.1}, {Transform = cfLerp})
+
+        if lookCF then
+            limb.CFrame = parent.CFrame * (motor.C0 * CFrame.new(motor.Transform.Position) * lookCF * motor.C1:inverse())
+        else
+            limb.CFrame = parent.CFrame * (motor.C0 * motor.Transform * motor.C1:inverse())
+        end
 	end
 
 	local function animateHats(filterTable)
@@ -202,6 +225,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                     or Player.getNexoCharacter():FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
                     or Player.getNexoCharacter():FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
                     or Player.getNexoCharacter():FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
+
                 v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
 			end				
 		end
@@ -228,6 +252,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                     or Player.getCharacter():FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
                     or Player.getCharacter():FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
                     or Player.getCharacter():FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
+
 				v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
 			end
 		end
@@ -241,13 +266,10 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
 
     local headCF, torsoCF
 
-	if kfA then
-        if looking then
-            headCF = lookAtMouse(character["UpperTorso"])
-        end
+	if kfA and kfB then
 
 		if kfA.CFrame then
-			animateTorso(kfA.CFrame, kfB.CFrame, interp)
+			animateTorso(kfA.CFrame, kfB.CFrame)
 		end
 
 		if kfA["RightUpperLeg"] then
@@ -256,8 +278,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LowerTorso"], 
                 Player.getNexoCharacter().RightUpperLeg["RightHip"], 
                 kfA["RightUpperLeg"].CFrame, 
-                kfB["RightUpperLeg"].CFrame, 
-                interp
+                kfB["RightUpperLeg"].CFrame
             )
 		end
 		if kfA["LeftUpperLeg"] then
@@ -266,8 +287,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LowerTorso"], 
                 Player.getNexoCharacter().LeftUpperLeg["LeftHip"], 
                 kfA["LeftUpperLeg"].CFrame, 
-                kfB["LeftUpperLeg"].CFrame, 
-                interp
+                kfB["LeftUpperLeg"].CFrame
             )
 		end
 		if kfA["RightUpperLeg"]["RightLowerLeg"] then
@@ -276,8 +296,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["RightUpperLeg"], 
                 Player.getNexoCharacter().RightLowerLeg["RightKnee"], 
                 kfA["RightUpperLeg"]["RightLowerLeg"].CFrame, 
-                kfB["RightUpperLeg"]["RightLowerLeg"].CFrame, 
-                interp
+                kfB["RightUpperLeg"]["RightLowerLeg"].CFrame
             )
 		end
 		if kfA["LeftUpperLeg"]["LeftLowerLeg"] then
@@ -286,8 +305,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LeftUpperLeg"],
                 Player.getNexoCharacter().LeftLowerLeg["LeftKnee"], 
                 kfA["LeftUpperLeg"]["LeftLowerLeg"].CFrame, 
-                kfB["LeftUpperLeg"]["LeftLowerLeg"].CFrame, 
-                interp
+                kfB["LeftUpperLeg"]["LeftLowerLeg"].CFrame
             )
 		end
 		if kfA["RightUpperLeg"]["RightLowerLeg"]["RightFoot"] then
@@ -296,8 +314,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["RightLowerLeg"],
                 Player.getNexoCharacter().RightFoot["RightAnkle"], 
                 kfA["RightUpperLeg"]["RightLowerLeg"]["RightFoot"].CFrame, 
-                kfB["RightUpperLeg"]["RightLowerLeg"]["RightFoot"].CFrame, 
-                interp
+                kfB["RightUpperLeg"]["RightLowerLeg"]["RightFoot"].CFrame 
             )
 		end
 		if kfA["LeftUpperLeg"]["LeftLowerLeg"]["LeftFoot"] then
@@ -306,8 +323,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LeftLowerLeg"],
                 Player.getNexoCharacter().LeftFoot["LeftAnkle"], 
                 kfA["LeftUpperLeg"]["LeftLowerLeg"]["LeftFoot"].CFrame, 
-                kfB["LeftUpperLeg"]["LeftLowerLeg"]["LeftFoot"].CFrame, 
-                interp
+                kfB["LeftUpperLeg"]["LeftLowerLeg"]["LeftFoot"].CFrame
             )
 		end
         if kfA["UpperTorso"] then
@@ -317,10 +333,12 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 Player.getNexoCharacter().UpperTorso["Waist"], 
                 kfA["UpperTorso"].CFrame, 
                 kfB["UpperTorso"].CFrame, 
-                interp,
                 torsoCF
             )
 		end
+        if looking then
+            headCF = lookAtMouse(character["UpperTorso"])
+        end
         if kfA["UpperTorso"]["Head"] then
 			animateLimb(
                 character["Head"], 
@@ -328,7 +346,6 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 Player.getNexoCharacter().Head["Neck"], 
                 kfA["UpperTorso"]["Head"].CFrame, 
                 kfB["UpperTorso"]["Head"].CFrame, 
-                interp,
                 headCF
             )
 
@@ -340,8 +357,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["UpperTorso"], 
                 Player.getNexoCharacter().RightUpperArm["RightShoulder"], 
                 kfA["UpperTorso"]["RightUpperArm"].CFrame, 
-                kfB["UpperTorso"]["RightUpperArm"].CFrame, 
-                interp
+                kfB["UpperTorso"]["RightUpperArm"].CFrame
             )
 		end
 		if kfA["UpperTorso"]["LeftUpperArm"] then
@@ -350,8 +366,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["UpperTorso"], 
                 Player.getNexoCharacter().LeftUpperArm["LeftShoulder"], 
                 kfA["UpperTorso"]["LeftUpperArm"].CFrame, 
-                kfB["UpperTorso"]["LeftUpperArm"].CFrame, 
-                interp
+                kfB["UpperTorso"]["LeftUpperArm"].CFrame
             )
 		end
 		if kfA["UpperTorso"]["RightUpperArm"]["RightLowerArm"] then
@@ -360,8 +375,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["RightUpperArm"],
                 Player.getNexoCharacter().RightLowerArm["RightElbow"], 
                 kfA["UpperTorso"]["RightUpperArm"]["RightLowerArm"].CFrame, 
-                kfB["UpperTorso"]["RightUpperArm"]["RightLowerArm"].CFrame, 
-                interp
+                kfB["UpperTorso"]["RightUpperArm"]["RightLowerArm"].CFrame
             )
 		end
 		if kfA["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"] then
@@ -370,8 +384,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LeftUpperArm"],
                 Player.getNexoCharacter().LeftLowerArm["LeftElbow"], 
                 kfA["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"].CFrame, 
-                kfB["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"].CFrame, 
-                interp
+                kfB["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"].CFrame
             )
 		end
 		if kfA["UpperTorso"]["RightUpperArm"]["RightLowerArm"]["RightHand"] then
@@ -380,8 +393,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["RightLowerArm"],
                 Player.getNexoCharacter().RightHand["RightWrist"], 
                 kfA["UpperTorso"]["RightUpperArm"]["RightLowerArm"]["RightHand"].CFrame, 
-                kfB["UpperTorso"]["RightUpperArm"]["RightLowerArm"]["RightHand"].CFrame, 
-                interp
+                kfB["UpperTorso"]["RightUpperArm"]["RightLowerArm"]["RightHand"].CFrame
             )
 		end
 		if kfA["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"]["LeftHand"] then
@@ -390,8 +402,7 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
                 character["LeftLowerArm"],
                 Player.getNexoCharacter().LeftHand["LeftWrist"], 
                 kfA["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"]["LeftHand"].CFrame, 
-                kfB["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"]["LeftHand"].CFrame, 
-                interp
+                kfB["UpperTorso"]["LeftUpperArm"]["LeftLowerArm"]["LeftHand"].CFrame
             )
 		end
 	end

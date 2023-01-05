@@ -120,7 +120,7 @@ end
 
 
 function Player:GetAnimationSpeed()
-	return ControllerSettings.GetSettings().DT * 100 * 60 / framerate
+	return 1 -- ControllerSettings.GetSettings().DT * 100 * 60 / framerate
 end
 
 
@@ -138,7 +138,13 @@ function Player:OnGround(length)
 	params.IgnoreWater = false
 	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-length,0), params)
 	
-	return raycastResult
+	if raycastResult then
+		if raycastResult.Instance.CanCollide then 
+			return raycastResult
+		else
+			return false
+		end
+	end
 end
 
 function Player:SetAnimationModule(module)

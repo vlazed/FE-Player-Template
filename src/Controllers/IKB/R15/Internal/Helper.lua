@@ -7,7 +7,7 @@ local MATH_NEGATIVE_HALF_PI = -MATH_HALF_PI
 
 local Helper = {}
 
-function Helper:Solve(originCF: CFrame, targetPos: Vector3, l1: number, l2: number, extendWhenUnreachable: boolean): (CFrame, number, number)
+function Helper:Solve(originCF: CFrame, targetPos: Vector3, l1: number, l2: number, extendWhenUnreachable: boolean)
 	-- Build intial values for solving
 	local localized = originCF:PointToObjectSpace(targetPos)
 	local l3 = localized.Magnitude
@@ -33,7 +33,11 @@ function Helper:Solve(originCF: CFrame, targetPos: Vector3, l1: number, l2: numb
 	]]
 	local added = l1 + l2
 	if l3 > added then
-		return if extendWhenUnreachable then planeCF * CFrame.new(Vector3.zAxis * (added - l3)) else planeCF, MATH_HALF_PI, 0
+		if extendWhenUnreachable then 
+			return planeCF * CFrame.new(Vector3.zAxis * (added - l3)) 
+		else 
+			return planeCF, MATH_HALF_PI, 0
+		end
 	end
 	
 	--[[
