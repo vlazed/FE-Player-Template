@@ -149,6 +149,25 @@ local GetFamily = function(ins, reverseorder)
     return Pathway    
 end
 
+
+function Network:CheckNetworkOwnershipOf(character)
+    if not isnetworkowner then return end
+
+    local parts = {}
+    for i,v in ipairs(character:GetChildren()) do
+        if v:IsA("BasePart") then
+            parts[v] = isnetworkowner(v)
+        end
+    end
+
+    for part,v in pairs(parts) do
+        if not v then return part.Position end
+    end
+
+    return true
+end
+
+
 function Network:FollowPart(part)
     if not isnetworkowner then return end
 

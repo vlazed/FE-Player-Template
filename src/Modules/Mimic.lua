@@ -240,22 +240,36 @@ local function processInputs()
 end
 
 
+function Mimic:AnchorAllPartsFrom(character, anchorValue)
+    for i,v in ipairs(character:GetChildren()) do
+        if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+            v.Anchored = anchorValue
+        elseif v:IsA("Accessory") then
+            v.Handle.Anchored = anchorValue
+        end
+    end
+end
+
+
 function Mimic:Update()
     processInputs()
 
     local character = workspace:FindFirstChild(targetName)
+    local myCharacter = Player.getCharacter()
 
     if Copying and character then
         PlayerController.LayerA.Playing = false
         PlayerController.LayerB.Playing = false
         PlayerController.DanceLayer.Playing = false
         self:CopyCharacterPose(character)
+        --self:AnchorAllPartsFrom(myCharacter, true)
         if Player:GetRigType() == Enum.HumanoidRigType.R6 then
             animateHats_R6()
         else
             animateHats_R15()
         end
     else
+        --self:AnchorAllPartsFrom(myCharacter, false)
         PlayerController.LayerA.Playing = true
         PlayerController.LayerB.Playing = true
         PlayerController.DanceLayer.Playing = true

@@ -98,7 +98,17 @@ local moduleExecuteTime = tick() + 1/updateModuleRate
 
 local previousVelocity = Vector3.new()
 
-local animationConnections = {}
+local animationConnection
+
+local lostOwnershipLocation = Instance.new("Part")
+lostOwnershipLocation.Size = Vector3.new(0.1, 2048, 0.1)
+lostOwnershipLocation.Transparency = 0.8
+lostOwnershipLocation.Material = Enum.Material.Neon
+lostOwnershipLocation.Anchored = true
+lostOwnershipLocation.CanCollide = false
+lostOwnershipLocation.Parent = workspace
+
+local lostPart = false
 
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
@@ -837,11 +847,6 @@ local function detectFling(threshold: number, dt)
 	end
 end
 
-
-local function addAnimationConnection(connection: Signal)
-	table.insert(animationConnections, connection)
-end
-
 -- TODO: Use Maid or Trove to automate cleanup of animation connections at respawn
 function PlayerController:_InitializeStates()	
 	Player:GetStateClass("Idling").OnTrue:Connect(self.OnIdle)
@@ -1069,6 +1074,15 @@ function PlayerController:Fly()
 end
 
 
+function PlayerController:SetLostNetworkPosition(position)
+	if lostPart then return end 
+
+	lostPart = true
+	lostOwnershipLocation.Position = position
+	lostOwnershipLocation.Transparency = 0
+end
+
+
 function PlayerController:ToggleDebug()
 	DEBUG = not DEBUG
 end
@@ -1226,6 +1240,14 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	local threshold = 5000
 
+	local position = Network:CheckNetworkOwnershipOf(char)
+	if typeof(position) == "Vector3" then
+		self:SetLostNetworkPosition(position)
+	else
+		lostPart = false
+		lostOwnershipLocation.Transparency = 1
+	end
+
 	if Player:GetState("Respawning") then
 		self:Respawn()	
 	end
@@ -1321,8 +1343,6 @@ function PlayerController:ProcessStates(char, nexoChar)
 	self.Buoyancy.Enabled = Player.Swimming
 	self.Buoyancy.Force = Vector3.new(0,1,0) * Player:GetWeight() * ascent
 
-	self.LayerA.looking = Player.Looking
-
 	hum.AutoRotate = false
 	nexoHum.AutoRotate = false
 	nexoHum:Move(moveVector)
@@ -1386,6 +1406,20 @@ function PlayerController:ProcessAfterStates()
 end
 
 
+function PlayerController:Animate()
+	local char = Player.getCharacter()
+	
+	self:LeanCharacter(char)
+
+	self.LayerA:Animate()
+	self.DanceLayer:Animate()
+
+	self.LayerA.looking = Player.Looking
+
+	self.LayerB:Animate()
+end
+
+
 function PlayerController:Update()
 
     local char = Player.getCharacter()
@@ -1395,16 +1429,7 @@ function PlayerController:Update()
 
 	self:ProcessInputs()
 
-	self:LeanCharacter(char)
-
 	self:ProcessStates(char, nexoChar)
-
-	ActionHandler:Update()
-	self.LayerA:Animate()
-	EmoteController:Update()
-	self.DanceLayer:Animate()
-
-	self.LayerB:Animate()
 
 	if self.ResetTransform then
 		self.RightArm:ResetTransform()
@@ -1425,6 +1450,8 @@ function PlayerController:Update()
 --	self.RightArm:Solve(self.AttackPosition)
 --	self.LeftArm:Solve(self.AttackPosition)
 
+	EmoteController:Update()
+	ActionHandler:Update()
 
 	self:RunUpdateTable()
 	
@@ -1666,6 +1693,7 @@ function PlayerController:Init(canClickFling)
 	previousCFrame = Player.getNexoHumanoidRootPart().CFrame
 
     connection = Thread.DelayRepeat(Settings.DT, self.Update, self)
+	animationConnection = RunService.Heartbeat:Connect(function() self:Animate() end)
 	ActionHandler:Init()
 	EmoteController:Init()
 
@@ -1689,6 +1717,10 @@ function PlayerController:Respawn()
 
 	if connection then
 		connection:Disconnect()
+	end
+
+	if animationConnection then
+		animationConnection:Disconnect()
 	end
 
 	for i, conn in pairs(nexoConnections)do 
@@ -1725,6 +1757,8 @@ function PlayerController:Respawn()
 	spawnLocation.Anchored = true
 	spawnLocation.Parent = workspace
 	Player.getPlayer().RespawnLocation = spawnLocation
+
+	lostOwnershipLocation:Destroy()
 
 	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function()
 		task.wait()

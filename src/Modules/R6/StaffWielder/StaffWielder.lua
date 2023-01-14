@@ -170,6 +170,25 @@ StaffWielder.Equipped = false
 StaffWielder.Sitting = false
 
 local attack
+local prevAttack = attack
+
+function StaffWielder:Attack(attackTable, endMultiplier)
+    if prevAttack then
+        prevAttack:Stop()
+    end
+
+    attack = attackTable[self.AttackIndex]
+    attack.Speed = 1.175
+    attack:Play()
+    Player:SetStateForDuration("FightMode", true, 4)
+    Player.Attacking:SetState(true)
+    task.delay(attack.TimeLength * endMultiplier, function()
+        Player.Attacking:SetState(false)
+        self.AttackIndex = (self.AttackIndex - 1 + (1 % #attackTable) + #attackTable) % #attackTable + 1
+        prevAttack = attack
+    end)
+end
+
 
 --[[
     An example of an input processing function. Ideally, one should provide some debounce
@@ -204,25 +223,9 @@ function StaffWielder:ProcessInputs()
     end
 
     if ActionHandler.IsKeyDownBool(LightAttackButton) and not Player.Attacking:GetState() then
-        attack = self.LightAttacks[self.AttackIndex]
-        attack.Speed = 1.175
-        attack:Play()
-        Player:SetStateForDuration("FightMode", true, 4)
-        Player.Attacking:SetState(true)
-        task.delay(attack.TimeLength/2, function()
-            Player.Attacking:SetState(false)
-            self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.LightAttacks) + #self.LightAttacks) % #self.LightAttacks + 1
-        end)
+        self:Attack(self.LightAttacks, 0.5)
     elseif ActionHandler.IsKeyDownBool(HeavyAttackButton) and not Player.Attacking:GetState() then
-        attack = self.HeavyAttacks[self.AttackIndex]
-        attack.Speed = 1.175
-        attack:Play()
-        Player:SetStateForDuration("FightMode", true, 4)
-        Player.Attacking:SetState(true)
-        task.delay(2*attack.TimeLength/3, function()
-            Player.Attacking:SetState(false)
-            self.AttackIndex = (self.AttackIndex - 1 + (1 % #self.HeavyAttacks) + #self.HeavyAttacks) % #self.HeavyAttacks + 1
-        end)
+        self:Attack(self.HeavyAttacks, 0.666)
     end
 end
 
@@ -273,13 +276,15 @@ function StaffWielder:ProcessStates(char, AccessoryStaff)
     end
 
     if Player.Attacking:GetState() then
-        if char.HumanoidRootPart then
-            char.HumanoidRootPart.Anchored = false
-            char.HumanoidRootPart.CanCollide = true
+        if char:FindFirstChild("HumanoidRootPart") then
             if self.Equipped and AccessoryStaff then
-                char.HumanoidRootPart.Position = AccessoryStaff.Handle.Position    
+                PlayerController.AttackPosition = Vector3.new(
+                    AccessoryStaff.Handle.Position.X, 
+                    char.Torso.Position.Y, 
+                    AccessoryStaff.Handle.Position.Z
+                )
             else
-                char.HumanoidRootPart.Position = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
+                PlayerController.AttackPosition = Player.getNexoHumanoidRootPart().CFrame:PointToWorldSpace(Vector3.new(0, 0, -1))
             end
         end
     end
