@@ -40,6 +40,8 @@ local ActionHandler = require(Project.Controllers.ActionHandler)
 local AnimationController = require(Project.Controllers.AnimationController)
 
 local MuayThai = {}
+MuayThai.Name = "Muay Thai"
+MuayThai.Type = "Action"
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own

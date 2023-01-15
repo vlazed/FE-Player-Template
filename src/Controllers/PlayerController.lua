@@ -35,10 +35,10 @@ local respawnConnection
 local EPSILON = 1e-4
 local DEBUG = false
 
-local moveVector = Player.getHumanoidRootPart().CFrame.LookVector
-local tiltVector = Vector3.new(0, 1, 0)
-local tiltSpring = Spring.new(2, tiltVector)
-local moveSpring = Spring.new(2, moveVector)
+PlayerController.MoveVector = Player.getHumanoidRootPart().CFrame.LookVector
+PlayerController.TiltVector = Vector3.new(0, 1, 0)
+local tiltSpring = Spring.new(2, PlayerController.TiltVector)
+local moveSpring = Spring.new(2, PlayerController.MoveVector)
 
 PlayerController.AttackPosition = Vector3.new()
 
@@ -77,6 +77,31 @@ PlayerController.Framerate = 30
 PlayerController.LerpEnabled = false
 
 PlayerController.Buoyancy = nil
+
+-- Controller Locomotion Scalars
+PlayerController.DefaultSettings = ControllerSettings:GetSettings()
+
+PlayerController.IdleSpeed = PlayerController.DefaultSettings.idleSpeed
+PlayerController.WalkSpeed = PlayerController.DefaultSettings.walkSpeed
+PlayerController.RunSpeed = PlayerController.DefaultSettings.runSpeed
+PlayerController.SprintSpeed = PlayerController.DefaultSettings.sprintSpeed
+PlayerController.JumpPower = PlayerController.DefaultSettings.jumpPower
+PlayerController.RunJumpPower = PlayerController.DefaultSettings.runJump
+PlayerController.SprintJumpPower = PlayerController.DefaultSettings.sprintJump
+PlayerController.IdleTweenTime = PlayerController.DefaultSettings.idleTime
+PlayerController.WalkTweenTime = PlayerController.DefaultSettings.walkTime
+PlayerController.RunTweenTime = PlayerController.DefaultSettings.runTime
+PlayerController.SprintTweenTime = PlayerController.DefaultSettings.sprintTime
+
+-- Controls for how reactive the character will lean to its target state 
+PlayerController.IdleTiltRate = 10
+PlayerController.FallTiltRate = 3
+PlayerController.JumpTiltRate = 3
+PlayerController.WalkTiltRate = 2
+PlayerController.RunTiltRate = 4
+
+-- Control for stable or maneuverable movement
+PlayerController.MoveRate = 2
 
 local connection
 
@@ -894,36 +919,29 @@ end
 
 
 function PlayerController:Sprint()
-	local Settings = ControllerSettings:GetSettings()
-
-	local runInfo = {1, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
-	local sprintInfo = {10, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local runInfo = {self.RunTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local sprintInfo = {self.SprintTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
 	if Player.Running:GetState() then
-		FastTween(humA, runInfo, {WalkSpeed = Settings.runSpeed})
-		FastTween(humB, runInfo, {WalkSpeed = Settings.runSpeed})
-		humA.JumpPower = Settings.runJump
-		humB.JumpPower = Settings.runJump
+		FastTween(humA, runInfo, {WalkSpeed = self.RunSpeed})
+		FastTween(humB, runInfo, {WalkSpeed = self.RunSpeed})
+		humA.JumpPower = self.RunJumpPower
+		humB.JumpPower = self.RunJumpPower
 	elseif Player.Sprinting:GetState() then
-		FastTween(humA, sprintInfo, {WalkSpeed = Settings.sprintSpeed})
-		FastTween(humB, sprintInfo, {WalkSpeed = Settings.sprintSpeed})
-		humA.JumpPower = Settings.sprintJump
-		humB.JumpPower = Settings.sprintJump
+		FastTween(humA, sprintInfo, {WalkSpeed = self.SprintSpeed})
+		FastTween(humB, sprintInfo, {WalkSpeed = self.SprintSpeed})
+		humA.JumpPower = self.SprintJumpPower
+		humB.JumpPower = self.SprintJumpPower
 	end
 
 	if Player.Flying then
-		tiltSpring.f = 2 * Player:GetAnimationSpeed()
-		--print("SprintFlying")
-		if Player.Dancing then return end
-		Player.Transition(2)
+		tiltSpring.f = self.RunTiltRate / 2 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		tiltSpring.f = 10 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
+		tiltSpring.f = self.RunTiltRate * 2.5 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = 4 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.RunTiltRate * Player:GetAnimationSpeed()
 
-		if Player.Dancing then return end
 		if Player.Running:GetState() then
 			Player:GetAnimation("Run"):AdjustWeight(1, 1)
 			Player:GetAnimation("Run"):Play()
@@ -932,49 +950,36 @@ function PlayerController:Sprint()
 			Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
 			Player:GetAnimation("Sprint"):Play()
 		end
-		Player.Transition()
 	end
 end
 
 
 function PlayerController:Walk()
-	local Settings = ControllerSettings:GetSettings()
-	local tweenInfo = {0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local tweenInfo = {self.WalkTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
-	humA.JumpPower = Settings.jumpPower
-	humB.JumpPower = Settings.jumpPower
-	FastTween(humA, tweenInfo, {WalkSpeed = Settings.walkSpeed})
-	FastTween(humB, tweenInfo, {WalkSpeed = Settings.walkSpeed})
+	humA.JumpPower = self.JumpPower
+	humB.JumpPower = self.JumpPower
+	FastTween(humA, tweenInfo, {WalkSpeed = self.WalkSpeed})
+	FastTween(humB, tweenInfo, {WalkSpeed = self.WalkSpeed})
 
 	if Player.Flying then
-		tiltSpring.f = 1 * Player:GetAnimationSpeed()
-		--print("WalkFly")
-		if Player.Dancing then return end
-		Player.Transition(1)
+		tiltSpring.f = self.WalkTiltRate / 2 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		tiltSpring.f = 10 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.WalkTiltRate * 5 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = 2 * Player:GetAnimationSpeed()
-		--print("Walk")
-		if Player.Dancing then return end
-		Player.Transition()
+		tiltSpring.f = self.WalkTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
 
 function PlayerController:Fall()
-	local Settings = ControllerSettings:GetSettings()
 
 	--print("Fall")
 	if Player.Flying then
-		tiltSpring.f = 1 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-		Player.Transition(1)
+		tiltSpring.f = self.FallTiltRate / 3 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = 3 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-		Player.Transition()
+		tiltSpring.f = self.FallTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
@@ -993,48 +998,35 @@ function PlayerController:Jump(char)
 	end
 
 	if Player.Flying then
-		--print("FlyingJump")
-		tiltSpring.f = 1 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-		Player.Transition(0.5)
+		tiltSpring.f = self.JumpTiltRate / 3 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		--print("FlyingJump")
-		tiltSpring.f = 1 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-		Player.Transition(0.5)
+		tiltSpring.f = self.JumpTiltRate / 3 * Player:GetAnimationSpeed()
 	else
-		--print("Jump")
-		tiltSpring.f = 3 * Player:GetAnimationSpeed()
-		if Player.Dancing then return end
-		Player.Transition(0.5)
+		tiltSpring.f = self.JumpTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
 
 function PlayerController:Idle()
-	local Settings = ControllerSettings:GetSettings()
-	local tweenInfo = {0.25, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
-
-	--tiltSpring.f = 8 * Player:GetAnimationSpeed()
+	local tweenInfo = {self.IdleTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
-	humA.JumpPower = Settings.jumpPower
-	humB.JumpPower = Settings.jumpPower
-	FastTween(humA, tweenInfo, {WalkSpeed = 0})
-	FastTween(humB, tweenInfo, {WalkSpeed = 0})
+	humA.JumpPower = self.JumpPower
+	humB.JumpPower = self.JumpPower
+	FastTween(humA, tweenInfo, {WalkSpeed = self.IdleSpeed})
+	FastTween(humB, tweenInfo, {WalkSpeed = self.IdleSpeed})
 
 	if Player.Landing then
-		humA.WalkSpeed = 0
-		humB.WalkSpeed = 0
+		humA.WalkSpeed = self.IdleSpeed
+		humB.WalkSpeed = self.IdleSpeed
 	end
-
-	if Player.Dancing then return end
 	
+	-- TODO: Change transition functions by shifting weight of animations
 	if Player.Flying then
 		Player.Transition(2)
 	elseif Player.Swimming then
-		tiltSpring.f = 10 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.IdleTiltRate * Player:GetAnimationSpeed()
 	else
 		Player.Transition(1)
 	end
@@ -1096,7 +1088,7 @@ end
 
 function PlayerController:Slide()
 	if Player.DodgeMoving then
-		self:DodgeMove(moveVector*0.1)
+		self:DodgeMove(self.MoveVector*0.1)
 		return
 	end
 
@@ -1133,7 +1125,7 @@ function PlayerController:DodgeGround()
 	if Player.Dancing or Player.Swimming then return end
 
 	if Player.DodgeMoving then
-		self:DodgeMove(moveVector * 0.3)
+		self:DodgeMove(self.MoveVector * 0.3)
 		return
 	end
 
@@ -1157,8 +1149,8 @@ function PlayerController:DodgeAir(char)
 
 	local rightVector = torso.CFrame.RightVector
 	local lookVector = torso.CFrame.lookVector
-	local c0 = rightVector:Dot(moveVector) + EPSILON / 2
-	local c1 = lookVector:Dot(moveVector) + EPSILON / 2
+	local c0 = rightVector:Dot(self.MoveVector) + EPSILON / 2
+	local c1 = lookVector:Dot(self.MoveVector) + EPSILON / 2
 
 	if math.abs(c0) < EPSILON then
 		if c1 >= 0 then
@@ -1185,7 +1177,7 @@ function PlayerController:DodgeAir(char)
 		self.LayerA.XDirection = math.round(c1)
 		self.LayerA.ZDirection = math.round(c0)
 		self:Jump()
-		torso:ApplyImpulse(Player:GetWeight()*(Vector3.new(0,0.5,0) + moveVector).Unit / 4)
+		torso:ApplyImpulse(Player:GetWeight()*(Vector3.new(0,0.5,0) + self.MoveVector).Unit / 4)
 		task.delay(currentFlipDelay, function() 
 			Player.DodgeMoving = false
 			Player.Flipping = false
@@ -1200,7 +1192,7 @@ function PlayerController:LeanCharacter(char)
 	local Settings = ControllerSettings:GetSettings()
 
 	if char.Humanoid.MoveDirection.Magnitude > 0 and not Player.Dodging then
-		moveVector = char.Humanoid.MoveDirection
+		self.MoveVector = char.Humanoid.MoveDirection
 	end
 
 	local sprintConstant = Player.Sprinting:GetState() and 8 or 1 
@@ -1209,12 +1201,12 @@ function PlayerController:LeanCharacter(char)
 	local jumpConstant = Player:GetState("Jumping") and 0.1 or 1
 	local flyConstant = Player.Flying and 2 or 1
 
-	tiltVector = Vector3.new(0,1,0) + char.Humanoid.MoveDirection * flyConstant * walkConstant * sprintConstant * jumpConstant * runConstant
+	self.TiltVector = Vector3.new(0,1,0) + char.Humanoid.MoveDirection * flyConstant * walkConstant * sprintConstant * jumpConstant * runConstant
 
-	moveSpring.f = 2 * Player:GetAnimationSpeed()
+	moveSpring.f = self.MoveRate * Player:GetAnimationSpeed()
 
-	local tilt = tiltSpring:Update(Settings.DT, tiltVector)
-	local move = moveSpring:Update(Settings.DT, moveVector)
+	local tilt = tiltSpring:Update(Settings.DT, self.TiltVector)
+	local move = moveSpring:Update(Settings.DT, self.MoveVector)
 
 	AnimationController.TiltVector = tilt
 	AnimationController.MoveVector = move
@@ -1345,7 +1337,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	hum.AutoRotate = false
 	nexoHum.AutoRotate = false
-	nexoHum:Move(moveVector)
+	nexoHum:Move(self.MoveVector)
 
 	if Player.Flying then
 		threshold *= 12
@@ -1395,7 +1387,7 @@ end
 
 
 function PlayerController:RunUpdateTable()
-	for i, module in pairs(self.Modules) do
+	for i, module in ipairs(self.Modules) do
 		module:Update()
 	end
 end
@@ -1546,21 +1538,6 @@ function PlayerController:OnIdle()
 end
 
 
-function PlayerController:GetMoveVector()
-	return moveVector
-end
-
-
-function PlayerController:SetMoveVector(vector: Vector3)
-	moveVector = vector
-end
-
-
-function PlayerController:GetTiltVector()
-	return tiltVector
-end
-
-
 function PlayerController.OnStopAnimation(animation: Animation)
 	if animation.Name == "Roll" or animation.Name:find("Flip") or animation.Name == "Slide" then
 		--print("Flipped")
@@ -1579,6 +1556,30 @@ local function delayStopAnim(anim: Animation)
 		Player.Slowing = true
 		anim:Play()
 	end
+end
+
+
+function PlayerController:ResetLocomotionScalars()
+	self.DefaultSettings = ControllerSettings:GetSettings()
+
+	self.IdleSpeed = self.DefaultSettings.idleSpeed
+	self.WalkSpeed = self.DefaultSettings.walkSpeed
+	self.RunSpeed = self.DefaultSettings.runSpeed
+	self.SprintSpeed = self.DefaultSettings.sprintSpeed
+	self.JumpPower = self.DefaultSettings.jumpPower
+	self.RunJumpPower = self.DefaultSettings.runJump
+	self.SprintJumpPower = self.DefaultSettings.sprintJump
+	self.IdleTweenTime = self.DefaultSettings.idleTime
+	self.WalkTweenTime = self.DefaultSettings.walkTime
+	self.RunTweenTime = self.DefaultSettings.runTime
+	self.SprintTweenTime = self.DefaultSettings.sprintTime
+	
+	-- Controls for how reactive the character will lean to its target state 
+	self.IdleTiltRate = 10
+	self.FallTiltRate = 3
+	self.JumpTiltRate = 3
+	self.WalkTiltRate = 2
+	self.RunTiltRate = 4
 end
 
 
@@ -1682,10 +1683,10 @@ function PlayerController:Init(canClickFling)
 	end
 
 
-	PlayerController.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
-	PlayerController.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left", "Arm")
-	PlayerController.LeftLeg = IKLegController.new(Player.getNexoCharacter(), "Left", "Leg")
-	PlayerController.RightLeg = IKLegController.new(Player.getNexoCharacter(), "Right", "Leg")
+	self.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
+	self.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left", "Arm")
+	self.LeftLeg = IKLegController.new(Player.getNexoCharacter(), "Left", "Leg")
+	self.RightLeg = IKLegController.new(Player.getNexoCharacter(), "Right", "Leg")
 
 	coroutine.resume(Network["PartOwnership"]["Enable"])
 	

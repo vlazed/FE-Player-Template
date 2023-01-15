@@ -44,6 +44,7 @@ local Animation = require(Project.Controllers.Animations.Animation)
 
 local StaffWielder = {}
 StaffWielder.Name = "Staff Wielder"
+StaffWielder.Type = "Action"
 
 StaffWielder.Initialized = false
 

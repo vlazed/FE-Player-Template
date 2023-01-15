@@ -1,30 +1,9 @@
 --[[
     Vlazed
 
-    The following is an example module that interfaces with the template's controllers and provides its own animation package for
-    movement. Every module must have the following functions:
-        - An update function (StaffWielder:Update())
-        - A process state function (processStates(args))
-        - A process input function (processInputs(args))
-        - An initialization function (StaffWielder:Init())
-        - A stopping function (StaffWielder:Stop())
-    
-    In addition, all animation packages (folders with animation data) must have the following files, with a .lua extension:
-        - Walk
-        - Run
-        - Sprint
-        - Jump
-        - Fall
-        - Fly variants of the above (prefixed with Fly*Name* e.g. FlyWalk)
-        - DodgeGround
-        - DodgeAir
-    If none of the above are provided, as a failsafe the Player will default to a set of animations found in Controllers/Animations
-
-    The premise of a module is to allow the player to switch between different animation styles or modes without having to run
-    different scripts. For example, this allows the player to
-        - Switch between different fighting animations,
-        - Equip different weapons on their character, or
-        - Populate a keyboard with different emotes (with a known emote mapping).
+    This is an example custom locomotion module, which modifies the PlayerController's locomotion scalars
+    to provide controllable biking speed via the W and S keys. This also changes the tilt and move vectors
+    of the character on the bicycle.
 --]]
 
 local Project
@@ -40,17 +19,23 @@ local ActionHandler = require(Project.Controllers.ActionHandler)
 local AnimationController = require(Project.Controllers.AnimationController)
 
 local Bike = {}
+Bike.Name = "Bike"
+Bike.Type = "Movement"
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
     or somehow loses the accessory.
 --]]
-local Staff = "Giant Sword Catcher"
+local Vehicle = "Bike"
 
 local Animations = script.Parent.Animations
 local filterTable = {}
 
-Bike.PlayerAnimator = AnimationController.new()
+local onBike = false
+
+local BikeButton = Enum.KeyCode.R
+local TrickButton = Enum.KeyCode.G
+
 Bike.Initialized = false
 
 --[[
@@ -64,7 +49,7 @@ Bike.Animations = {
 	Jump = require(Animations.Jump),
 	Fall = require(Animations.Fall),
     Idle = require(Animations.Hold),
-    Roll = require(Animations.DodgeGround)
+    Roll = require(Animations.Roll)
 }
 
 --[[
@@ -88,7 +73,7 @@ end
 --[[
     An example of a state processing function. 
 --]]
-function Bike:ProcessStates(char, AccessoryStaff)
+function Bike:ProcessStates(char, Accessory)
     
 end
 
@@ -103,10 +88,16 @@ function Bike:Update()
     self:ProcessStates(char)
 end
 
+
+function Bike:SetLocomotionScalars()
+end
+
+
 function Bike:Init()
     if self.Initialized then return end
     Player.AnimationModule = self.Animations
     PlayerController.Modules[self] = self
+    Bike:SetLocomotionScalars()
     PlayerController:Init()
     Bike.Initialized = true
 end
@@ -115,6 +106,7 @@ end
 function Bike:Stop()
     Player:ResetAnimationModule()
     PlayerController.Modules[self] = nil
+    PlayerController:ResetLocomotionScalars()
     self.Initialized = false
 end
 

@@ -13,6 +13,8 @@ local FastTween = require(Project.Util.FastTween)
 local Player = require(Project.Player)
 
 local Mimic = {}
+Mimic.Name = "Mimic"
+Mimic.Type = "Core"
 
 local Mouse = Player.getMouse()
 
@@ -283,7 +285,7 @@ function Mimic:Init()
     Initialized = true
     clickConnection = Mouse.Button1Down:Connect(getUserFromClick)
     SendNotification("Mimic Loaded", "Press M to mimic a clicked humanoid", "Close", 2)
-    PlayerController.Modules[self] = self
+    PlayerController.Modules[self] = {self, #PlayerController.Modules + 1}
 end
 
 

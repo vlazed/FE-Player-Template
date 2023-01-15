@@ -31,11 +31,16 @@ local Settings = {
     DT = 0.01,
     runSpeed = 50,
     sprintSpeed = 1000,
+    idleSpeed = 0,
     walkSpeed = 16,
     jumpPower = 50,
     runJump = 125,
     sprintJump = 300,
     ascentSpeed = 10,
+    idleTime = 0.25,
+    walkTime = 0.25,
+    runTime = 2,
+    sprintTime = 10,
 }
 
 local PlayerController = require(script.Controllers.PlayerController)

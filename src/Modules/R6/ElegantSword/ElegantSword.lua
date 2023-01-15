@@ -46,6 +46,7 @@ local Spring = require(Project.Util.Spring)
 
 local ElegantSword = {}
 ElegantSword.Name = "Elegant Sword"
+ElegantSword.Type = "Action"
 
 ElegantSword.Initialized = false
 
@@ -458,7 +459,7 @@ function ElegantSword:ProcessStates(char, AccessorySword, AccessoryBow)
                 PlayerController.AttackPosition = Vector3.new(AccessorySword.Handle.Position.X, char.Torso.Position.Y, AccessorySword.Handle.Position.Z)
             elseif EquippedBow and AccessoryBow then 
                 PlayerController.AttackPosition = Mouse.Hit.Position
-                PlayerController:SetMoveVector((Mouse.Hit.Position - hrp.Position).Unit)
+                PlayerController.MoveVector = Mouse.Hit.Position - hrp.Position.Unit
                 if PlayerController.ResetTransform then
                     PlayerController.RightArm:Solve(PlayerController.AttackPosition, CFrame.Angles(0, 0, math.pi / 2))
                     PlayerController.LeftArm:Solve(PlayerController.AttackPosition, CFrame.Angles(math.pi / 2, 0, -math.pi / 2))
