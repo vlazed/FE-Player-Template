@@ -3,6 +3,9 @@ An open-source, code-based, rbxm-suite package that provides a framework for exp
 
 This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15, with 4eyes's Network Ownership Library as an additive layer for ownership.
 
+## Disclaimer
+This template has been tested using the Synapse X executor; thus, the source code is written with Synapse in mind. In the future, I may provide support for other executors.
+
 ## Note
 This framework is currently in alpha. Thus, the information provided below and the source code may change at any given point. 
 
