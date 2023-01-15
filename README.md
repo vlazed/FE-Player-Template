@@ -31,7 +31,7 @@ This framework is partially plug-and-play: external animation modules can be ins
 * "M" - Mimic a target's animations
 
 
-## Usage
+# Usage
 This framework has been programmed to be plug-and-play. This framework requires a few steps, which aren't hard to follow. 
 1. Download the up-to-date roblox model file (.rbxm file) of FE-Player-Template from Github releases
 2. Place this file into a directory in your executor's workspace (a directory that allows the executor to see its files)
@@ -50,10 +50,10 @@ If an animation change does not occur, it may be due to a typo in the script its
 To facilitate this, I've included the fe-player-template folder on this repository. This folder also includes dances for R6 and R15. The method of installing new dance animations has a similar process.
 
 
-## For Developers
+# For Developers
 There are two ways to modify the source code and provide your own animation modules: the Rojo method and the Roblox Studio method. I recommend the former, as the template was developed in Rojo, and the source code can be directly used in your own Rojo projects. If you use Roblox Studio, you will need to download the rbxm file in order to import the script directory and edit its contents. 
 
-### Animation Modules
+## Animation Modules
 Animation modules are defined as a folder with a module script and an animation folder, which also contains a set of ModuleScripts or KeyframeSequences. The following is an example seen in a Rojo project. In Roblox Studio, these would be module scripts or KeyframeSequences.
 ```
 module-name/
@@ -69,10 +69,10 @@ Module source code must exist directly under the module folder. I provided an ex
 
 Generally, one should distribute their modules through a Github release (as per the design philosophy of richie0866's rbxm-suite).
 
-### General Modules
+## General Modules
 In addition to animation modules, the framework also supports modules that provide general functionality for the user. An example of such a module is Mimic, which is installed internally into FE-Player-Template by default. Users should install general modules in lieu of modifying existing FE-Player-Template code if one wants to add additional player functions (such as a camera module or a gravity controller, to come up with examples). See Mimic.lua under the Modules for a coding template.
 
-### Animations
+## Animations
 This process involves using Roblox Studio. To make your own animation files, you will need a keyframe sequence to module script plugin. I've included a modified version of an [Animation Converter](https://www.roblox.com/library/442028078/Animation-Converter) that outputs a format that this frameworks animation controllers can read. The general outline for conversion are the following:
 - Obtain or make an animation using Moon Animator 2 (through Rig Animation) or Roblox Animation Editor
 - Export the animation as a keyframe sequence in **Roblox Animation Editor**. The addon will have trouble exporting from a direct-from-Moon-Animator-2 sequence.
