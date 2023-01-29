@@ -433,6 +433,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 		cf = cf or lastCF
 
         local hrp = Player.getNexoCharacter().HumanoidRootPart
+        if not hrp then return end
+
 		local C0 = hrp["RootJoint"].C0
 		local C1 = hrp["RootJoint"].C1
 
@@ -455,6 +457,9 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
             FastTween(hrp, {0.1}, {CFrame = lookAt})
             --hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
         end
+
+        local torso = character:FindFirstChild("Torso")
+        if not torso then return end
 
 		character.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
         nexoCharacter.Torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
@@ -496,6 +501,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
         local nexoLimb = nexoCharacter:FindFirstChild(limb.Name)
         
         FastTween(motor, {0.1}, {Transform = cfLerp})
+
+        if not limb then return end
 
         if lookCF then
             limb.CFrame = character.Torso.CFrame * (motor.C0 * CFrame.new(motor.Transform.Position) * lookCF * motor.C1:inverse())
@@ -539,42 +546,49 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
 
     local headCF
 
+    local leftarm = character:FindFirstChild("Left Arm")
+    local rightarm = character:FindFirstChild("Right Arm")
+    local leftleg = character:FindFirstChild("Left Leg")
+    local rightleg = character:FindFirstChild("Right Leg")
+    local head = character:FindFirstChild("Head")
+    local torso = character:FindFirstChild("Torso")
+    
 	if kfA and kfB then
         if kfA.CFrame then
 			animateTorso(kfA.CFrame, kfB.CFrame)
 		end
 		if kfA["Right Leg"] and kfB["Right Leg"] then
             if reflected then
-                animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
+                animateLimb(leftleg, nexoCharacter.Torso["Left Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
             else
-                animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
+                animateLimb(rightleg, nexoCharacter.Torso["Right Hip"], kfA["Right Leg"].CFrame, kfB["Right Leg"].CFrame)
             end
 		end
 		if kfA["Left Leg"] and kfB["Left Leg"] then
             if reflected then
-                animateLimb(character["Right Leg"], nexoCharacter.Torso["Right Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
+                animateLimb(rightleg, nexoCharacter.Torso["Right Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
             else
-                animateLimb(character["Left Leg"], nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
+                animateLimb(leftleg, nexoCharacter.Torso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
             end
 		end
-        if looking then
-            headCF = lookAtMouse(character["Torso"]) 
+        if looking and torso then
+            headCF = lookAtMouse(torso) 
         end
 		if kfA["Head"] and kfB["Head"] then
-			animateLimb(character["Head"], nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, headCF)
+			animateLimb(head, nexoCharacter.Torso["Neck"], kfA["Head"].CFrame, kfB["Head"].CFrame, headCF)
 		end
         if kfA["Right Arm"] and kfB["Right Arm"] then
             if reflected then
-                animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
+                animateLimb(leftarm, nexoCharacter.Torso["Left Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
             else
-                animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
+                animateLimb(rightarm, nexoCharacter.Torso["Right Shoulder"], kfA["Right Arm"].CFrame, kfB["Right Arm"].CFrame)
             end
 		end
 		if kfA["Left Arm"] and kfB["Left Arm"] then
             if reflected then
-                animateLimb(character["Right Arm"], nexoCharacter.Torso["Right Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
+                animateLimb(rightarm, nexoCharacter.Torso["Right Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
             else
-                animateLimb(character["Left Arm"], nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
+                animateLimb(leftarm, nexoCharacter.Torso["Left Shoulder"], kfA["Left Arm"].CFrame, kfB["Left Arm"].CFrame)
             end
 		end
         animateHats(filterTable)

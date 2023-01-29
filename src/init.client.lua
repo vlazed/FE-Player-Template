@@ -29,6 +29,7 @@ local Settings = {
     debugButton = Enum.KeyCode.F2,
 
     DT = 0.01,
+
     runSpeed = 50,
     sprintSpeed = 1000,
     idleSpeed = 0,
@@ -43,10 +44,11 @@ local Settings = {
     sprintTime = 10,
 }
 
-local PlayerController = require(script.Controllers.PlayerController)
-
 local ControllerSettings = require(script.Controllers.ControllerSettings)
 ControllerSettings.SetSettings(Settings)
+
+local PlayerController = require(script.Controllers.PlayerController)
+
 local App = require(script.Components.App)
 local Mimic = require(script.Modules.Mimic)
 

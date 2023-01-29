@@ -159,6 +159,7 @@ end
 function Sidebar:Update()
     if tick() <= nextTime then return end
     if RunService:IsStudio() then return end
+    if Player:GetState("Respawning") then return end
 
     nextTime = tick() + 1/pollRate
     

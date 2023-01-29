@@ -21,14 +21,17 @@ local Mouse = Player.getMouse()
 local Initialized = false
 local Copying = false
 local CopyButton = Enum.KeyCode.M
+local FrontButton = Enum.KeyCode.Comma
 
 local targetCharacter = nil
 local targetName = ""
 local debounce = false
+local isInFront = false
 
 local clickConnection
 
-local offset = CFrame.new(6,0,0.5)
+local default_offset = CFrame.new(0.5,0,-6)
+local forward_offset = default_offset
 
 local R15_TO_R6_CORRESPONDENCE = {
     ["LeftLowerArm"] = "Left Arm",
@@ -219,7 +222,19 @@ function Mimic:CopyCharacterPose(character)
         end
 
         if myPart and instance:IsA("BasePart") then
+            local xz_vector = Vector3.zAxis + Vector3.xAxis
+            if theirPart.Name == "Torso" then
+                forward_offset = CFrame.new((theirPart.CFrame.LookVector * xz_vector).Unit * 6)
+            end
+
             local nexoPart = myNexo:FindFirstChild(myPart.Name)
+            local offset = CFrame.identity
+            if isInFront then
+                offset = forward_offset
+            else
+                offset = default_offset
+            end
+
             local resultantFrame = CFrame.new(theirPart.CFrame.Position):ToWorldSpace(offset) * theirPart.CFrame.Rotation * partOffset
             
             myPart.CFrame = resultantFrame
@@ -232,11 +247,16 @@ end
 
 
 local function processInputs()
-    if Player.Focusing or Player.Emoting:GetState() or Player.ChatEmoting:GetState() then return end
-    if ActionHandler.IsKeyDownBool(CopyButton) and not debounce then
+    if debounce or Player.Focusing or Player.Emoting:GetState() or Player.ChatEmoting:GetState() then return end
+    if ActionHandler.IsKeyDownBool(CopyButton) then
         Copying = not Copying
         debounce = true
         SendNotification("Mimic Enabled", tostring(Copying), "Close", 2)
+        task.delay(1, function() debounce = false end)
+    elseif ActionHandler.IsKeyDownBool(FrontButton) then
+        isInFront = not isInFront
+        debounce = true
+        SendNotification("In Front:", tostring(isInFront), "Close", 2)
         task.delay(1, function() debounce = false end)
     end
 end
@@ -254,6 +274,8 @@ end
 
 
 function Mimic:Update()
+    if Player:GetState("Respawning") or not Initialized then return end
+
     processInputs()
 
     local character = workspace:FindFirstChild(targetName)
@@ -285,7 +307,7 @@ function Mimic:Init()
     Initialized = true
     clickConnection = Mouse.Button1Down:Connect(getUserFromClick)
     SendNotification("Mimic Loaded", "Press M to mimic a clicked humanoid", "Close", 2)
-    PlayerController.Modules[self] = {self, #PlayerController.Modules + 1}
+    PlayerController.Modules[self] = self
 end
 
 

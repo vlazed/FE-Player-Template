@@ -136,14 +136,11 @@ function Player:OnGround(length)
 	params.FilterDescendantsInstances = {hrp.Parent, Player.getCharacter()}
 	params.FilterType = Enum.RaycastFilterType.Blacklist
 	params.IgnoreWater = false
+	params.RespectCanCollide = true
 	local raycastResult = workspace:Raycast(hrp.Position, Vector3.new(0,-length,0), params)
 	
 	if raycastResult then
-		if raycastResult.Instance.CanCollide then 
-			return raycastResult
-		else
-			return false
-		end
+		return raycastResult
 	end
 end
 

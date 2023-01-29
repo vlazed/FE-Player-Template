@@ -134,6 +134,7 @@ lostOwnershipLocation.CanCollide = false
 lostOwnershipLocation.Parent = workspace
 
 local lostPart = false
+local ground = Player:OnGround()
 
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
@@ -510,7 +511,6 @@ local function _R15ReanimLoad()
 					s.Position=fakechar.UpperTorso.Position
 					hrp.Position=fakechar.HumanoidRootPart.Position
 				end
-				--b.HumanoidRootPart.CanCollide = not toggleFling
 				if Player:GetFramerate() > 25 then
 					hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
 					hrp.AngularVelocity.Enabled = toggleFling
@@ -663,7 +663,9 @@ local function _NexoLoad(canClickFling)
 		D.RootPriority = 127
 	end 
 	for D,E in next,b:GetDescendants()do 
-		if E:IsA('BasePart')then 
+		if E:IsA('BasePart')then
+			--Network:RetainPart(E)
+			Network:FollowPart(E) 
 			d(c,x.RenderStepped:Connect(function()
 				E.CanCollide=false 
 			end))
@@ -863,10 +865,17 @@ local function detectFling(threshold: number, dt)
 
 	--print(currentAcceleration)
 
-	if currentAcceleration > threshold and not (Player.Sprinting:GetState() or Player.Running:GetState() or Player.Landing or Player.Flipping) then
+	if 
+		currentAcceleration > threshold and 
+		not (
+			Player.Sprinting:GetState() or 
+			Player.Running:GetState() or 
+			Player.Landing or 
+			Player.Flipping
+		)
+	then
 		print("Detected Fling")
-		nhrp.CFrame = previousCFrame:ToWorldSpace(CFrame.new(0, 5, 0))
-		nhrp.AssemblyLinearVelocity = Vector3.new()
+		nhrp.CFrame = previousCFrame + Vector3.yAxis * 5
 		Player.SetCFrame = false
 		task.delay(1, function() Player.SetCFrame = true end)
 	end
@@ -943,12 +952,26 @@ function PlayerController:Sprint()
 		tiltSpring.f = self.RunTiltRate * Player:GetAnimationSpeed()
 
 		if Player.Running:GetState() then
-			Player:GetAnimation("Run"):AdjustWeight(1, 1)
-			Player:GetAnimation("Run"):Play()
-			Player:GetAnimation("Run").Framerate = 30 / (humA.WalkSpeed/32)
+			if Player.Flying then
+				Player:GetAnimation("FlyRun"):AdjustWeight(1, 1)
+				Player:GetAnimation("FlyRun"):Play()
+				Player:GetAnimation("FlyRun").Framerate = 30 / (humA.WalkSpeed / 64)
+			else
+				Player:GetAnimation("Run"):AdjustWeight(1, 1)
+				Player:GetAnimation("Run"):Play()
+				Player:GetAnimation("Run").Framerate = 30 / (humA.WalkSpeed / 64)
+			end
 		elseif Player.Sprinting:GetState() then
-			Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
-			Player:GetAnimation("Sprint"):Play()
+			if Player.Flying then
+				Player:GetAnimation("FlySprint"):AdjustWeight(1, 1)
+				Player:GetAnimation("FlySprint"):Play()
+				Player:GetAnimation("FlySprint").Framerate = 60	
+			else
+				Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
+				Player:GetAnimation("Sprint"):Play()
+				Player:GetAnimation("Sprint").Framerate = 60
+	
+			end
 		end
 	end
 end
@@ -989,7 +1012,7 @@ function PlayerController:Jump(char)
 
 	char = char or Player.getNexoCharacter()
 
-	if Player:OnGround() then
+	if ground then
 		char.Humanoid.Jump = true
 	elseif Player.Dodging and not Player:GetState("Jumping") then
 		char.Humanoid:ChangeState(3)
@@ -1024,11 +1047,11 @@ function PlayerController:Idle()
 	
 	-- TODO: Change transition functions by shifting weight of animations
 	if Player.Flying then
-		Player.Transition(2)
+		--Player.Transition(2)
 	elseif Player.Swimming then
 		tiltSpring.f = self.IdleTiltRate * Player:GetAnimationSpeed()
 	else
-		Player.Transition(1)
+		--Player.Transition(1)
 	end
 end
 
@@ -1232,6 +1255,8 @@ function PlayerController:ProcessStates(char, nexoChar)
 
 	local threshold = 5000
 
+	ground = Player:OnGround()
+
 	local position = Network:CheckNetworkOwnershipOf(char)
 	if typeof(position) == "Vector3" then
 		self:SetLostNetworkPosition(position)
@@ -1240,14 +1265,10 @@ function PlayerController:ProcessStates(char, nexoChar)
 		lostOwnershipLocation.Transparency = 1
 	end
 
-	if Player:GetState("Respawning") then
-		self:Respawn()	
-	end
-
 	local fallenPercent = math.abs((height - workspace.FallenPartsDestroyHeight) / workspace.FallenPartsDestroyHeight)
 	if fallenPercent < FALLEN_PARTS_THRESHOLD then
-		hrp.CFrame = previousCFrame + Vector3.new(0, 5, 0)
 		hrp.AssemblyLinearVelocity = Vector3.new()
+		hrp.CFrame = previousCFrame + Vector3.new(0, 5, 0)
 	end
 
 	if Player.Dancing then
@@ -1272,7 +1293,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 		Player:SetState("Jumping", true)
 		threshold *= 4
 		self:Jump(nexoChar)
-	elseif not (Player:OnGround() or Player.Flying) then
+	elseif not (ground or Player.Flying) then
 		Player:GetStateClass("Falling"):SetPreviousState(Player:GetEnabledLocomotionState())
 		Player:SetState("Falling", true)
 		fallingSpeed = hrp.AssemblyLinearVelocity.Y
@@ -1352,9 +1373,6 @@ function PlayerController:ProcessStates(char, nexoChar)
 		moduleExecuteTime = tick() + 1 / updateModuleRate
 	end
 	detectFling(threshold)
-
-	--print(Player.Landing)
-	--print(Player.Slowing)
 end
 
 
@@ -1387,7 +1405,7 @@ end
 
 
 function PlayerController:RunUpdateTable()
-	for i, module in ipairs(self.Modules) do
+	for i, module in pairs(self.Modules) do
 		module:Update()
 	end
 end
@@ -1413,6 +1431,10 @@ end
 
 
 function PlayerController:Update()
+	if Player:GetState("Respawning") then 
+		self:Respawn()
+		return 
+	end
 
     local char = Player.getCharacter()
 	local nexoChar = Player.getNexoCharacter()
@@ -1494,7 +1516,6 @@ end
 
 function PlayerController:OnIdle()
 	--print("Idling")
-	local nexoHRP = Player.getNexoHumanoidRootPart()
 	--print(fallingSpeed)
 	if Player.Dancing then return end
 	if Player.Flying then
@@ -1523,6 +1544,7 @@ function PlayerController:OnIdle()
 		end
 		
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
+			
 			if math.abs(fallingSpeed) > 150 then
 				Player:GetAnimation("LandHard").Framerate = 30
 				Player.Landing = true
@@ -1710,6 +1732,7 @@ end
 
 
 function PlayerController:Respawn()
+	print("Respawning")
     local char = game:GetService("Players").LocalPlayer.Character
 
 	local oldCFrame = previousCFrame
@@ -1750,7 +1773,7 @@ function PlayerController:Respawn()
 	game:GetService("Players").LocalPlayer.Character = newChar
 	task.wait()
 	game:GetService("Players").LocalPlayer.Character = char
-	newChar:Destroy()	
+	newChar:Destroy()
 
 	local spawnLocation = Instance.new("SpawnLocation")
 	spawnLocation.CFrame = oldCFrame
@@ -1761,9 +1784,8 @@ function PlayerController:Respawn()
 
 	lostOwnershipLocation:Destroy()
 
-	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function()
-		task.wait()
-		local hrp = Player.getHumanoidRootPart()
+	respawnConnection = Player.getPlayer().CharacterAdded:Connect(function(character)
+		local hrp = character:WaitForChild("HumanoidRootPart")
 		if hrp then
 			hrp.CFrame = oldCFrame			
 			Player.getCharacter():SetPrimaryPartCFrame(oldCFrame)
