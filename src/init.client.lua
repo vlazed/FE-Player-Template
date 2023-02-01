@@ -58,7 +58,7 @@ if RunService:IsStudio() then
     end    
 end
 
-local SelectedModule = require(script.Modules.R6.ElegantSword.ElegantSword)
+local SelectedModule = require(script.Modules.R6.Bike.Bike)
 
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"

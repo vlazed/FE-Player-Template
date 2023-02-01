@@ -298,7 +298,7 @@ function ElegantSword:ProcessInputs()
     elseif ActionHandler.IsKeyDownBool(SitButton) then
         --print("SitButotn")
         Sitting = not Sitting
-        if Sit:IsPlaying() then
+        if Sit:IsPlaying() and not Sitting then
             Sit:Stop()
         else
             Sit:Play()

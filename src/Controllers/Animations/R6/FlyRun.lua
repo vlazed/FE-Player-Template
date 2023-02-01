@@ -1499,13 +1499,5 @@ return {
 				},
 			},
 		},
-		{
-			["Time"] = 0.017,
-			["HumanoidRootPart"] = {
-				["Torso"] = {
-					CFrame = CFrame.new(0, 0, 0.727) * CFrame.Angles(math.rad(82.105), math.rad(1.547), math.rad(-0.401)),
-				},
-			},
-		},
 	}
 }

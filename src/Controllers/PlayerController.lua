@@ -99,6 +99,12 @@ PlayerController.FallTiltRate = 3
 PlayerController.JumpTiltRate = 3
 PlayerController.WalkTiltRate = 2
 PlayerController.RunTiltRate = 4
+PlayerController.SprintTiltRate = 8
+
+PlayerController.WalkTiltMagnitude = 0.25
+PlayerController.RunTiltMagnitude = 4
+PlayerController.SprintTiltMagnitude = 4
+PlayerController.JumpTiltMagnitude = 0.1
 
 -- Control for stable or maneuverable movement
 PlayerController.MoveRate = 2
@@ -905,6 +911,8 @@ function PlayerController:_InitializeStates()
 	Player:GetAnimation("SprintStop"):ConnectStop(self.OnStopAnimation)
 	Player:GetAnimation("RunStop"):ConnectStop(self.OnStopAnimation)
 	Player:GetAnimation("WalkStop"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("FlyRunStop"):ConnectStop(self.OnStopAnimation)
+	Player:GetAnimation("FlyWalkStop"):ConnectStop(self.OnStopAnimation)
 	
 	Player.FightMode.OnFalse:Connect(self.StoppedState)
 	Player.Attacking.OnFalse:Connect(self.StoppedState)
@@ -949,8 +957,6 @@ function PlayerController:Sprint()
 	elseif Player.Swimming then
 		tiltSpring.f = self.RunTiltRate * 2.5 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = self.RunTiltRate * Player:GetAnimationSpeed()
-
 		if Player.Running:GetState() then
 			if Player.Flying then
 				Player:GetAnimation("FlyRun"):AdjustWeight(1, 1)
@@ -960,6 +966,7 @@ function PlayerController:Sprint()
 				Player:GetAnimation("Run"):AdjustWeight(1, 1)
 				Player:GetAnimation("Run"):Play()
 				Player:GetAnimation("Run").Framerate = 30 / (humA.WalkSpeed / 64)
+				tiltSpring.f = self.RunTiltRate * Player:GetAnimationSpeed()
 			end
 		elseif Player.Sprinting:GetState() then
 			if Player.Flying then
@@ -970,7 +977,7 @@ function PlayerController:Sprint()
 				Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
 				Player:GetAnimation("Sprint"):Play()
 				Player:GetAnimation("Sprint").Framerate = 60
-	
+				tiltSpring.f = self.SprintTiltRate * Player:GetAnimationSpeed()
 			end
 		end
 	end
@@ -1218,10 +1225,10 @@ function PlayerController:LeanCharacter(char)
 		self.MoveVector = char.Humanoid.MoveDirection
 	end
 
-	local sprintConstant = Player.Sprinting:GetState() and 8 or 1 
-	local runConstant = Player.Running:GetState() and 4 or 1
-	local walkConstant = Player:GetState("Walking") and 0.25 or 1
-	local jumpConstant = Player:GetState("Jumping") and 0.1 or 1
+	local sprintConstant = Player.Sprinting:GetState() and self.SprintTiltMagnitude or 1 
+	local runConstant = Player.Running:GetState() and self.RunTiltMagnitude or 1
+	local walkConstant = Player:GetState("Walking") and self.WalkTiltMagnitude or 1
+	local jumpConstant = Player:GetState("Jumping") and self.JumpTiltMagnitude or 1
 	local flyConstant = Player.Flying and 2 or 1
 
 	self.TiltVector = Vector3.new(0,1,0) + char.Humanoid.MoveDirection * flyConstant * walkConstant * sprintConstant * jumpConstant * runConstant
@@ -1546,7 +1553,6 @@ function PlayerController:OnIdle()
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
 			
 			if math.abs(fallingSpeed) > 150 then
-				Player:GetAnimation("LandHard").Framerate = 30
 				Player.Landing = true
 				Player:GetAnimation("LandHard"):Play()
 				--print("Landed HARD")
@@ -1565,9 +1571,9 @@ function PlayerController.OnStopAnimation(animation: Animation)
 		--print("Flipped")
 		Player.Dodging = false
 		Player.Flipping = false
-	elseif animation.Name == "LandSoft" or animation.Name == "LandHard" then
+	elseif animation.Name:find("Land") then
 		Player.Landing = false
-	elseif animation.Name == "RunStop" or animation.Name == "SprintStop" or animation.Name == "WalkStop" then
+	elseif animation.Name:find("Stop") then
 		Player.Slowing = false
 	end
 end
@@ -1602,26 +1608,49 @@ function PlayerController:ResetLocomotionScalars()
 	self.JumpTiltRate = 3
 	self.WalkTiltRate = 2
 	self.RunTiltRate = 4
+	self.SprintTiltRate = 3
+
+	self.WalkTiltMagnitude = 0.25
+	self.RunTiltMagnitude = 4
+	self.SprintTiltMagnitude = 8
+	self.JumpTiltMagnitude = 0.1
 end
 
 
 function PlayerController.StoppedState(state)
 	if state:GetName() == "Sprinting" then
 		--print("Skidded HARD")
+		Player:GetAnimation("FlySprint"):Stop()
+		Player:GetAnimation("Sprint").Weight = 0
 		Player:GetAnimation("Sprint"):Stop()
 		Player:GetAnimation("Sprint").Weight = 0
-		task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
+		if Player.Flying then
+			task.delay(0.05, delayStopAnim, Player:GetAnimation("FlyRunStop"))
+		else
+			task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
+		end
 	elseif state:GetName() == "Running" then
 		--print("Skidded")
+		Player:GetAnimation("FlyRun"):Stop()
+		Player:GetAnimation("FlyRun").Weight = 0
 		Player:GetAnimation("Run"):Stop()
 		Player:GetAnimation("Run").Weight = 0
-		task.delay(0.05, delayStopAnim, Player:GetAnimation("RunStop"))
+		if Player.Flying then
+			task.delay(0.05, delayStopAnim, Player:GetAnimation("FlyRunStop"))
+		else
+			task.delay(0.05, delayStopAnim, Player:GetAnimation("SprintStop"))
+		end
 	elseif state:GetName() == "Walking" then
 		--print("Skidded")
+		Player:GetAnimation("FlyWalk"):Stop()
 		Player:GetAnimation("Walk"):Stop()
 		Player:GetAnimation("CrouchWalk"):Stop()
 		if not Player.Crouching:GetState() then
-			task.delay(0.01, delayStopAnim, Player:GetAnimation("WalkStop"))
+			if Player.Flying then
+				task.delay(0.05, delayStopAnim, Player:GetAnimation("FlyWalkStop"))
+			else
+				task.delay(0.05, delayStopAnim, Player:GetAnimation("WalkStop"))
+			end
 		end
 	elseif state:GetName() == "FightMode" then
 		Player:GetAnimation("FightIdle"):Stop()
@@ -1642,6 +1671,9 @@ end
 
 function PlayerController:OnWalk()
 	if Player.Flying then
+		Player:GetAnimation("Fall"):Stop()
+		Player:GetAnimation("Jump"):Stop()
+
 		Player:GetAnimation("FlyFall"):Pause()
 		Player:GetAnimation("FlyJump"):Stop()
 		Player:GetAnimation("FlyWalk"):Play()

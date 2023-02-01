@@ -1,7 +1,8 @@
 return {
 	Properties = {
 		Looping = true,
-		Priority = Enum.AnimationPriority.Movement
+		Priority = Enum.AnimationPriority.Movement,
+		Framerate = 60,
 	},
 	Keyframes = {
 		{
@@ -1496,14 +1497,6 @@ return {
 					["Left Arm"] = {
 						CFrame = CFrame.new(0, -0.082, 0.014) * CFrame.Angles(math.rad(-8.652), math.rad(-3.495), math.rad(26.127)),
 					},
-				},
-			},
-		},
-		{
-			["Time"] = 0.017,
-			["HumanoidRootPart"] = {
-				["Torso"] = {
-					CFrame = CFrame.new(0, 0, 0.727) * CFrame.Angles(math.rad(67.724), math.rad(1.604), 0),
 				},
 			},
 		},

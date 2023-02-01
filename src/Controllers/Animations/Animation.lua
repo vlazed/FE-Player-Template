@@ -31,6 +31,7 @@ function Animation.new(name: string, keyframeSequence: table, framerate: number,
     self.IsInterpolating = true
 
     self.FilterTable = {}
+    self.ToolMap = {}
 
     self.Looking = looking or false
 

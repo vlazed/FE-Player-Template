@@ -39,6 +39,7 @@ Player.Sprinting = State.new("Sprinting", false)
 Player.Dancing = false
 Player.Looking = true
 Player.Swimming = false
+Player.Leaning = true
 
 Player.Emoting = State.new("Emoting", false)
 Player.Focusing = false
@@ -52,6 +53,7 @@ Player.Climbing = State.new("Climbing", false)
 
 Player.Invisible = false
 
+Player.DefaultModule = PlayerAnimations
 Player.AnimationModule = PlayerAnimations
 
 Player.Locked = false
@@ -91,10 +93,10 @@ function Player:GetAnimation(animation: string): Animation
 	elseif self.AnimationModule.Emotes[animation:lower()] then
 		--print(self.AnimationModule.Emotes[animation])
 		return self.AnimationModule.Emotes[animation:lower()]
-	elseif PlayerAnimations.Emotes[animation:lower()] then
+	elseif self.DefaultModule.Emotes[animation:lower()] then
 		--print(PlayerAnimations.Emotes[animation:lower()])	
 		return PlayerAnimations.Emotes[animation:lower()]
-	elseif PlayerAnimations[animation] then
+	elseif self.DefaultModule[animation] then
 		--print(PlayerAnimations[animation])
 		return PlayerAnimations[animation]
 	else
@@ -154,6 +156,22 @@ end
 
 function Player:ResetAnimationModule()
 	self.AnimationModule = PlayerAnimations
+end
+
+
+function Player:ConstructMotor(name, parent, part1, c0, c1)
+	if parent[name] then return end
+	
+	local nexoChar = self.getNexoCharacter()
+	local part0 = nexoChar[parent]
+	local motor6D = Instance.new("Motor6D")
+	motor6D.C0 = c0
+	motor6D.C1 = c1
+	motor6D.Part0 = part0
+	motor6D.Part1 = part1
+	motor6D.Enabled = true
+
+	return motor6D
 end
 
 

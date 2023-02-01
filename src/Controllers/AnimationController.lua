@@ -101,11 +101,13 @@ local function lookAtMouse(torso)
     local torsoCF
     local headCF
     if torso.Name == "Torso" then
-        torso.CFrame *= CFrame.fromOrientation(
-            math.clamp(-angleX, -math.pi/32, math.pi/32),
-            math.clamp(-angleY, -math.pi/8, math.pi/8), 
-            math.clamp(-angleY, -math.pi/64, math.pi/64)
-        )
+        if AnimationController.TorsoLook then
+            torso.CFrame *= CFrame.fromOrientation(
+                math.clamp(-angleX, -math.pi/32, math.pi/32),
+                math.clamp(-angleY, -math.pi/8, math.pi/8), 
+                math.clamp(-angleY, -math.pi/64, math.pi/64)
+            )                
+        end
         headCF = CFrame.fromOrientation(
             math.clamp(angleX, -math.pi/16, math.pi/4), 
             math.clamp(-angleY, -math.pi/16, math.pi/16),
@@ -113,11 +115,13 @@ local function lookAtMouse(torso)
         )
         --]]
     else
-        torso.CFrame *= CFrame.fromOrientation(
-            math.clamp(-angleX, -math.pi/32, math.pi/32), 
-            math.clamp(-angleY, -math.pi/16, math.pi/16), 
-            math.clamp(-angleY, -math.pi/16, math.pi/16) 
-        )
+        if AnimationController.TorsoLook then
+            torso.CFrame *= CFrame.fromOrientation(
+                math.clamp(-angleX, -math.pi/32, math.pi/32), 
+                math.clamp(-angleY, -math.pi/16, math.pi/16), 
+                math.clamp(-angleY, -math.pi/16, math.pi/16) 
+            )                
+        end
         headCF = CFrame.fromOrientation(
             math.clamp(-angleX, -math.pi/2, math.pi/2), 
             math.clamp(-angleY, -math.pi/2, math.pi/2), 
@@ -127,6 +131,107 @@ local function lookAtMouse(torso)
 
     return headCF
 end
+
+
+local function parseToolMappingR6(character, kf, toolMapping, weight)
+    
+    local function animateTool(tool, parent, offset, motor)
+        if not offset.CFrame then return end
+
+        local nexoCharacter = Player.getNexoCharacter()
+        local nexoTool = nexoCharacter:FindFirstChild(tool.Parent.Name)
+        
+        local attachment = tool:FindFirstChildOfClass("Attachment")
+        local attachmentCF = attachment.CFrame
+        local parentAttachmentCF = parent[attachment.Name].CFrame 
+        local parentCF = parent.CFrame
+        local cfLerp = CFrame.identity:Lerp(offset.CFrame, 1)        
+        
+        FastTween(motor, {0.1}, {Transform = cfLerp})
+        --print(c0)
+        --print(tool)
+        tool.CFrame = parentCF * (motor.c0 * motor.Transform * motor.c1:Inverse()) 
+        nexoTool.Handle.CFrame = tool.CFrame
+    end
+
+    for limb, tool in pairs(toolMapping) do
+        local limb = character:FindFirstChild(limb)
+        
+        if limb.Name == "Torso" then
+            if kf[tool[1].Name] then    
+                animateTool(tool[1], limb, kf[tool[1].Name], tool[2], tool[3])
+            end
+        else
+            if kf[limb.Name] then
+                if kf[limb.Name][tool[1].Name] then    
+                    animateTool(tool[1], limb, kf[limb.Name][tool[1].Name], tool[2], tool[3])
+                end                    
+            end
+        end
+
+    end
+end
+
+
+local function parseToolMappingR15(character, kf, toolMapping, weight)
+    local function animateTool(tool, parent, offset)
+        if not offset then return end
+        
+        local attachment = tool:FindFirstChildOfClass("Attachment")
+        local attachmentCF = attachment.CFrame
+        local parentCF = parent:FindFirstChild(attachment.Name).CFrame or parent.CFrame
+        local cfLerp = CFrame.identity:Lerp(offset, weight)
+        
+        tool.Handle.CFrame = parentCF * cfLerp * attachmentCF:inverse()
+    end
+
+    for limb, tool in pairs(toolMapping) do
+        local limb = character:FindFirstChild(limb)
+        
+        if limb and kf[limb][tool] then
+            animateTool(tool, limb, kf[limb][tool])
+            return
+        end
+    end
+end
+
+
+
+function AnimationController:_poseAccessoryR15(character, keyframe, toolMapping)
+    local kfLowerTorso = keyframe["HumanoidRootPart"] and keyframe["HumanoidRootPart"]["LowerTorso"]
+    local kfUpperTorso = kfLowerTorso and kfLowerTorso["UpperTorso"]
+    local kfHead = kfUpperTorso and kfUpperTorso["Head"]
+    local kfRightUpperArm = kfUpperTorso and kfUpperTorso["RightUpperArm"]
+    local kfLeftUpperArm = kfUpperTorso and kfUpperTorso["LeftUpperArm"]
+    local kfRightLowerArm = kfUpperTorso and kfRightUpperArm["RightLowerArm"]
+    local kfLeftLowerArm = kfUpperTorso and kfLeftUpperArm["LeftLowerArm"]
+    local kfRightHand = kfRightUpperArm and kfRightLowerArm["RightHand"]
+    local kfLeftHand = kfLeftUpperArm and kfLeftLowerArm["LeftHand"]
+    local kfRightUpperLeg = kfUpperTorso and kfUpperTorso["RightUpperLeg"]
+    local kfLeftUpperLeg = kfUpperTorso and kfUpperTorso["LeftUpperLeg"]
+    local kfRightLowerLeg = kfUpperTorso and kfRightUpperLeg["RightLowerLeg"]
+    local kfLeftLowerLeg = kfUpperTorso and kfLeftUpperLeg["LeftLowerLeg"]
+    local kfRightFoot = kfRightLowerLeg and kfRightLowerLeg["RightFoot"]
+    local kfLeftFoot = kfLeftLowerLeg and kfLeftLowerLeg["LeftFoot"]
+    
+    -- FIXME: Think of an iterative process to parse keyframes
+    parseToolMappingR15(character, kfLowerTorso, toolMapping)
+    parseToolMappingR15(character, kfUpperTorso, toolMapping)
+    parseToolMappingR15(character, kfRightUpperArm, toolMapping)
+    parseToolMappingR15(character, kfLeftUpperArm, toolMapping)
+    parseToolMappingR15(character, kfRightUpperArm, toolMapping)
+    parseToolMappingR15(character, kfLeftLowerArm, toolMapping)
+    parseToolMappingR15(character, kfRightHand, toolMapping)
+    parseToolMappingR15(character, kfLeftHand, toolMapping)
+    parseToolMappingR15(character, kfRightUpperLeg, toolMapping)
+    parseToolMappingR15(character, kfLeftUpperLeg, toolMapping)
+    parseToolMappingR15(character, kfRightUpperLeg, toolMapping)
+    parseToolMappingR15(character, kfLeftLowerLeg, toolMapping)
+    parseToolMappingR15(character, kfRightFoot, toolMapping)
+    parseToolMappingR15(character, kfLeftFoot, toolMapping)
+    parseToolMappingR15(character, kfHead, toolMapping)
+end
+
 
 function AnimationController:_poseR15(character, keyframe, interp, filterTable, looking, reflected, weight, offset)
     interp = interp or 1
@@ -169,7 +274,8 @@ function AnimationController:_poseR15(character, keyframe, interp, filterTable, 
             or Player.FightMode:GetState()
             or Player.Slowing
             or Player:GetState("Idling")
-        )
+        ) and
+            Player.Leaning
         then
             character.LowerTorso.CFrame = CFrame.fromMatrix(
                 character.LowerTorso.CFrame.Position,
@@ -421,6 +527,17 @@ function AnimationController:Flip(xDir, zDir, dt)
 end
 
 
+function AnimationController:_poseAccessoryR6(character, keyframe, toolMapping, weight)
+    local kf = keyframe["HumanoidRootPart"] and keyframe["HumanoidRootPart"]["Torso"] or keyframe["Torso"]
+    
+    weight = math.clamp(weight, 0, 1)
+    
+    if kf then
+        parseToolMappingR6(character, kf, toolMapping, weight)
+    end
+end
+
+
 function AnimationController:_poseR6(character, keyframe, interp, filterTable, looking, reflected, weight, offset)
     interp = interp or 1
 
@@ -475,7 +592,8 @@ function AnimationController:_poseR6(character, keyframe, interp, filterTable, l
                 Player.Slowing or
                 Player:GetState("Idling") or
                 Player.Climbing:GetState()
-            )
+            ) and
+            Player.Leaning
         then
             local tiltFrame = CFrame.fromMatrix(
                 character.Torso.CFrame.Position,
@@ -691,6 +809,7 @@ function AnimationController:_animateStep(char, animation: Animation)
             animation.Weight,
             animation.Offset
         )
+        self:_poseAccessoryR6(char, animation.KeyframeSequence[animation:GetIndex()], animation.ToolMap, animation.Weight)
     else 
         self:_poseR15(
             char, 
@@ -702,6 +821,7 @@ function AnimationController:_animateStep(char, animation: Animation)
             animation.Weight,
             animation.Offset
         )
+        self:_poseAccessoryR15(char, animation.KeyframeSequence[animation:GetIndex()], animation.ToolMap, animation.Weight)
     end
 
     
@@ -796,6 +916,7 @@ function AnimationController.new(animationModule)
         [Enum.AnimationPriority.Action4] = {}
     }
 
+    self.TorsoLook = true
     self.CurrentModule = animationModule
 
     self.Playing = true

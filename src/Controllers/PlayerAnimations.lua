@@ -19,9 +19,9 @@ end
 
 for i,v in ipairs(directory:GetChildren()) do
     if v:IsA("ModuleScript") then
-        PlayerAnimations[v.Name] = Animation.new(v.Name, require(v), 24, true)
+        PlayerAnimations[v.Name] = Animation.new(v.Name, require(v), 60, true)
     elseif v:IsA("KeyframeSequence") then
-        PlayerAnimations[v.Name] = Animation.new(v.Name, v, 24, true)
+        PlayerAnimations[v.Name] = Animation.new(v.Name, v, 60, true)
     end
 end
 

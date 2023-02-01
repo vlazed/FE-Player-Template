@@ -1,0 +1,6 @@
+{
+    "name": "Bike",
+    "tree": {
+      "$path": "src/Modules/R6/Bike"
+    }
+  }

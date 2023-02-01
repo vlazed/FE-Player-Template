@@ -50,7 +50,7 @@ function Network:RetainPart(Part) --function for retaining ownership of unanchor
 end
 
 function Network:RemovePart(Part) --function for removing ownership of unanchored part
-    if Part:IsA("BasePart") and Part:IsDescendantOf(workspace) then
+    if not Part or (Part:IsA("BasePart") and Part:IsDescendantOf(workspace)) then
         local Index = table.find(self["BaseParts"],Part)
         if Index then
             table.remove(self["BaseParts"],Index)
