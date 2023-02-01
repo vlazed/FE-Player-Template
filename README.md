@@ -1,4 +1,7 @@
 # FE-Player-Template
+<p align="center">
+  <img src="./media/dance-party.gif" alt="animated" />
+</p>
 An open-source, code-based, rbxm-suite package that provides a framework for experienced scripters or animators of any level or both to reanimate a character or their accessories and a system to switch between different reanimations nonintrusively.
 
 This framework uses the Nexo Animator as a base for R6 and a hybrid of Nexo R6 and kuraga's [R15 Reanimation](https://v3rmillion.net/showthread.php?tid=1073859) for R15, with 4eyes's Network Ownership Library as an additive layer for ownership.
