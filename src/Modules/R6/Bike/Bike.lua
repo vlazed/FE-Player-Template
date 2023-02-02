@@ -46,6 +46,32 @@ Bike.Initialized = false
 --]]
 Bike.Animations = {Emotes = {}}
 Bike.Tricks = {}
+Bike.Settings = {
+    IdleSpeed = 0,
+    WalkSpeed = 20,
+    RunSpeed = 40,
+    SprintSpeed = 500,
+    JumpPower = 100,
+    RunJumpPower = 120,
+    SprintJumpPower = 150,
+    
+    IdleTweenTime = 1,
+    WalkTweenTime = 0.5,
+    RunTweenTime = 2,
+    SprintTweenTime = 2,
+    
+    IdleTiltRate = 1,
+	FallTiltRate = 3,
+	JumpTiltRate = 3,
+	WalkTiltRate = 0.5,
+	RunTiltRate = 6,
+    SprintTiltRate = 64,
+
+    WalkTiltMagnitude = 0.6,
+    RunTiltMagnitude = 0.6,
+    SprintTiltMagnitude = 8,
+    JumpTiltMagnitude = 0.1,
+}
 
 local function populateEmoteTable(inputTable: table, targetTable: table)
     for i,v in ipairs(inputTable) do
@@ -120,6 +146,8 @@ end
     implementation to prevent inputs from processing on the update step
 --]]
 function Bike:ProcessInputs(char, Accessory)
+    if Player.Focusing then return end
+    
     if ActionHandler.IsKeyDownBool(BikeButton) then
         if not onBike and not isMounting then
             self:Mount(Accessory)
@@ -238,29 +266,7 @@ end
 
 
 function Bike:SetLocomotionScalars()
-    PlayerController.IdleSpeed = 0
-    PlayerController.WalkSpeed = 20
-    PlayerController.RunSpeed = 40
-    PlayerController.SprintSpeed = 500
-    PlayerController.JumpPower = 100
-    PlayerController.RunJumpPower = 120
-    PlayerController.SprintJumpPower = 150
-    PlayerController.IdleTweenTime = 1
-    PlayerController.WalkTweenTime = 0.5
-    PlayerController.RunTweenTime = 2
-    PlayerController.SprintTweenTime = 2
-    
-	PlayerController.IdleTiltRate = 1
-	PlayerController.FallTiltRate = 3
-	PlayerController.JumpTiltRate = 3
-	PlayerController.WalkTiltRate = 0.5
-	PlayerController.RunTiltRate = 6
-    PlayerController.SprintTiltRate = 64
-
-    PlayerController.WalkTiltMagnitude = 0.6
-    PlayerController.RunTiltMagnitude = 0.6
-    PlayerController.SprintTiltMagnitude = 8
-    PlayerController.JumpTiltMagnitude = 0.1
+    PlayerController:SetSettings(self.Settings)
 end
 
 
@@ -274,9 +280,9 @@ end
 
 function Bike:Stop()
     self:DetachBike()
-    local onBike = false
-    local isMounting = false
-    local isDismounting = false
+    onBike = false
+    isMounting = false
+    isDismounting = false
     PlayerController.Modules[self] = nil
     PlayerController:ResetLocomotionScalars()
     self.Initialized = false

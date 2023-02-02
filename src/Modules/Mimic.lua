@@ -88,56 +88,59 @@ end
 
 local function animateHats_R15(filterTable)
     filterTable = filterTable or {}
+    local character = Player.getCharacter()
+    local nexoCharacter = Player.getNexoCharacter()
 
-    for i,v in ipairs(Player.getNexoCharacter():GetChildren()) do
+
+    for i,v in ipairs(nexoCharacter:GetChildren()) do
         if v:IsA("Accessory") and not filterTable[v.Name] then
             local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
-            local characterAttachment = Player.getNexoCharacter():FindFirstChild("UpperTorso"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter():FindFirstChild("LowerTorso"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter():FindFirstChild("Head"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getNexoCharacter():FindFirstChild("Left Arm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("Right Arm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("Right Leg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("Left Leg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftUpperArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightUpperArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightUpperLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftUpperLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftLowerArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightLowerArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightLowerLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftLowerLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftFoot"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter():FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
+            local characterAttachment = nexoCharacter:FindFirstChild("UpperTorso"):FindFirstChild(accessoryAttachment.Name) 
+                or character:FindFirstChild("LowerTorso"):FindFirstChild(accessoryAttachment.Name) 
+                or character:FindFirstChild("Head"):FindFirstChild(accessoryAttachment.Name) 
+                or nexoCharacter:FindFirstChild("Left Arm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("Right Arm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("Right Leg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("Left Leg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftUpperArm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightUpperArm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightUpperLeg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftUpperLeg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftLowerArm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightLowerArm"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightLowerLeg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftLowerLeg"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftFoot"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter:FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
 
             v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
         end				
     end
 
-    for i,v in ipairs(Player.getCharacter():GetChildren()) do
+    for i,v in ipairs(character:GetChildren()) do
         if v:IsA("Accessory") and not filterTable[v.Name] then
             local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
-             local characterAttachment = Player.getCharacter():FindFirstChild("UpperTorso"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter():FindFirstChild("LowerTorso"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter():FindFirstChild("Head"):FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter():FindFirstChild("Left Arm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("Right Arm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("Right Leg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("Left Leg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftUpperArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightUpperArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightUpperLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftUpperLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftLowerArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightLowerArm"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightLowerLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftLowerLeg"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftFoot"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter():FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
+             local characterAttachment = character:FindFirstChild("UpperTorso"):FindFirstChild(accessoryAttachment.Name) 
+                or character:FindFirstChild("LowerTorso"):FindFirstChild(accessoryAttachment.Name) 
+                or character:FindFirstChild("Head"):FindFirstChild(accessoryAttachment.Name) 
+                or character:FindFirstChild("Left Arm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("Right Arm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("Right Leg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("Left Leg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftUpperArm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightUpperArm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightUpperLeg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftUpperLeg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftLowerArm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightLowerArm"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightLowerLeg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftLowerLeg"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftFoot"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightFoot"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("RightHand"):FindFirstChild(accessoryAttachment.Name)
+                or character:FindFirstChild("LeftHand"):FindFirstChild(accessoryAttachment.Name)
 
             v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
         end
@@ -147,29 +150,31 @@ end
 
 local function animateHats_R6(filterTable)
     filterTable = filterTable or {}
+    local character = Player.getCharacter()
+    local nexoCharacter = Player.getNexoCharacter()
 
-    for i,v in ipairs(Player.getNexoCharacter():GetChildren()) do
+    for i,v in ipairs(nexoCharacter:GetChildren()) do
         if v:IsA("Accessory") and not filterTable[v.Name] then
             local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
             local characterAttachment = Player.getNexoCharacter().Torso:FindFirstChild(accessoryAttachment.Name) 
-                or Player.getNexoCharacter().Head:FindFirstChild(accessoryAttachment.Name) 
-                or Player.getNexoCharacter()["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter()["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter()["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getNexoCharacter()["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter.Head:FindFirstChild(accessoryAttachment.Name) 
+                or nexoCharacter["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
+                or nexoCharacter["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
             v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
         end		
     end
     
-    for i,v in ipairs(Player.getCharacter():GetChildren()) do
+    for i,v in ipairs(character:GetChildren()) do
         if v:IsA("Accessory") and not filterTable[v.Name] then
             local accessoryAttachment = v.Handle:FindFirstChildOfClass("Attachment")
              local characterAttachment = Player.getCharacter().Torso:FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter().Head:FindFirstChild(accessoryAttachment.Name) 
-                or Player.getCharacter()["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter()["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter()["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
-                or Player.getCharacter()["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
+                or character.Head:FindFirstChild(accessoryAttachment.Name) 
+                or character["Left Arm"]:FindFirstChild(accessoryAttachment.Name)
+                or character["Right Arm"]:FindFirstChild(accessoryAttachment.Name)
+                or character["Right Leg"]:FindFirstChild(accessoryAttachment.Name)
+                or character["Left Leg"]:FindFirstChild(accessoryAttachment.Name)
             v.Handle.CFrame = characterAttachment.Parent.CFrame * characterAttachment.CFrame * accessoryAttachment.CFrame:inverse()
         end
     end

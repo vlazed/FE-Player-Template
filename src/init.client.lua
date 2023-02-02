@@ -30,18 +30,32 @@ local Settings = {
 
     DT = 0.01,
 
-    runSpeed = 50,
-    sprintSpeed = 1000,
-    idleSpeed = 0,
-    walkSpeed = 16,
-    jumpPower = 50,
-    runJump = 125,
-    sprintJump = 300,
-    ascentSpeed = 10,
-    idleTime = 0.25,
-    walkTime = 0.25,
-    runTime = 2,
-    sprintTime = 10,
+    RunSpeed = 50,
+    SprintSpeed = 1000,
+    IdleSpeed = 0,
+    WalkSpeed = 16,
+    JumpPower = 50,
+    RunJumpPower = 125,
+    SprintJumpPower = 300,
+    AscentSpeed = 10,
+    IdleTweenTime = 0.25,
+    WalkTweenTime = 0.25,
+    RunTweenTime = 2,
+    SprintTweenTime = 10,
+
+    IdleTiltRate = 10,
+	FallTiltRate = 3,
+	JumpTiltRate = 3,
+	WalkTiltRate = 2,
+	RunTiltRate = 4,
+	SprintTiltRate = 3,
+
+    WalkTiltMagnitude = 0.25,
+	RunTiltMagnitude = 4,
+	SprintTiltMagnitude = 8,
+	JumpTiltMagnitude = 0.1,
+
+    MoveRate = 2,
 }
 
 local ControllerSettings = require(script.Controllers.ControllerSettings)
@@ -70,7 +84,7 @@ end
 
 local success, err = pcall(function()
     PlayerController:Init()
-    --SelectedModule:Init()
+    SelectedModule:Init()
     Mimic:Init()
     App:Init()
 end)

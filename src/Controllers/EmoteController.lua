@@ -8,17 +8,15 @@ end
 local Player = require(Project.Player)
 local AnimationController = require(Project.Controllers.AnimationController)
 
-local ControllerSettings = require(Project.Controllers.ControllerSettings)
-
 local EmoteController = {}
 
 local initialized = false
+
 local focusConnection, focusLostConnection, updateConnection
-local chatbar
 
 local PlayerGui = Player.getPlayerGui()
 
-local EmoteLayer = AnimationController.new()
+local EmoteLayer = {}
 
 EmoteController.PointRight = false
 EmoteController.PointLeft = false
@@ -173,7 +171,8 @@ end
 
 function EmoteController:Init()
     if initialized then return end
-    local Settings = ControllerSettings.GetSettings()
+    
+    EmoteLayer = AnimationController.new()
 
     local chatbar = PlayerGui.Chat:FindFirstChild("ChatBar", true)
     if chatbar then

@@ -5,35 +5,34 @@ else
 	Project = script:FindFirstAncestor(_G.PROJECT_NAME)
 end
 
+local RunService = game:GetService("RunService")
+
 local ActionHandler = require(Project.Controllers.ActionHandler)
 local Animation = require(Project.Controllers.Animations.Animation)
 local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local EmoteController = require(Project.Controllers.EmoteController)
+local R6Reanim = require(Project.Controllers.Reanimation.R6Nexo)
+local R15Reanim = require(Project.Controllers.Reanimation.R15NexoKuraga)
 
 local Network = require(Project.Util.Network)
-
--- TODO: Determine CFrame-based implementation for R6 IK Foot Placement 
---local R6IKController = require(Project.Controllers.R6IKController)
-
-local Player = require(Project.Player)
-
 local SendNotification = require(Project.Util.SendNotification)
 local FastTween = require(Project.Util.FastTween)
 local Thread = require(Project.Util.Thread)
 local Signal = require(Project.Packages.Signal)
 local Spring = require(Project.Util.Spring)
 
-local RunService = game:GetService("RunService")
+-- TODO: Determine CFrame-based implementation for R6 IK Foot Placement 
+--local R6IKController = require(Project.Controllers.R6IKController)
+
+local Player = require(Project.Player)
 
 local PlayerController = {}
 
 local FALLEN_PARTS_THRESHOLD = 0.25
-
-local respawnConnection
-
 local EPSILON = 1e-4
 local DEBUG = false
+
 
 PlayerController.MoveVector = Player.getHumanoidRootPart().CFrame.LookVector
 PlayerController.TiltVector = Vector3.new(0, 1, 0)
@@ -61,10 +60,9 @@ PlayerController.LeftLeg = nil
 PlayerController.RightLeg = nil
 
 PlayerController.ResetTransform = false
+PlayerController.ToggleFling = false
+PlayerController.LerpEnabled = false
 
-local posSpring = Spring.new(1, Vector3.new())
-
-local toggleFling = false
 local debounce = false
 
 local fallingSpeed = 0
@@ -72,54 +70,50 @@ local currentFlipDelay = 0
 
 local previousCFrame = CFrame.identity
 
-PlayerController.Animation = Animation.new("Blank", {}, 30, false)
-PlayerController.Framerate = 30
-PlayerController.LerpEnabled = false
-
 PlayerController.Buoyancy = nil
 
 -- Controller Locomotion Scalars
 PlayerController.DefaultSettings = ControllerSettings:GetSettings()
 
-PlayerController.IdleSpeed = PlayerController.DefaultSettings.idleSpeed
-PlayerController.WalkSpeed = PlayerController.DefaultSettings.walkSpeed
-PlayerController.RunSpeed = PlayerController.DefaultSettings.runSpeed
-PlayerController.SprintSpeed = PlayerController.DefaultSettings.sprintSpeed
-PlayerController.JumpPower = PlayerController.DefaultSettings.jumpPower
-PlayerController.RunJumpPower = PlayerController.DefaultSettings.runJump
-PlayerController.SprintJumpPower = PlayerController.DefaultSettings.sprintJump
-PlayerController.IdleTweenTime = PlayerController.DefaultSettings.idleTime
-PlayerController.WalkTweenTime = PlayerController.DefaultSettings.walkTime
-PlayerController.RunTweenTime = PlayerController.DefaultSettings.runTime
-PlayerController.SprintTweenTime = PlayerController.DefaultSettings.sprintTime
+PlayerController.Settings = {
+	IdleSpeed = PlayerController.DefaultSettings.IdleSpeed,
+	WalkSpeed = PlayerController.DefaultSettings.WalkSpeed,
+	RunSpeed = PlayerController.DefaultSettings.RunSpeed,
+	SprintSpeed = PlayerController.DefaultSettings.SprintSpeed,
+	JumpPower = PlayerController.DefaultSettings.JumpPower,
+	RunJumpPower = PlayerController.DefaultSettings.RunJumpPower,
+	SprintJumpPower = PlayerController.DefaultSettings.SprintJumpPower,
+	IdleTweenTime = PlayerController.DefaultSettings.IdleTweenTime,
+	WalkTweenTime = PlayerController.DefaultSettings.WalkTweenTime,
+	RunTweenTime = PlayerController.DefaultSettings.RunTweenTime,
+	SprintTweenTime = PlayerController.DefaultSettings.SprintTweenTime,
 
--- Controls for how reactive the character will lean to its target state 
-PlayerController.IdleTiltRate = 10
-PlayerController.FallTiltRate = 3
-PlayerController.JumpTiltRate = 3
-PlayerController.WalkTiltRate = 2
-PlayerController.RunTiltRate = 4
-PlayerController.SprintTiltRate = 8
+	-- Controls for reactive locomotion
+	IdleTiltRate = 10,
+	FallTiltRate = 3,
+	JumpTiltRate = 3,
+	WalkTiltRate = 2,
+	RunTiltRate = 4,
+	SprintTiltRate = 8,
 
-PlayerController.WalkTiltMagnitude = 0.25
-PlayerController.RunTiltMagnitude = 4
-PlayerController.SprintTiltMagnitude = 4
-PlayerController.JumpTiltMagnitude = 0.1
+	-- Controls for strength to influence character's tilt
+	WalkTiltMagnitude = 0.25,
+	RunTiltMagnitude = 4,
+	SprintTiltMagnitude = 4,
+	JumpTiltMagnitude = 0.1,
 
--- Control for stable or maneuverable movement
-PlayerController.MoveRate = 2
-
-local connection
+	MoveRate = 2,
+}
 
 PlayerController.Modules = {}
 
--- Animation Controller Layers
-PlayerController.LayerA = AnimationController.new(Player.AnimationModule)
-PlayerController.LayerB = AnimationController.new()
-PlayerController.DanceLayer = AnimationController.new(false)
-PlayerController.Initialized = false
+PlayerController.Animation = Animation.new("Blank", {}, 30, false)
 
-local nexoConnections
+-- Animation Controller Layers
+PlayerController.LayerA = {}
+PlayerController.LayerB = {}
+PlayerController.DanceLayer = {}
+PlayerController.Initialized = false
 
 local massPollRate = 1
 local massExecuteTime = tick() + 1/massPollRate
@@ -129,6 +123,9 @@ local moduleExecuteTime = tick() + 1/updateModuleRate
 
 local previousVelocity = Vector3.new()
 
+local connection
+local nexoConnections
+local respawnConnection
 local animationConnection
 
 local lostOwnershipLocation = Instance.new("Part")
@@ -140,7 +137,7 @@ lostOwnershipLocation.CanCollide = false
 lostOwnershipLocation.Parent = workspace
 
 local lostPart = false
-local ground = Player:OnGround()
+local ground
 
 -- https://raw.githubusercontent.com/CenteredSniper/Kenzen/master/ZendeyReanimate.lua
 local function setPhysicsOptimizations()
@@ -162,646 +159,45 @@ local function setPhysicsOptimizations()
 end
 
 
+local function acceleration(v1, v2, dt)
+	dt = dt or 0.01
+	return (v2-v1).Magnitude/dt
+end
+
 --[[
-local R6Legs
-local LeftLeg
-local RightLeg
-]]
--- https://v3rmillion.net/showthread.php?tid=1073859
--- Modified to borrow netless implementations from Nexo
-local function _R15ReanimLoad()
-	local plr  = game:GetService("Players").LocalPlayer
-	local char = plr.Character
+	Some scripts are able to bypass the noclip anti-fling by attempting to apply a higher angular velocity
+	while "stealing" network ownership. This is a compensation rather than an anti-fling.
+--]]
+local function detectFling(threshold: number, dt)
+	threshold = threshold or 1000
 
-	-- Grabbed from Nexo
-	local c={}
-	nexoConnections = c
-	local d=table.insert 
-    for D,E in next,char:GetDescendants()do 
-		if E:IsA("BasePart")then 
-			Network:RetainPart(E)
-			Network:FollowPart(E)
+	local currentVelocity = Vector3.new()
+	local currentAcceleration = 0
 
-			d(c,game:GetService("RunService").Heartbeat:connect(function()
-				pcall(function()
-					E.Velocity=Vector3.new(1,1,1) * 17.325
-					if RunService:IsClient() then
-						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
-						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",999999999)
-					end
-					game.Players.LocalPlayer.ReplicationFocus=workspace 
-				end)
-			end))
-		end 
-	end 
-
-	--making variables
-	local rs = game:GetService("RunService")
-	local e=false
-	local cam  = workspace:WaitForChild("Camera")
-
-	local folder=Instance.new('Folder')
-	folder.Name='CWExtra'
-	char.Archivable=true
-    folder.Parent = char
-
-	local fakechar = char:Clone()
-	for D,E in next,fakechar:GetDescendants()do 
-		if E:IsA('BasePart') or E:IsA('Decal') then 
-			E.Transparency=1 
-		end 
-	end 
-
-	local h = 5.65
-	local function anchorAllParts(value)
-		char.UpperTorso.Anchored = value
-		char.LowerTorso.Anchored = value
-		char.RightUpperArm.Anchored = value
-		char.LeftUpperArm.Anchored = value
-		char.RightUpperLeg.Anchored = value
-		char.LeftUpperLeg.Anchored = value
-		char.RightLowerArm.Anchored = value
-		char.LeftLowerArm.Anchored = value
-		char.RightLowerLeg.Anchored = value
-		char.LeftLowerLeg.Anchored = value
-		char.RightHand.Anchored = value
-		char.LeftHand.Anchored = value
-		char.RightFoot.Anchored = value
-		char.LeftFoot.Anchored = value
+	local nhrp = Player.getNexoHumanoidRootPart()
+	if nhrp then
+		currentVelocity = nhrp.AssemblyLinearVelocity + nhrp.AssemblyLinearVelocity
+		currentAcceleration = acceleration(previousVelocity, currentVelocity, dt)
+		previousVelocity = currentVelocity
 	end
 
-	plr.Character = nil
-	plr.Character = char
+	--print(currentAcceleration)
 
-	char.Humanoid.WalkSpeed = 0
-	char.Humanoid.JumpPower = 0
-	anchorAllParts(true)
-	char.Animate.Disabled = true
-	SendNotification('R15 Reanimation','Reanimating...\nPlease wait '..h..' seconds.')
-	wait(h)
-	anchorAllParts(false)
-	SendNotification('R15 Reanimation','Reanimated')
-	char.Humanoid.Health = 0
-	fakechar.Animate.Disabled = true
-	
-	fakechar.Parent = folder
-	fakechar.HumanoidRootPart.CFrame=char.HumanoidRootPart.CFrame
-	cam.CameraSubject = fakechar:FindFirstChildOfClass("Humanoid")
-
-	fakechar.Name='NexoPD'
-
-	local connections = {}
-	local kill = false
-	--creating aling function which will be used to hold your body parts
-	local function Align(Part1, Part0, Position, Angle)
-		Part1.CanCollide = false
-
-		local AlignPos = Instance.new("AlignPosition")
-		AlignPos.ApplyAtCenterOfMass = true
-		AlignPos.MaxForce = 100000
-		AlignPos.MaxVelocity = math.huge
-		AlignPos.ReactionForceEnabled = false
-		AlignPos.Responsiveness = 200
-		AlignPos.RigidityEnabled = false
-		AlignPos.Parent = Part1
-
-		local AlignOri = Instance.new("AlignOrientation")
-		AlignOri.MaxAngularVelocity = math.huge
-		AlignOri.MaxTorque = 100000
-		AlignOri.PrimaryAxisOnly = false
-		AlignOri.ReactionTorqueEnabled = false
-		AlignOri.Responsiveness = 200
-		AlignOri.RigidityEnabled = false
-		AlignOri.Parent = Part1
-
-		local at1 = Instance.new("Attachment")
-		at1.Parent = Part1
-		local at2 = Instance.new("Attachment")
-		at2.Parent = Part0
-		at2.Orientation = Angle
-		at2.Position = Position
-		
-		AlignPos.Attachment0 = at1
-		AlignPos.Attachment1 = at2
-		AlignOri.Attachment0 = at1
-		AlignOri.Attachment1 = at2
+	if 
+		currentAcceleration > threshold and 
+		not (
+			Player.Sprinting:GetState() or 
+			Player.Running:GetState() or 
+			Player.Landing or 
+			Player.Flipping
+		)
+	then
+		print("Detected Fling")
+		nhrp.CFrame = previousCFrame + Vector3.yAxis * 5
+		Player.SetCFrame = false
+		task.delay(1, function() Player.SetCFrame = true end)
 	end
-
-	local success, fail = pcall(function()
-		-- Make the fake character invisible
-		for _,v in pairs(fakechar:GetDescendants()) do
-			if v:IsA("MeshPart") then
-				v.Transparency = 1
-			elseif v:IsA("SpecialMesh") then
-				v.MeshId = "rbxassetid://0"
-			end
-		end
-
-			-- Noclipping
-		table.insert(connections, rs.Stepped:Connect(function()
-			for i,v in ipairs(char:GetDescendants()) do
-				if v:IsA("BasePart") then
-					v.CanCollide = false
-				end
-			end
-			--[[
-			fakechar:FindFirstChild("Head").CanCollide = false
-			fakechar:FindFirstChild("UpperTorso").CanCollide = false
-			fakechar:FindFirstChild("LowerTorso").CanCollide = false
-			fakechar:FindFirstChild("RightUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("RightLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("RightUpperArm").CanCollide = false
-			fakechar:FindFirstChild("RightLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperArm").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftHand").CanCollide = false
-			fakechar:FindFirstChild("LeftFoot").CanCollide = false
-			fakechar:FindFirstChild("RightFoot").CanCollide = false
-			fakechar:FindFirstChild("RightHand").CanCollide = false
-			fakechar:FindFirstChild("HumanoidRootPart").CanCollide = false
-			char.HumanoidRootPart.CanCollide = true
-			char.Head.CanCollide = false
-			char.UpperTorso.CanCollide = false
-			char.LowerTorso.CanCollide = false
-			char.RightUpperArm.CanCollide = false
-			char.LeftUpperArm.CanCollide = false
-			char.RightUpperLeg.CanCollide = false
-			char.LeftUpperLeg.CanCollide = false
-			char.RightLowerArm.CanCollide = false
-			char.LeftLowerArm.CanCollide = false
-			char.RightLowerLeg.CanCollide = false
-			char.LeftLowerLeg.CanCollide = false
-			char.RightHand.CanCollide = false
-			char.LeftHand.CanCollide = false
-			char.RightFoot.CanCollide = false
-			char.LeftFoot.CanCollide = false
-			]]
-		end))
-		table.insert(connections, rs.Heartbeat:Connect(function()
-			for i,v in ipairs(char:GetDescendants()) do
-				if v:IsA("BasePart") then
-					v.CanCollide = false
-				end
-			end
-			--[[
-			fakechar:FindFirstChild("Head").CanCollide = false
-			fakechar:FindFirstChild("UpperTorso").CanCollide = false
-			fakechar:FindFirstChild("LowerTorso").CanCollide = false
-			fakechar:FindFirstChild("RightUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("RightLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("RightUpperArm").CanCollide = false
-			fakechar:FindFirstChild("RightLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperArm").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftHand").CanCollide = false
-			fakechar:FindFirstChild("LeftFoot").CanCollide = false
-			fakechar:FindFirstChild("RightFoot").CanCollide = false
-			fakechar:FindFirstChild("RightHand").CanCollide = false
-			fakechar:FindFirstChild("HumanoidRootPart").CanCollide = false
-			char.HumanoidRootPart.CanCollide = true
-			char.Head.CanCollide = false
-			char.UpperTorso.CanCollide = false
-			char.LowerTorso.CanCollide = false
-			char.RightUpperArm.CanCollide = false
-			char.LeftUpperArm.CanCollide = false
-			char.RightUpperLeg.CanCollide = false
-			char.LeftUpperLeg.CanCollide = false
-			char.RightLowerArm.CanCollide = false
-			char.LeftLowerArm.CanCollide = false
-			char.RightLowerLeg.CanCollide = false
-			char.LeftLowerLeg.CanCollide = false
-			char.RightHand.CanCollide = false
-			char.LeftHand.CanCollide = false
-			char.RightFoot.CanCollide = false
-			char.LeftFoot.CanCollide = false
-			]]
-		end))
-		table.insert(connections, rs.RenderStepped:Connect(function()
-			for i,v in ipairs(char:GetDescendants()) do
-				if v:IsA("BasePart") then
-					v.CanCollide = false
-				end
-			end
-			--[[
-			fakechar:FindFirstChild("Head").CanCollide = false
-			fakechar:FindFirstChild("UpperTorso").CanCollide = false
-			fakechar:FindFirstChild("LowerTorso").CanCollide = false
-			fakechar:FindFirstChild("RightUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("RightLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperLeg").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerLeg").CanCollide = false
-			fakechar:FindFirstChild("RightUpperArm").CanCollide = false
-			fakechar:FindFirstChild("RightLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftUpperArm").CanCollide = false
-			fakechar:FindFirstChild("LeftLowerArm").CanCollide = false
-			fakechar:FindFirstChild("LeftHand").CanCollide = false
-			fakechar:FindFirstChild("LeftFoot").CanCollide = false
-			fakechar:FindFirstChild("RightFoot").CanCollide = false
-			fakechar:FindFirstChild("RightHand").CanCollide = false
-			fakechar:FindFirstChild("HumanoidRootPart").CanCollide = false
-			char.HumanoidRootPart.CanCollide = true
-			char.Head.CanCollide = false
-			char.UpperTorso.CanCollide = false
-			char.LowerTorso.CanCollide = false
-			char.RightUpperArm.CanCollide = false
-			char.LeftUpperArm.CanCollide = false
-			char.RightUpperLeg.CanCollide = false
-			char.LeftUpperLeg.CanCollide = false
-			char.RightLowerArm.CanCollide = false
-			char.LeftLowerArm.CanCollide = false
-			char.RightLowerLeg.CanCollide = false
-			char.LeftLowerLeg.CanCollide = false
-			char.RightHand.CanCollide = false
-			char.LeftHand.CanCollide = false
-			char.RightFoot.CanCollide = false
-			char.LeftFoot.CanCollide = false
-			]]
-		end))
-
-		-- using the align function to prevent body parts from falling
-		for _,v in pairs(char:GetChildren()) do
-			if v:IsA("MeshPart") or v.Name == "Head" then
-				if v.Name == "UpperTorso" then
-					Align(char[v.Name], fakechar[v.Name], Vector3.new(0,0,0),Vector3.new(0,0,0))
-				else
-					Align(char[v.Name], fakechar[v.Name], Vector3.new(0,0,0),Vector3.new(0,0,0))
-				end
-			end
-		end
-
-		local function i(D,E,F,G)
-			Instance.new("Attachment",D)
-			Instance.new("AlignPosition",D)
-			Instance.new("AlignOrientation",D)
-			Instance.new("Attachment",E)
-	
-			D.Attachment.Name=D.Name 
-			E.Attachment.Name=D.Name 
-			D.AlignPosition.Attachment0=D[D.Name]
-			D.AlignOrientation.Attachment0=D[D.Name]
-			D.AlignPosition.Attachment1=E[D.Name]
-			D.AlignOrientation.Attachment1=E[D.Name]
-			E[D.Name].Position=F or Vector3.new()
-			D[D.Name].Orientation=G or Vector3.new()
-			D.AlignPosition.MaxForce=999999999 
-			D.AlignPosition.MaxVelocity=math.huge 
-			D.AlignPosition.ReactionForceEnabled=false 
-			D.AlignPosition.Responsiveness=math.huge 
-			D.AlignOrientation.Responsiveness=math.huge 
-			D.AlignPosition.RigidityEnabled=false 
-			D.AlignOrientation.MaxTorque=999999999 
-			D.Massless=true 
-		end
-
-		for D,E in next,char:GetDescendants()do 
-			if E:IsA('Accessory')then 
-				i(E.Handle,fakechar[E.Name].Handle)
-			end 
-		end 
-
-		local k=plr:GetMouse()
-
-		local z=Instance.new("Part")
-		z.CanCollide=false 
-		z.Transparency=1
-		z.Parent = folder
-	
-		d(c,rs.RenderStepped:Connect(function()
-			local D=workspace.CurrentCamera.CFrame.lookVector 
-			local E=fakechar["HumanoidRootPart"]
-			z.Position=E.Position 
-			z.CFrame=CFrame.new(z.Position,Vector3.new(D.X*10000,D.Y,D.Z*10000))
-		end))
-		local l,m,n,o,p=false,false,false,false,false
-		local function q(D)
-			local r=Instance.new('BodyAngularVelocity')
-			local b=Instance.new('AngularVelocity')
-			r.AngularVelocity=Vector3.new(2147483646,2147483646,2147483646)
-			r.MaxTorque=Vector3.new(2147483646,2147483646,2147483646)
-			b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
-			b.MaxTorque = 2147483646
-			b.Attachment0 = Player.getCharacterRootAttachment()
-			b.Parent = D
-			r.Parent = D
-		end 
-		q(char.HumanoidRootPart)
-		k=plr:GetMouse()
-		
-		local s=Instance.new('BodyPosition')
-		s.P=9e9 
-		s.D=9e9 
-		s.MaxForce=Vector3.new(99999,99999,99999)
-		s.Position = char.HumanoidRootPart.Position
-		s.Parent = char.HumanoidRootPart
-		
-
-		local A 
-		d(c,rs.Heartbeat:Connect(function()
-			if not char:FindFirstChild("HumanoidRootPart") then return end
-			local hrp = char:FindFirstChild("HumanoidRootPart")
-			if rs:IsStudio() then 
-				hrp.Anchored = true
-			end
-			if A==true then 
-				s.Position=k.Hit.p 
-				hrp.Position=k.Hit.p 
-			else
-				if Player.Attacking:GetState() then
-					s.Position = PlayerController.AttackPosition
-					hrp.Position = PlayerController.AttackPosition
-				else
-					s.Position=fakechar.UpperTorso.Position
-					hrp.Position=fakechar.HumanoidRootPart.Position
-				end
-				if Player:GetFramerate() > 25 then
-					hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
-					hrp.AngularVelocity.Enabled = toggleFling
-				else
-					s.Position=fakechar.UpperTorso.Position
-					hrp.Position=fakechar.UpperTorso.Position
-					hrp.AngularVelocity.Enabled = false
-					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
-				end
-			end
-		end))
-
-		local B=Instance.new("SelectionBox")
-		B.Adornee=char.HumanoidRootPart 
-		B.LineThickness=0.02 
-		B.Color3=Color3.fromRGB(250,0,0)
-		B.Parent=char.HumanoidRootPart 
-		B.Name="RAINBOW"
-
-	end)
-
-	if fail then
-		warn(fail)
-		--plr.Character = char
-		--char:BreakJoints()
-		--fakechar:Destroy()
-
-		PlayerController:Respawn()
-		return
-	end
-
-	SendNotification("R15 Reanimation", "Loaded")
 end
-
-
--- Nexo Character Reanimation
-local function _NexoLoad(canClickFling)
-    canClickFling = canClickFling or false
-
-	local a=game.Players.LocalPlayer 
-	local b=game.Players.LocalPlayer.Character 
-	if not b or not b.Parent then
-		b = a.CharacterAdded:Wait()
-	end
-	local c={}
-	local d=table.insert 
-	local e=false 
-	
-    for D,E in next,b:GetDescendants()do 
-		if E:IsA("BasePart")then 
-			Network:RetainPart(E)
-			Network:FollowPart(E)
-			
-			d(c,game:GetService("RunService").Heartbeat:connect(function()
-				pcall(function()
-					E.Velocity=Vector3.new(1,1,1) * 17.325
-					if RunService:IsClient() then
-						sethiddenproperty(game.Players.LocalPlayer,"MaximumSimulationRadius",math.huge)
-						sethiddenproperty(game.Players.LocalPlayer,"SimulationRadius",1000)
-					end
-					game.Players.LocalPlayer.ReplicationFocus=workspace 
-				end)
-			end))
-			
-		end 
-	end 
-	
-
-    local function f(D,E,F)
-		game.StarterGui:SetCore("SendNotification",{Title=D;Text=E;Duration=F or 5;})
-	end 
-	
-    local x=game:GetService("RunService")
-	local g=Instance.new('Folder')
-	g.Name='CWExtra'
-	b.Archivable=true
-    g.Parent = b
-
-    local y=b:Clone()
-	y.Name='NexoPD'
-	for D,E in next,y:GetDescendants()do 
-		if E:IsA('BasePart') or E:IsA('Decal') then 
-			E.Transparency=1 
-		end 
-	end 
-	local h=5.65 
-	a.Character=nil 
-	a.Character=b 
-	b.Humanoid.AutoRotate=false 
-	b.Humanoid.WalkSpeed=0 
-	b.Humanoid.JumpPower=0 
-	b.Torso.Anchored=true 
-	b["Right Arm"].Anchored = true
-	b["Left Arm"].Anchored = true
-	b["Right Leg"].Anchored = true
-	b["Left Leg"].Anchored = true
-	b.Animate.Disabled = true
-	f('Nexo','Reanimating...\nPlease wait '..h..' seconds.')
-	wait(h)
-	b.Torso.Anchored=false
-	b["Right Arm"].Anchored = false
-	b["Left Arm"].Anchored = false
-	b["Right Leg"].Anchored = false
-	b["Left Leg"].Anchored = false
-	f('Nexo','Reanimated..')
-	b.Humanoid.Health=0 
-	y.Animate.Disabled=true 
-	y.Parent=g 
-	y.HumanoidRootPart.CFrame=b.HumanoidRootPart.CFrame*CFrame.new(0,5,0)
-
-	local function i(D,E,F,G)
-		Instance.new("Attachment",D)
-		Instance.new("AlignPosition",D)
-		Instance.new("AlignOrientation",D)
-		Instance.new("Attachment",E)
-
-		D.Attachment.Name=D.Name 
-		E.Attachment.Name=D.Name 
-		D.AlignPosition.Attachment0=D[D.Name]
-		D.AlignOrientation.Attachment0=D[D.Name]
-		D.AlignPosition.Attachment1=E[D.Name]
-		D.AlignOrientation.Attachment1=E[D.Name]
-		E[D.Name].Position=F or Vector3.new()
-		D[D.Name].Orientation=G or Vector3.new()
-		D.AlignPosition.MaxForce=999999999 
-		D.AlignPosition.MaxVelocity=math.huge 
-		D.AlignPosition.ReactionForceEnabled=false 
-		D.AlignPosition.Responsiveness=math.huge 
-		D.AlignOrientation.Responsiveness=math.huge 
-		D.AlignPosition.RigidityEnabled=false 
-		D.AlignOrientation.MaxTorque=999999999 
-		D.Massless=true
-		D.RootPriority = 127
-	end 
-	local function j(D,E,F)
-		Instance.new("Attachment",D)
-		Instance.new("AlignPosition",D)
-		Instance.new("Attachment",E)
-
-		D.Attachment.Name=D.Name 
-		E.Attachment.Name=D.Name 
-		D.AlignPosition.Attachment0=D[D.Name]
-		D.AlignPosition.Attachment1=E[D.Name]
-		E[D.Name].Position=F or Vector3.new()
-		D.AlignPosition.MaxForce=999999999 
-		D.AlignPosition.MaxVelocity=math.huge 
-		D.AlignPosition.ReactionForceEnabled=false 
-		D.AlignPosition.Responsiveness=math.huge 
-		D.Massless=true 
-		D.RootPriority = 127
-	end 
-	for D,E in next,b:GetDescendants()do 
-		if E:IsA('BasePart')then
-			--Network:RetainPart(E)
-			Network:FollowPart(E) 
-			d(c,x.RenderStepped:Connect(function()
-				E.CanCollide=false 
-			end))
-		end 
-	end 
-	for D,E in next,b:GetDescendants()do 
-		if E:IsA('BasePart')then 
-			d(c,x.Stepped:Connect(function()
-				E.CanCollide=false
-			end))
-		end 
-	end 
-	for D,E in next,y:GetDescendants()do 
-		if E:IsA('BasePart')then 
-			d(c,x.RenderStepped:Connect(function()
-				E.CanCollide=false 
-			end))
-		end 
-	end 
-	for D,E in next,y:GetDescendants()do 
-		if E:IsA('BasePart') then 
-			d(c,x.Stepped:Connect(function()
-				E.CanCollide=false 
-			end))
-		end 
-	end 
-	for D,E in next,b:GetDescendants()do 
-		if E:IsA('Accessory')then 
-			i(E.Handle,y[E.Name].Handle)
-		end 
-	end 
-
-    i(b['Head'],y['Head'])
-	i(b['Torso'],y['Torso'])
-	j(b['HumanoidRootPart'],y['Torso'],Vector3.new(0,0,0))
-	i(b['Right Arm'],y['Right Arm'])
-	i(b['Left Arm'],y['Left Arm'])
-	i(b['Right Leg'],y['Right Leg'])
-	i(b['Left Leg'],y['Left Leg'])
-	local k=a:GetMouse()
-
-    local z=Instance.new("Part")
-	z.CanCollide=false 
-	z.Transparency=1
-    z.Parent = g
-
-    d(c,x.RenderStepped:Connect(function()
-		local D=workspace.CurrentCamera.CFrame.lookVector 
-		local E=y["HumanoidRootPart"]
-		z.Position=E.Position 
-		z.CFrame=CFrame.new(z.Position,Vector3.new(D.X*10000,D.Y,D.Z*10000))
-	end))
-	local l,m,n,o,p=false,false,false,false,false
-	local function q(D)
-		local r=Instance.new('BodyAngularVelocity')
-		local b=Instance.new('AngularVelocity')
-		r.AngularVelocity=Vector3.new(2147483646,2147483646,2147483646)
-		r.P=math.huge
-		r.MaxTorque = Vector3.new(1,1,1) * math.huge
-		b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
-		b.MaxTorque = 2147483646
-		b.Attachment0 = D["RootAttachment"]
-		b.Parent = D
-        r.Parent = D
-	end 
-	q(b.HumanoidRootPart)
-	k=a:GetMouse()
-	
-	local s=Instance.new('BodyPosition')
-	s.P=9e9 
-    s.D=9e9 
-    s.MaxForce=Vector3.new(99999,99999,99999)
-	s.Position = b.HumanoidRootPart.Position
-    s.Parent = b.HumanoidRootPart
-	
-	local A 
-	d(c,x.Heartbeat:Connect(function()
-		if not b:FindFirstChild("HumanoidRootPart") then return end
-		local hrp = b:FindFirstChild("HumanoidRootPart")
-		if x:IsStudio() then 
-			hrp.Anchored = true
-		end
-		if A==true then 
-			s.Position=k.Hit.p 
-            hrp.Position=k.Hit.p 
-		else
-	
-			if Player.Attacking:GetState() then
-				s.Position = PlayerController.AttackPosition
-				hrp.Position = PlayerController.AttackPosition
-			else
-				s.Position=y.Torso.Position
-				b.HumanoidRootPart.Position=y.HumanoidRootPart.Position
-			end
-			--b.HumanoidRootPart.CanCollide = not toggleFling
-			if Player:GetFramerate() > 25 then
-				hrp.BodyAngularVelocity.AngularVelocity = (toggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
-				hrp.AngularVelocity.Enabled = toggleFling
-			else
-				s.Position=y.Torso.Position
-				hrp.Position=y.Torso.Position
-				hrp.AngularVelocity.Enabled = false
-				hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
-			end
-		end 
-	end))
-
-	local B=Instance.new("SelectionBox")
-	B.Adornee=b.HumanoidRootPart 
-    B.LineThickness=0.02 
-    B.Color3=Color3.fromRGB(250,0,0)
-    B.Parent=b.HumanoidRootPart 
-    B.Name="RAINBOW"
-
-	local t = B 
-	if canClickFling then 
-		d(c,k.Button1Down:Connect(function()
-			A=true 
-		end))
-		d(c,k.Button1Up:Connect(function()
-			A=false 
-		end))
-	end 
-
-	workspace.CurrentCamera.CameraSubject=y.Humanoid 
-
-	nexoConnections = c
-
-end
-
 
 local function initializeControls()
 	local hrp = Player.getNexoHumanoidRootPart()
@@ -844,46 +240,6 @@ local function initializeControls()
 		buoyancyForce.RelativeTo = Enum.ActuatorRelativeTo.World
 		buoyancyForce.Parent = Player.getNexoHumanoidRootPart()
 		PlayerController.Buoyancy = buoyancyForce	
-	end
-end
-
-local function acceleration(v1, v2, dt)
-	dt = dt or 0.01
-	return (v2-v1).Magnitude/dt
-end
-
---[[
-	Some scripts are able to bypass the noclip anti-fling. This is a safeguard against these
-	types
---]]
-local function detectFling(threshold: number, dt)
-	threshold = threshold or 1000
-
-	local currentVelocity = Vector3.new()
-	local currentAcceleration = 0
-
-	local nhrp = Player.getNexoHumanoidRootPart()
-	if nhrp then
-		currentVelocity = nhrp.AssemblyLinearVelocity + nhrp.AssemblyLinearVelocity
-		currentAcceleration = acceleration(previousVelocity, currentVelocity, dt)
-		previousVelocity = currentVelocity
-	end
-
-	--print(currentAcceleration)
-
-	if 
-		currentAcceleration > threshold and 
-		not (
-			Player.Sprinting:GetState() or 
-			Player.Running:GetState() or 
-			Player.Landing or 
-			Player.Flipping
-		)
-	then
-		print("Detected Fling")
-		nhrp.CFrame = previousCFrame + Vector3.yAxis * 5
-		Player.SetCFrame = false
-		task.delay(1, function() Player.SetCFrame = true end)
 	end
 end
 
@@ -930,32 +286,39 @@ function PlayerController:_InitializeStates()
 end
 
 
+function PlayerController:SetSettings(setting)
+	for name,setting in pairs(setting) do
+		self.Settings[name] = setting
+	end
+end
+
+
 function PlayerController:SetAnimation(animTable)
 	self.Animation = animTable
 end
 
 
 function PlayerController:Sprint()
-	local runInfo = {self.RunTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
-	local sprintInfo = {self.SprintTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local runInfo = {self.Settings.RunTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local sprintInfo = {self.Settings.SprintTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
 	if Player.Running:GetState() then
-		FastTween(humA, runInfo, {WalkSpeed = self.RunSpeed})
-		FastTween(humB, runInfo, {WalkSpeed = self.RunSpeed})
-		humA.JumpPower = self.RunJumpPower
-		humB.JumpPower = self.RunJumpPower
+		FastTween(humA, runInfo, {WalkSpeed = self.Settings.RunSpeed})
+		FastTween(humB, runInfo, {WalkSpeed = self.Settings.RunSpeed})
+		humA.JumpPower = self.Settings.RunJumpPower
+		humB.JumpPower = self.Settings.RunJumpPower
 	elseif Player.Sprinting:GetState() then
-		FastTween(humA, sprintInfo, {WalkSpeed = self.SprintSpeed})
-		FastTween(humB, sprintInfo, {WalkSpeed = self.SprintSpeed})
-		humA.JumpPower = self.SprintJumpPower
-		humB.JumpPower = self.SprintJumpPower
+		FastTween(humA, sprintInfo, {WalkSpeed = self.Settings.SprintSpeed})
+		FastTween(humB, sprintInfo, {WalkSpeed = self.Settings.SprintSpeed})
+		humA.JumpPower = self.Settings.SprintJumpPower
+		humB.JumpPower = self.Settings.SprintJumpPower
 	end
 
 	if Player.Flying then
-		tiltSpring.f = self.RunTiltRate / 2 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.RunTiltRate / 2 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		tiltSpring.f = self.RunTiltRate * 2.5 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.RunTiltRate * 2.5 * Player:GetAnimationSpeed()
 	else
 		if Player.Running:GetState() then
 			if Player.Flying then
@@ -966,7 +329,7 @@ function PlayerController:Sprint()
 				Player:GetAnimation("Run"):AdjustWeight(1, 1)
 				Player:GetAnimation("Run"):Play()
 				Player:GetAnimation("Run").Framerate = 30 / (humA.WalkSpeed / 64)
-				tiltSpring.f = self.RunTiltRate * Player:GetAnimationSpeed()
+				tiltSpring.f = self.Settings.RunTiltRate * Player:GetAnimationSpeed()
 			end
 		elseif Player.Sprinting:GetState() then
 			if Player.Flying then
@@ -977,7 +340,7 @@ function PlayerController:Sprint()
 				Player:GetAnimation("Sprint"):AdjustWeight(1, 1)
 				Player:GetAnimation("Sprint"):Play()
 				Player:GetAnimation("Sprint").Framerate = 60
-				tiltSpring.f = self.SprintTiltRate * Player:GetAnimationSpeed()
+				tiltSpring.f = self.Settings.SprintTiltRate * Player:GetAnimationSpeed()
 			end
 		end
 	end
@@ -985,20 +348,20 @@ end
 
 
 function PlayerController:Walk()
-	local tweenInfo = {self.WalkTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local tweenInfo = {self.Settings.WalkTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
-	humA.JumpPower = self.JumpPower
-	humB.JumpPower = self.JumpPower
-	FastTween(humA, tweenInfo, {WalkSpeed = self.WalkSpeed})
-	FastTween(humB, tweenInfo, {WalkSpeed = self.WalkSpeed})
+	humA.JumpPower = self.Settings.JumpPower
+	humB.JumpPower = self.Settings.JumpPower
+	FastTween(humA, tweenInfo, {WalkSpeed = self.Settings.WalkSpeed})
+	FastTween(humB, tweenInfo, {WalkSpeed = self.Settings.WalkSpeed})
 
 	if Player.Flying then
-		tiltSpring.f = self.WalkTiltRate / 2 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.WalkTiltRate / 2 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		tiltSpring.f = self.WalkTiltRate * 5 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.WalkTiltRate * 5 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = self.WalkTiltRate * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.WalkTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
@@ -1007,9 +370,9 @@ function PlayerController:Fall()
 
 	--print("Fall")
 	if Player.Flying then
-		tiltSpring.f = self.FallTiltRate / 3 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.FallTiltRate / 3 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = self.FallTiltRate * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.FallTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
@@ -1028,35 +391,35 @@ function PlayerController:Jump(char)
 	end
 
 	if Player.Flying then
-		tiltSpring.f = self.JumpTiltRate / 3 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.JumpTiltRate / 3 * Player:GetAnimationSpeed()
 	elseif Player.Swimming then
-		tiltSpring.f = self.JumpTiltRate / 3 * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.JumpTiltRate / 3 * Player:GetAnimationSpeed()
 	else
-		tiltSpring.f = self.JumpTiltRate * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.JumpTiltRate * Player:GetAnimationSpeed()
 	end
 end
 
 
 function PlayerController:Idle()
-	local tweenInfo = {self.IdleTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
+	local tweenInfo = {self.Settings.IdleTweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.In}
 
 	local humA, humB = Player.getHumanoid(), Player.getNexoHumanoid()
 
-	humA.JumpPower = self.JumpPower
-	humB.JumpPower = self.JumpPower
-	FastTween(humA, tweenInfo, {WalkSpeed = self.IdleSpeed})
-	FastTween(humB, tweenInfo, {WalkSpeed = self.IdleSpeed})
+	humA.JumpPower = self.Settings.JumpPower
+	humB.JumpPower = self.Settings.JumpPower
+	FastTween(humA, tweenInfo, {WalkSpeed = self.Settings.IdleSpeed})
+	FastTween(humB, tweenInfo, {WalkSpeed = self.Settings.IdleSpeed})
 
 	if Player.Landing then
-		humA.WalkSpeed = self.IdleSpeed
-		humB.WalkSpeed = self.IdleSpeed
+		humA.WalkSpeed = self.Settings.IdleSpeed
+		humB.WalkSpeed = self.Settings.IdleSpeed
 	end
 	
 	-- TODO: Change transition functions by shifting weight of animations
 	if Player.Flying then
 		--Player.Transition(2)
 	elseif Player.Swimming then
-		tiltSpring.f = self.IdleTiltRate * Player:GetAnimationSpeed()
+		tiltSpring.f = self.Settings.IdleTiltRate * Player:GetAnimationSpeed()
 	else
 		--Player.Transition(1)
 	end
@@ -1089,7 +452,7 @@ function PlayerController:Fly()
 	local walkSpeed = humanoid.WalkSpeed
 	local moveDirection = humanoid.MoveDirection
 	
-	local ascent = (ActionHandler.IsKeyDown(Settings.ascendButton) - ActionHandler.IsKeyDown(Settings.crouchButton)) * Settings.ascentSpeed * Vector3.new(0,1,0)
+	local ascent = (ActionHandler.IsKeyDown(Settings.ascendButton) - ActionHandler.IsKeyDown(Settings.crouchButton)) * Settings.AscentSpeed * Vector3.new(0,1,0)
 
 	alignRot.CFrame = CFrame.fromMatrix(hrp.CFrame.Position, Camera.CFrame.XVector, Camera.CFrame.YVector)
 	float.Position = hrp.Position + moveDirection * walkSpeed + ascent * humanoid.JumpPower / 50
@@ -1141,8 +504,6 @@ function PlayerController:Invisible()
 		return 
 	end
 
-	local nexoEquivalent
-			
 	for i,v in ipairs(Player.getCharacter():GetDescendants()) do
 		if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
 			v.CFrame = CFrame.new(0,1000,0)
@@ -1225,15 +586,15 @@ function PlayerController:LeanCharacter(char)
 		self.MoveVector = char.Humanoid.MoveDirection
 	end
 
-	local sprintConstant = Player.Sprinting:GetState() and self.SprintTiltMagnitude or 1 
-	local runConstant = Player.Running:GetState() and self.RunTiltMagnitude or 1
-	local walkConstant = Player:GetState("Walking") and self.WalkTiltMagnitude or 1
-	local jumpConstant = Player:GetState("Jumping") and self.JumpTiltMagnitude or 1
+	local sprintConstant = Player.Sprinting:GetState() and self.Settings.SprintTiltMagnitude or 1 
+	local runConstant = Player.Running:GetState() and self.Settings.RunTiltMagnitude or 1
+	local walkConstant = Player:GetState("Walking") and self.Settings.WalkTiltMagnitude or 1
+	local jumpConstant = Player:GetState("Jumping") and self.Settings.JumpTiltMagnitude or 1
 	local flyConstant = Player.Flying and 2 or 1
 
 	self.TiltVector = Vector3.new(0,1,0) + char.Humanoid.MoveDirection * flyConstant * walkConstant * sprintConstant * jumpConstant * runConstant
 
-	moveSpring.f = self.MoveRate * Player:GetAnimationSpeed()
+	moveSpring.f = self.Settings.MoveRate * Player:GetAnimationSpeed()
 
 	local tilt = tiltSpring:Update(Settings.DT, self.TiltVector)
 	local move = moveSpring:Update(Settings.DT, self.MoveVector)
@@ -1388,7 +749,7 @@ function PlayerController:ProcessInputs()
 
 	if not debounce then
 		if ActionHandler.IsKeyDownBool(Enum.KeyCode.Equals) then
-			toggleFling = not toggleFling
+			self.ToggleFling = not self.ToggleFling
 			debounce = true
 			task.delay(0.2, function() debounce = false end)
 		elseif ActionHandler.IsKeyDownBool(Enum.KeyCode.BackSlash) then
@@ -1588,32 +949,9 @@ end
 
 
 function PlayerController:ResetLocomotionScalars()
-	self.DefaultSettings = ControllerSettings:GetSettings()
-
-	self.IdleSpeed = self.DefaultSettings.idleSpeed
-	self.WalkSpeed = self.DefaultSettings.walkSpeed
-	self.RunSpeed = self.DefaultSettings.runSpeed
-	self.SprintSpeed = self.DefaultSettings.sprintSpeed
-	self.JumpPower = self.DefaultSettings.jumpPower
-	self.RunJumpPower = self.DefaultSettings.runJump
-	self.SprintJumpPower = self.DefaultSettings.sprintJump
-	self.IdleTweenTime = self.DefaultSettings.idleTime
-	self.WalkTweenTime = self.DefaultSettings.walkTime
-	self.RunTweenTime = self.DefaultSettings.runTime
-	self.SprintTweenTime = self.DefaultSettings.sprintTime
-	
-	-- Controls for how reactive the character will lean to its target state 
-	self.IdleTiltRate = 10
-	self.FallTiltRate = 3
-	self.JumpTiltRate = 3
-	self.WalkTiltRate = 2
-	self.RunTiltRate = 4
-	self.SprintTiltRate = 3
-
-	self.WalkTiltMagnitude = 0.25
-	self.RunTiltMagnitude = 4
-	self.SprintTiltMagnitude = 8
-	self.JumpTiltMagnitude = 0.1
+	for name, _ in pairs(self.Settings) do
+		self.Setting[name] = self.DefaultSettings[name]
+	end
 end
 
 
@@ -1729,13 +1067,16 @@ function PlayerController:Init(canClickFling)
 	setPhysicsOptimizations()
 	Player:HookFramerate()
 	if Player.getHumanoid().RigType == Enum.HumanoidRigType.R15 then
-		_R15ReanimLoad()
+		nexoConnections = R15Reanim(canClickFling, self)
 	else
-		_NexoLoad(canClickFling)
+		nexoConnections = R6Reanim(canClickFling, self)
 		--R6Legs, LeftLeg, RightLeg = R6IKController.givePlayerIK()
 		--AnimationController.R6Legs = R6Legs
 	end
-
+	self.LayerA = AnimationController.new(Player.AnimationModule)
+	self.LayerB = AnimationController.new()
+	self.DanceLayer = AnimationController.new(false)
+	PlayerController.Initialized = false
 
 	self.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
 	self.LeftArm = IKArmController.new(Player.getNexoCharacter(), "Left", "Arm")
@@ -1784,6 +1125,7 @@ function PlayerController:Respawn()
 	end 
 
 	table.clear(nexoConnections)
+
 	Network:RemoveParts()
 	coroutine.resume(Network["PartOwnership"]["Disable"])
 
@@ -1799,6 +1141,7 @@ function PlayerController:Respawn()
 
 	self:StopAllModules()
 	
+	-- This triggers respawn of the character
 	char:ClearAllChildren()
 	local newChar = Instance.new("Model")
 	newChar.Parent = workspace

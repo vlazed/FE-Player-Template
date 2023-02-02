@@ -12,6 +12,7 @@ local Animation = require(Project.Controllers.Animations.Animation)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local State = require(Project.Util.State)
 local Spring = require(Project.Util.Spring)
+local Promise = require(Project.Packages.Promise)
 
 local Player = {}
 
@@ -82,7 +83,7 @@ end
 
 
 function Player.getNexoCharacter()
-	return workspace.Camera.CameraSubject.Parent
+	return Player.getCharacter():FindFirstChild("CWExtra").NexoPD
 end
 
 
@@ -130,7 +131,6 @@ function Player:OnGround(length)
 	length = length or 7
 
 	local hrp = self.getNexoHumanoidRootPart()
-	local _hrp = self.getHumanoidRootPart()
 
 	if not hrp then return end
 
@@ -408,7 +408,7 @@ end
 
 
 function Player:_initializeMass()
-	local char = self.getNexoCharacter()
+	local char = self.getCharacter()
 	if not char then return end
 
 	for i,instance in ipairs(char:GetDescendants()) do
