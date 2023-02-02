@@ -950,7 +950,7 @@ end
 
 function PlayerController:ResetLocomotionScalars()
 	for name, _ in pairs(self.Settings) do
-		self.Setting[name] = self.DefaultSettings[name]
+		self.Settings[name] = self.DefaultSettings[name]
 	end
 end
 
