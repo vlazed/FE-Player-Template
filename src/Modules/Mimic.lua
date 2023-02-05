@@ -21,17 +21,18 @@ local Mouse = Player.getMouse()
 local Initialized = false
 local Copying = false
 local CopyButton = Enum.KeyCode.M
-local FrontButton = Enum.KeyCode.Comma
+local ChangeSideButton = Enum.KeyCode.Comma
 
 local targetCharacter = nil
 local targetName = ""
 local debounce = false
-local isInFront = false
+local sideIndex = 0
 
 local clickConnection
 
 local default_offset = CFrame.new(0.5,0,-6)
 local forward_offset = default_offset
+local connect_offset = CFrame.new()
 
 local R15_TO_R6_CORRESPONDENCE = {
     ["LeftLowerArm"] = "Left Arm",
@@ -234,10 +235,12 @@ function Mimic:CopyCharacterPose(character)
 
             local nexoPart = myNexo:FindFirstChild(myPart.Name)
             local offset = CFrame.identity
-            if isInFront then
-                offset = forward_offset
-            else
+            if sideIndex == 0 then
                 offset = default_offset
+            elseif sideIndex == 1 then
+                offset = forward_offset
+            elseif sideIndex == 2 then
+                offset = connect_offset
             end
 
             local resultantFrame = CFrame.new(theirPart.CFrame.Position):ToWorldSpace(offset) * theirPart.CFrame.Rotation * partOffset
@@ -258,10 +261,10 @@ local function processInputs()
         debounce = true
         SendNotification("Mimic Enabled", tostring(Copying), "Close", 2)
         task.delay(1, function() debounce = false end)
-    elseif ActionHandler.IsKeyDownBool(FrontButton) then
-        isInFront = not isInFront
+    elseif ActionHandler.IsKeyDownBool(ChangeSideButton) then
+        sideIndex = (sideIndex + 1) % 3
         debounce = true
-        SendNotification("In Front:", tostring(isInFront), "Close", 2)
+        SendNotification("In Front:", tostring(sideIndex), "Close", 2)
         task.delay(1, function() debounce = false end)
     end
 end

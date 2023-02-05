@@ -61,7 +61,11 @@ PlayerController.RightLeg = nil
 
 PlayerController.ResetTransform = false
 PlayerController.ToggleFling = false
+PlayerController.LimbFling = false
 PlayerController.LerpEnabled = false
+
+local HRPFlingButton = Enum.KeyCode.Equals
+local LimbFlingButton = Enum.KeyCode.RightBracket
 
 local debounce = false
 
@@ -748,10 +752,16 @@ function PlayerController:ProcessInputs()
 	local Settings = ControllerSettings:GetSettings()
 
 	if not debounce then
-		if ActionHandler.IsKeyDownBool(Enum.KeyCode.Equals) then
+		if ActionHandler.IsKeyDownBool(HRPFlingButton) then
 			self.ToggleFling = not self.ToggleFling
+			SendNotification("ToggleFling", tostring(self.ToggleFling), "Close")
 			debounce = true
 			task.delay(0.2, function() debounce = false end)
+		elseif ActionHandler.IsKeyDownBool(LimbFlingButton) then
+				self.LimbFling = not self.LimbFling
+				SendNotification("LimbFling", tostring(self.LimbFling), "Close")
+				debounce = true
+				task.delay(0.2, function() debounce = false end)
 		elseif ActionHandler.IsKeyDownBool(Enum.KeyCode.BackSlash) then
 			self.LerpEnabled = not self.LerpEnabled
 			debounce = true

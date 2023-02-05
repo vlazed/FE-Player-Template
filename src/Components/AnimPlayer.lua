@@ -74,7 +74,7 @@ local function minimizeToTab(frame)
         }
     )
 
-    FastTween(frame, tweenInfo, {Position = frame.Parent.AnimList.PlayerTab.Position, BackgroundTransparency = 1}) -- Cheap and quick
+    FastTween(frame, tweenInfo, {Position = tab.Position, BackgroundTransparency = 1}) -- Cheap and quick
     oldPlayerPosition = frame.Position
 end
 
@@ -214,7 +214,7 @@ function AnimPlayer:Init(playerFrame: Frame)
     speedMultiplier = playerFrame.SpeedMultiplier
 
     handle = playerFrame.Handle
-    tab = playerFrame.Parent.AnimList.PlayerTab
+    tab = playerFrame.Parent.AnimList.Tabs.PlayerTab
 
     self:AttachToAnimation(PlayerController.Animation)
 
@@ -288,7 +288,7 @@ function AnimPlayer:Init(playerFrame: Frame)
 
     tab.Selection.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            FastTween(tab.Selection, tweenInfo, { BackgroundTransparency = 1 })
+            FastTween(tab.Selection, tweenInfo, { BackgroundTransparency = 0.85 })
         end
     end)
 
@@ -297,7 +297,7 @@ function AnimPlayer:Init(playerFrame: Frame)
     end)
 
     tab.Selection.MouseLeave:Connect(function()
-        FastTween(tab.Selection, tweenInfo, { BackgroundTransparency = 1 })
+        FastTween(tab.Selection, tweenInfo, { BackgroundTransparency = 0.85 })
     end)
     
     speedMultiplier.FocusLost:Connect(function(enterPressed)

@@ -183,7 +183,7 @@ function StaffWielder:Attack(attackTable, endMultiplier)
     attack:Play()
     Player:SetStateForDuration("FightMode", true, 4)
     Player.Attacking:SetState(true)
-    task.delay(attack.TimeLength * endMultiplier, function()
+    task.delay(attack.TimeLength * attack.Framerate / 60 * endMultiplier, function()
         Player.Attacking:SetState(false)
         self.AttackIndex = (self.AttackIndex - 1 + (1 % #attackTable) + #attackTable) % #attackTable + 1
         prevAttack = attack

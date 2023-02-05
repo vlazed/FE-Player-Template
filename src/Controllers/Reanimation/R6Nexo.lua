@@ -188,13 +188,20 @@ return function(canClickFling, controller)
 		r.AngularVelocity=Vector3.new(2147483646,2147483646,2147483646)
 		r.P=math.huge
 		r.MaxTorque = Vector3.new(1,1,1) * math.huge
-		b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
-		b.MaxTorque = 2147483646
-		b.Attachment0 = D["RootAttachment"]
-		b.Parent = D
+		if D.Name == "HumanoidRootPart" then
+			b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
+			b.MaxTorque = 2147483646
+			b.Attachment0 = D["RootAttachment"]
+			b.Parent = D	
+		end
         r.Parent = D
 	end 
 	q(b.HumanoidRootPart)
+	q(b.Torso)
+	q(b["Right Arm"])
+	q(b["Left Arm"])
+	q(b["Right Leg"])
+	q(b["Left Leg"])
 	k=a:GetMouse()
 	
 	local s=Instance.new('BodyPosition')
@@ -208,6 +215,11 @@ return function(canClickFling, controller)
 	d(c,x.Heartbeat:Connect(function()
 		if not b:FindFirstChild("HumanoidRootPart") then return end
 		local hrp = b:FindFirstChild("HumanoidRootPart")
+		local rightarm = b:FindFirstChild("Right Arm")
+		local leftarm = b:FindFirstChild("Left Arm")
+		local torso = b:FindFirstChild("Torso")
+		local leftleg = b:FindFirstChild("Left Leg")
+		local rightleg = b:FindFirstChild("Right Leg")
 		if x:IsStudio() then 
 			hrp.Anchored = true
 		end
@@ -225,7 +237,21 @@ return function(canClickFling, controller)
 			end
 			--b.HumanoidRootPart.CanCollide = not toggleFling
 			if Player:GetFramerate() > 25 then
-				hrp.BodyAngularVelocity.AngularVelocity = (controller.ToggleFling or Player.Attacking:GetState()) and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new(5, 5, 5)
+				if controller.ToggleFling or Player.Attacking:GetState() then
+					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
+					torso.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+					rightarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+					leftarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+					rightleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+					leftleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+				else
+					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
+					torso.BodyAngularVelocity.AngularVelocity = Vector3.new()
+					rightarm.BodyAngularVelocity.AngularVelocity = Vector3.new()
+					leftarm.BodyAngularVelocity.AngularVelocity = Vector3.new()
+					leftleg.BodyAngularVelocity.AngularVelocity = Vector3.new()
+					rightleg.BodyAngularVelocity.AngularVelocity = Vector3.new()
+				end
 				hrp.AngularVelocity.Enabled = controller.ToggleFling
 			else
 				s.Position=y.Torso.Position

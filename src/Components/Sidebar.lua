@@ -13,6 +13,9 @@ local Player = require(Project.Player)
 local Animation = require(Project.Controllers.Animations.Animation)
 local FastTween = require(Project.Util.FastTween)
 
+local defaultSize = UDim2.new(0, 250, 0, 500)
+local reducedSize = UDim2.new(0, 250, 0, 0)
+
 local rbxmSuite 
 if not RunService:IsStudio() then
     rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
@@ -54,7 +57,7 @@ function Sidebar:CreateAnimationElement(filePath)
 
     element.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.4 })
+            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.5 })
             
             animTable = loadfile(filePath)()
             keyframes = Animation.new(name, animTable, animTable.Properties.Framerate, true)
@@ -82,7 +85,7 @@ function Sidebar:CreateAnimationElement(filePath)
 
     element.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.6 })
+            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 1 })
         end
     end)
 
@@ -124,7 +127,7 @@ function Sidebar:CreateModuleElement(file)
 
     element.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.4 })
+            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.5 })
             
             if self.SelectedModule then
                 self.SelectedModule:Stop()
@@ -138,7 +141,7 @@ function Sidebar:CreateModuleElement(file)
 
     element.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 0.6 })
+            FastTween(element.Selection, tweenInfo, { BackgroundTransparency = 1 })
         end
     end)
 
@@ -228,14 +231,15 @@ function Sidebar:Init(frame)
     modbar = frame.Modules
     handle = frame.Handle
 
-    animtab = frame.AnimTab
-    modtab = frame.ModuleTab
+    animtab = frame.Tabs.AnimTab
+    modtab = frame.Tabs.ModuleTab
 
     animtab.Selection.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             FastTween(animtab.Selection, tweenInfo, { BackgroundTransparency = 0.8 })
             animbar.Visible = true
             modbar.Visible = false
+            handle.Title.Text = "Animations"
         end
     end)
 
@@ -250,7 +254,7 @@ function Sidebar:Init(frame)
     end)
 
     animtab.Selection.MouseLeave:Connect(function()
-        FastTween(animtab.Selection, tweenInfo, { BackgroundTransparency = 1 })
+        FastTween(animtab.Selection, tweenInfo, { BackgroundTransparency = 0.85 })
     end)
 
     modtab.Selection.InputBegan:Connect(function(input)
@@ -258,6 +262,7 @@ function Sidebar:Init(frame)
             FastTween(modtab.Selection, tweenInfo, { BackgroundTransparency = 0.8 })
             animbar.Visible = false
             modbar.Visible = true
+            handle.Title.Text = "Modules"
         end
     end)
 
@@ -272,7 +277,7 @@ function Sidebar:Init(frame)
     end)
 
     modtab.Selection.MouseLeave:Connect(function()
-        FastTween(modtab.Selection, tweenInfo, { BackgroundTransparency = 1 })
+        FastTween(modtab.Selection, tweenInfo, { BackgroundTransparency = 0.85 })
     end)
 
     handle.Minimize.InputBegan:Connect(function(input)
@@ -280,9 +285,9 @@ function Sidebar:Init(frame)
             FastTween(handle.Minimize, tweenInfo, { BackgroundTransparency = 0.8 })
             minimized = not minimized
             if minimized then
-                FastTween(frame, tweenInfo, { Size = UDim2.new(0, 208, 0, 0) })
+                FastTween(frame, tweenInfo, { Size = reducedSize })
             else
-                FastTween(frame, tweenInfo, { Size = UDim2.new(0, 208, 0, 393) })
+                FastTween(frame, tweenInfo, { Size = defaultSize })
             end
         end
     end)
