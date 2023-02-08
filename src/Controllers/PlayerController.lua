@@ -12,6 +12,8 @@ local Animation = require(Project.Controllers.Animations.Animation)
 local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local EmoteController = require(Project.Controllers.EmoteController)
+local VRController = require(Project.Controllers.VRController)
+
 local R6Reanim = require(Project.Controllers.Reanimation.R6Nexo)
 local R15Reanim = require(Project.Controllers.Reanimation.R15NexoKuraga)
 
@@ -117,6 +119,7 @@ PlayerController.Animation = Animation.new("Blank", {}, 30, false)
 PlayerController.LayerA = {}
 PlayerController.LayerB = {}
 PlayerController.DanceLayer = {}
+PlayerController.VRLayer = {}
 PlayerController.Initialized = false
 
 local massPollRate = 1
@@ -805,6 +808,8 @@ function PlayerController:Animate()
 	self.LayerA.looking = Player.Looking
 
 	self.LayerB:Animate()
+
+	self.VRLayer:Update()
 end
 
 
@@ -1086,6 +1091,7 @@ function PlayerController:Init(canClickFling)
 	self.LayerA = AnimationController.new(Player.AnimationModule)
 	self.LayerB = AnimationController.new()
 	self.DanceLayer = AnimationController.new(false)
+	self.VRLayer = VRController.new()
 	PlayerController.Initialized = false
 
 	self.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
@@ -1104,6 +1110,8 @@ function PlayerController:Init(canClickFling)
 	EmoteController:Init()
 
 	self:_InitializeStates()
+
+	self.VRLayer:EnableVR()
 
 	self.Initialized = true
 end
@@ -1148,6 +1156,7 @@ function PlayerController:Respawn()
 	self.LayerA:Destroy()
 	self.LayerB:Destroy()
 	self.DanceLayer:Destroy()
+	self.VRLayer:Destroy()
 
 	self:StopAllModules()
 	
