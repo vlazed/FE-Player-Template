@@ -10,13 +10,11 @@ import threading
 print("Loading extensions...")  # also called libraries
 
 "-----EDIT THESE VALUES-----"
-# Roblox username of player
-username = "OHMANdoiloveGAMESTOP"
 # AUTHORIZATION token (games will ask you for this)
 authorization = "GAMESTOPFOREVER"
 # SERVER OWNERS: move {username} to wherever the player's username should be inserted into the URL. 
 # PLAYERS: this value should be given from the roblox game.
-upload_url = f"https://www.example.com/upload_pose/{username}" 
+upload_url = f"http://127.0.0.1:3000/upload_pose/" 
 
 # how long in seconds between each pose update (less seconds = more data uploaded to server = lag)
 cooldown = 0.2
@@ -143,8 +141,8 @@ def keep_uploading():  # runs on a separate thread
                     pydirectinput.press(ending_char)
                 else:  # otherwise upload to server
                     try:
-                        r = rq.post(url=upload_url, json=sent_data,
-                                    headers=request_headers)
+                        print("Post")
+                        r = rq.post(url=upload_url, json=sent_data, verify=False, headers=request_headers)
                     except rq.ConnectTimeout as e:
                         print(e)
                         continue
@@ -154,6 +152,7 @@ def keep_uploading():  # runs on a separate thread
 
                     if r.status_code == 200:  # success
                         last_sequence_num = sequence_num
+                        print("Successful")
                     else:  # failure
                         print(f"Status code: {r.status_code}")
                         print(f"Response body: {r.text}")
@@ -330,7 +329,7 @@ if __name__ == '__main__':
         input("Press Enter in the console to begin the program. "
               + f"The script will begin typing on the screen in {start_typing_delay} "
               + "seconds, so make sure Roblox is in focus.")
-    time.sleep(start_typing_delay)
+        time.sleep(start_typing_delay)
     upload_process = threading.Thread(target=keep_uploading)
     upload_process.start()
     main()  # if this function terminates, then stop the other thread below too

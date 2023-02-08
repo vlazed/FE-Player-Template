@@ -6,7 +6,7 @@ import os
 import secrets
 import time
 
-master_token = "CHANGE_ME"
+master_token = "GAMESTOPFOREVER"
 token_lifetime = (60 * 10) # in seconds. 10 minutes
 
 # IF YOU ARE HAVING TROUBLE RELOADING THIS SITE, THAT MEANS IT'S STILL BEING
@@ -36,25 +36,26 @@ def download_poses():
     resp.data = data
     return resp
 
-@app.route('/download_pose/<string:username>', methods = ['GET'])
-def download_pose(username): # download pose for only a single player
+@app.route('/download_pose/', methods = ['GET'])
+def download_pose(): # download pose for only a single player
     status = 404
     headers = {}
     data = 'Username not found. Come back later.'
 
-    if username in poses:
+    if "Player" in poses:
         status = 200
-        data = json.dumps(poses[username])
+        data = json.dumps(poses["Player"])
     else:
-        print(username)
         print(poses)
 
     resp = flask.Response(status=status,headers=headers)
     resp.data = data
+	
+    print(resp.data)
     return resp
 
-@app.route('/upload_pose/<string:username>', methods = ['POST'])
-def upload_pose(username):
+@app.route('/upload_pose/', methods = ['POST'])
+def upload_pose():
     pose = flask.request.json
     given_headers = flask.request.headers
     status_code = 400
@@ -68,19 +69,17 @@ def upload_pose(username):
     elif 'authorization' in given_headers:
         status_code = 401 # default status before finding token
         response_data = "Invalid temporary token (expired, server restarted, or not yours)."
-
-        for token in temp_keys: # overrides the 401 status
-            if token["value"] == given_headers["authorization"] and username == token["username"]: # same person that requested token
-                    poses[username] = pose
-                    status_code = 200
-                    response_data = "Updated user's pose."
-                    break
+		
+        poses["Player"] = pose
+        status_code = 200
+        response_data = "Updated user's pose."
     else:
         status_code = 403
         response_data = "No temporary token given."
 
     resp = flask.Response(status=status_code)
     resp.data = response_data
+	
     return resp
 
 @app.route('/get_temp_keys/<string:username>', methods = ['GET']) # all poses
@@ -113,4 +112,4 @@ def get_temporary_keys(username):
 if __name__ == '__main__': 
     from waitress import serve
     print("Production server is ready - connections are now being accepted. (Press CTRL+C to quit)")
-    serve(app, host="0.0.0.0", port=3000)
+    serve(app, host="127.0.0.1", port=3000)

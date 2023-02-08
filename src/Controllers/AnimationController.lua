@@ -200,10 +200,10 @@ function AnimationController:_poseAccessoryR15(keyframe, toolMapping)
     local kfLeftLowerArm = kfUpperTorso and kfLeftUpperArm["LeftLowerArm"]
     local kfRightHand = kfRightUpperArm and kfRightLowerArm["RightHand"]
     local kfLeftHand = kfLeftUpperArm and kfLeftLowerArm["LeftHand"]
-    local kfRightUpperLeg = kfUpperTorso and kfUpperTorso["RightUpperLeg"]
-    local kfLeftUpperLeg = kfUpperTorso and kfUpperTorso["LeftUpperLeg"]
-    local kfRightLowerLeg = kfUpperTorso and kfRightUpperLeg["RightLowerLeg"]
-    local kfLeftLowerLeg = kfUpperTorso and kfLeftUpperLeg["LeftLowerLeg"]
+    local kfRightUpperLeg = kfLowerTorso and kfLowerTorso["RightUpperLeg"]
+    local kfLeftUpperLeg = kfLowerTorso and kfLowerTorso["LeftUpperLeg"]
+    local kfRightLowerLeg = kfRightUpperLeg and kfRightUpperLeg["RightLowerLeg"]
+    local kfLeftLowerLeg = kfLeftUpperLeg and kfLeftUpperLeg["LeftLowerLeg"]
     local kfRightFoot = kfRightLowerLeg and kfRightLowerLeg["RightFoot"]
     local kfLeftFoot = kfLeftLowerLeg and kfLeftLowerLeg["LeftFoot"]
     
@@ -439,7 +439,7 @@ function AnimationController:_poseR15(keyframe, interp, animation)
                 torsoCF
             )
 		end
-        if animation.Looking then
+        if animation.Looking and Player.Looking then
             headCF = self:_lookAtMouse(self.Character["UpperTorso"])
         end
         if kfA["UpperTorso"]["Head"] then
@@ -689,7 +689,7 @@ function AnimationController:_poseR6(keyframe, interp, animation)
                 animateLimb(leftleg, nexoTorso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
             end
 		end
-        if animation.Looking and torso then
+        if animation.Looking and torso and Player.Looking then
             headCF = self:_lookAtMouse(torso) 
         end
 		if kfA["Head"] and kfB["Head"] then

@@ -38,7 +38,7 @@ Player.Dodging = false
 Player.Running = State.new("Running", false)
 Player.Sprinting = State.new("Sprinting", false)
 Player.Dancing = false
-Player.Looking = true
+Player.Looking = false
 Player.Swimming = false
 Player.Leaning = true
 

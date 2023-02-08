@@ -134,6 +134,7 @@ local connection
 local nexoConnections
 local respawnConnection
 local animationConnection
+local vrConnection
 
 local lostOwnershipLocation = Instance.new("Part")
 lostOwnershipLocation.Size = Vector3.new(0.1, 2048, 0.1)
@@ -808,8 +809,6 @@ function PlayerController:Animate()
 	self.LayerA.looking = Player.Looking
 
 	self.LayerB:Animate()
-
-	self.VRLayer:Update()
 end
 
 
@@ -1106,6 +1105,7 @@ function PlayerController:Init(canClickFling)
 
     connection = Thread.DelayRepeat(Settings.DT, self.Update, self)
 	animationConnection = RunService.Heartbeat:Connect(function() self:Animate() end)
+	vrConnection = Thread.DelayRepeat(0.1, self.VRLayer.Update, self.VRLayer)
 	ActionHandler:Init()
 	EmoteController:Init()
 
@@ -1136,6 +1136,10 @@ function PlayerController:Respawn()
 
 	if animationConnection then
 		animationConnection:Disconnect()
+	end
+
+	if vrConnection then
+		vrConnection:Disconnect()
 	end
 
 	for i, conn in pairs(nexoConnections)do 
