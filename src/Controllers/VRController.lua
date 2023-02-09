@@ -50,7 +50,7 @@ end
 
 
 --rotate the jointMotor player character motor through jointRot's x,y,z rotation attributes
-local function moveJoint(rotTable, jointRotName, jointMotor, addVector, rotXadd, rotYadd, rotZadd)
+local function moveJointR6(rotTable, jointRotName, jointMotor, addVector, rotXadd, rotYadd, rotZadd)
 	local jointRot = rotTable[jointRotName] -- assign to table containg x,y,z rotations
 	-- CFrame object which contains X,Y,Z rotation
 	local jointLook
@@ -58,11 +58,17 @@ local function moveJoint(rotTable, jointRotName, jointMotor, addVector, rotXadd,
 	if jointRotName == "neck" then -- the neck and waist require different CFrame calculations
 		jointLook = CFrame.fromOrientation(math.rad(rotXadd) + (math.pi - jointRot.x), math.rad(rotYadd), jointRot.z) + addVector
 	else --normal joint
-		jointLook = CFrame.fromOrientation(math.rad(rotXadd) + (jointRot.x), math.rad(rotYadd) + jointRot.y, (math.pi - jointRot.z) + math.rad(rotZadd)) + addVector
+		jointLook = CFrame.fromOrientation(math.rad(rotXadd) + jointRot.x, math.rad(rotYadd), jointRot.z + math.rad(rotZadd)) + addVector
 	end
+
+	-- if upper arm is not visible enough to have an accurate pose estimation
+	if jointRot.visibility < 0.4 and (jointRotName:find("shoulder") or jointRotName:find("elbow")) then 
+		jointLook = CFrame.fromOrientation(math.rad(rotXadd), math.rad(rotYadd), math.rad(rotZadd)) + addVector		
+	end
+
 	-- if upper leg is not visible enough to have an accurate pose estimation
 	if jointRot.visibility < 0.8 and (jointRotName:find("hip") or jointRotName:find("knee")) then 
-		jointLook = CFrame.fromOrientation(jointRot.x + math.rad(rotXadd), jointRot.y + math.rad(rotYadd), jointRot.z + math.rad(rotZadd)) + addVector		
+		jointLook = CFrame.fromOrientation(math.rad(rotXadd), math.rad(rotYadd), math.rad(rotZadd)) + addVector		
 	end
 
 	local jointTween = TweenC0(jointMotor, jointLook) -- animate the joint movement into a smooth tween.
@@ -70,30 +76,53 @@ local function moveJoint(rotTable, jointRotName, jointMotor, addVector, rotXadd,
 end
 
 
+local function moveJointR15(rotTable, jointRotName, jointMotor, addVector, rotXadd, rotYadd, rotZadd)
+	local jointRot = rotTable[jointRotName] -- assign to table containg x,y,z rotations
+	-- CFrame object which contains X,Y,Z rotation
+	local jointLook
+
+	if jointRotName == "neck" then -- the neck and waist require different CFrame calculations
+		jointLook = CFrame.fromEulerAnglesXYZ((math.pi + 1.2*jointRot.x), jointRot.z, 0)
+	elseif jointRotName:find("elbow") then
+		jointLook = CFrame.fromOrientation(math.rad(90), jointRot.z, 0)
+	else --normal joint
+		jointLook = CFrame.fromEulerAnglesXYZ(0 + math.rad(rotXadd), 0 + math.rad(rotYadd), jointRot.z + math.rad(rotZadd))
+	end
+
+	-- if upper leg is not visible enough to have an accurate pose estimation
+	if jointRot.visibility < 0.8 and (jointRotName:find("hip") or jointRotName:find("knee")) then 
+		jointLook = CFrame.fromEulerAnglesXYZ(0, 0, 0)		
+	end
+
+	local jointTween = TweenC0(jointMotor, jointLook + addVector) -- animate the joint movement into a smooth tween.
+	jointTween:Play()
+end
+
+
 function VRController:_rotateBodyR6()
 	-- elbows
 	if self.data.left_shoulder then
-		moveJoint(self.data, "left_shoulder", self._nexoCharacter.Torso["Left Shoulder"], 
-		Vector3.new(-1,0.5,0), 0,-90,360-math.deg(self.data.left_shoulder.z))
+		moveJointR6(self.data, "right_elbow", self._nexoCharacter.Torso["Left Shoulder"], 
+		Vector3.new(-1,0.5,0), 90,0,0)
 	end
 	if self.data.right_shoulder then
-		moveJoint(self.data, "right_shoulder", self._nexoCharacter.Torso["Right Shoulder"], 
-		Vector3.new(1,0.5,0), 0,90,360-math.deg(self.data.right_shoulder.z))
+		moveJointR6(self.data, "left_elbow", self._nexoCharacter.Torso["Right Shoulder"], 
+		Vector3.new(1,0.5,0), 90,0,0)
 	end
 	
 	-- lower legs (knees to ankle)
 	if self.data.left_knee then
-		moveJoint(self.data, "left_knee", self._nexoCharacter.Torso["Left Hip"], 
-		Vector3.new(1,-1,0), 0,-90,0) --360-math.deg(self.data.left_hip.z) - (360-math.deg(self.data.waist.z))
+		moveJointR6(self.data, "left_knee", self._nexoCharacter.Torso["Left Hip"], 
+		Vector3.new(-1,-1,0), 0,-90,0) --360-math.deg(self.data.left_hip.z) - (360-math.deg(self.data.waist.z))
 	end
 	if self.data.right_knee then
-		moveJoint(self.data, "right_knee", self._nexoCharacter.Torso["Right Hip"], 
-		Vector3.new(-1,-1,0), 0,90,0) -- 360-math.deg(self.data.right_hip.z) - (360-math.deg(self.data.waist.z))
+		moveJointR6(self.data, "right_knee", self._nexoCharacter.Torso["Right Hip"], 
+		Vector3.new(1,-1,0), 0,90,0) -- 360-math.deg(self.data.right_hip.z) - (360-math.deg(self.data.waist.z))
 	end
 
 	-- neck/head
 	if self.data.neck then
-		moveJoint(self.data, "neck", self._nexoCharacter.Torso.Neck, 
+		moveJointR6(self.data, "neck", self._nexoCharacter.Torso.Neck, 
 		Vector3.new(0,1,0), -90,-180,0)
 	end
 	print(self.data.neck)
@@ -104,35 +133,63 @@ end
 
 function VRController:_rotateBodyR15() 	
 	-- shoulders
-	moveJoint(self.data, "left_shoulder", self._nexoCharacter.LeftUpperArm.LeftShoulder, 
-		Vector3.new(-1,0.5,0), 0,0,180)
-	moveJoint(self.data, "right_shoulder", self._nexoCharacter.RightUpperArm.RightShoulder, 
-		Vector3.new(1,0.5,0), 0,0,180)
+	moveJointR15(
+		self.data, 
+		"left_shoulder", 
+		self._nexoCharacter.LeftUpperArm.LeftShoulder, 
+		Vector3.new(-1,0.5,0), 
+		90+math.deg(self.data.left_shoulder.x),
+		math.deg(self.data.left_shoulder.z)+math.deg(self.data.left_shoulder.x),
+		180
+	)
+	moveJointR15(
+		self.data, 
+		"right_shoulder", 
+		self._nexoCharacter.RightUpperArm.RightShoulder, 
+		Vector3.new(1,0.5,0), 
+		90+math.deg(self.data.right_shoulder.x),
+		math.deg(self.data.right_shoulder.z)-math.deg(self.data.right_shoulder.x),
+		180
+	)
 
 	-- elbows
-	moveJoint(self.data, "left_elbow", self._nexoCharacter.LeftLowerArm.LeftElbow, 
-		Vector3.new(0,-0.5,0), 0,0,360-math.deg(self.data.left_shoulder.z))
-	moveJoint(self.data, "right_elbow", self._nexoCharacter.RightLowerArm.RightElbow, 
-		Vector3.new(0,-0.5,0), 0,0,360-math.deg(self.data.right_shoulder.z))
+	moveJointR15(
+		self.data, 
+		"left_elbow", 
+		self._nexoCharacter.LeftLowerArm.LeftElbow, 
+		Vector3.new(0,-0.334,0), 
+		0,
+		0,
+		0
+	)
+	moveJointR15(
+		self.data, 
+		"right_elbow", 
+		self._nexoCharacter.RightLowerArm.RightElbow, 
+		Vector3.new(0,-0.334,0), 
+		0,
+		0,
+		0
+	)
 
 	-- upper legs (hips to knees)
-	moveJoint(self.data, "left_hip", self._nexoCharacter.LeftUpperLeg.LeftHip, 
+	moveJointR15(self.data, "left_hip", self._nexoCharacter.LeftUpperLeg.LeftHip, 
 		Vector3.new(-0.5,-0.2,0), 0,0,180+(360-math.deg(self.data.waist.z)))
-	moveJoint(self.data, "right_hip", self._nexoCharacter.RightUpperLeg.RightHip, 
+	moveJointR15(self.data, "right_hip", self._nexoCharacter.RightUpperLeg.RightHip, 
 		Vector3.new(0.5,-0.2,0), 0,0,180+(360-math.deg(self.data.waist.z)))
 
 	-- lower legs (knees to ankle)
-	moveJoint(self.data, "left_knee", self._nexoCharacter.LeftLowerLeg.LeftKnee, 
+	moveJointR15(self.data, "left_knee", self._nexoCharacter.LeftLowerLeg.LeftKnee, 
 		Vector3.new(0,-0.5,0), 0,0,360-math.deg(self.data.left_hip.z) - (360-math.deg(self.data.waist.z)))
-	moveJoint(self.data, "right_knee", self._nexoCharacter.RightLowerLeg.RightKnee, 
+	moveJointR15(self.data, "right_knee", self._nexoCharacter.RightLowerLeg.RightKnee, 
 		Vector3.new(0,-0.5,0), 0,0,360-math.deg(self.data.right_hip.z) - (360-math.deg(self.data.waist.z)))
 
 	-- hips (upper and lower torso)
-	moveJoint(self.data, "waist", self._nexoCharacter.UpperTorso.Waist,
+	moveJointR15(self.data, "waist", self._nexoCharacter.UpperTorso.Waist,
 		Vector3.new(0,0,0), 0,0,0) 
 
 	-- neck/head
-	moveJoint(self.data, "neck", self._nexoCharacter.Head.Neck, 
+	moveJointR15(self.data, "neck", self._nexoCharacter.Head.Neck, 
 		Vector3.new(0,0.8,0), 0,0,0)
 end
 

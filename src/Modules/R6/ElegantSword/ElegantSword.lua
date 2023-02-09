@@ -47,6 +47,7 @@ local Spring = require(Project.Util.Spring)
 local ElegantSword = {}
 ElegantSword.Name = "Elegant Sword"
 ElegantSword.Type = "Action"
+ElegantSword.Icon = ""
 
 ElegantSword.Initialized = false
 
@@ -565,7 +566,7 @@ function ElegantSword:Init()
     PlayerController.LayerB.Looking = false
     self:_InitializeAnimations()
     findCape()
-    PlayerController.Modules[self] = self
+    PlayerController.Modules[self.Name] = self
     PlayerController:Init()
     self.Initialized = true
 end
@@ -579,7 +580,7 @@ function ElegantSword:Stop()
     end
     PlayerController.LayerA.FilterTable = {}
     PlayerController.LayerB.FilterTable = {}
-    PlayerController.Modules[self] = nil
+    PlayerController.Modules[self.Name] = nil
     self.Initialized = false
 end
 

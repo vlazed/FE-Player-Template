@@ -65,6 +65,7 @@ local PlayerController = require(script.Controllers.PlayerController)
 
 local App = require(script.Components.App)
 local Mimic = require(script.Modules.Mimic)
+local VRController = require(script.Modules.VRController)
 
 if RunService:IsStudio() then
     if script.Parent.Name == "NexoPD" then
@@ -86,6 +87,7 @@ local success, err = pcall(function()
     PlayerController:Init()
     --SelectedModule:Init()
     Mimic:Init()
+    VRController:Init()
     App:Init()
 end)
 

@@ -439,7 +439,7 @@ function AnimationController:_poseR15(keyframe, interp, animation)
                 torsoCF
             )
 		end
-        if animation.Looking and Player.Looking then
+        if animation.Looking and self.Looking then
             headCF = self:_lookAtMouse(self.Character["UpperTorso"])
         end
         if kfA["UpperTorso"]["Head"] then
@@ -600,19 +600,21 @@ function AnimationController:_poseR6(keyframe, interp, animation)
 	local function animateLimb(limb, motor, cf, lastCF, lookCF) -- Local to torso
         lastCF = lastCF or CFrame.identity
         cf = cf or lastCF
-		
+
         local torso = self.Character:FindFirstChild("Torso")
+
+
+        if animation.Reflected then
+            print("Reflect limb")
+            local x, y, z = cf:ToOrientation()
+            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
+                * CFrame.fromOrientation(x, -y, -z)
+        end    
+
         local cfLerp = CFrame.identity:Lerp(cf, animation.Weight)
 
         if not limb then return end
         if not torso then return end
-        
-
-        if animation.Reflected then
-            local x, y, z = cf:ToOrientation()
-            cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
-                * CFrame.fromOrientation(x, -y, -z)
-        end
         
         FastTween(motor, {0.1}, {Transform = cfLerp})
         
@@ -689,7 +691,7 @@ function AnimationController:_poseR6(keyframe, interp, animation)
                 animateLimb(leftleg, nexoTorso["Left Hip"], kfA["Left Leg"].CFrame, kfB["Left Leg"].CFrame)
             end
 		end
-        if animation.Looking and torso and Player.Looking then
+        if animation.Looking and torso and self.Looking then
             headCF = self:_lookAtMouse(torso) 
         end
 		if kfA["Head"] and kfB["Head"] then
@@ -903,6 +905,7 @@ function AnimationController.new(animationModule)
     }
 
     self.TorsoLook = true
+    self.Looking = Player.Looking
     self.CurrentModule = animationModule
     self.Character = Player.getCharacter()
     self.NexoCharacter = Player.getNexoCharacter()

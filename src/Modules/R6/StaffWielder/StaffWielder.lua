@@ -45,6 +45,7 @@ local Animation = require(Project.Controllers.Animations.Animation)
 local StaffWielder = {}
 StaffWielder.Name = "Staff Wielder"
 StaffWielder.Type = "Action"
+StaffWielder.Icon = ""
 
 StaffWielder.Initialized = false
 
@@ -342,7 +343,7 @@ function StaffWielder:Init()
     Player:SetAnimationModule(self.UnequippedAnimations)
     PlayerController.LayerA:UpdateModule(self.UnequippedAnimations)
     self:_InitializeAnimations()
-    PlayerController.Modules[self] = self
+    PlayerController.Modules[self.Name] = self
     PlayerController:Init()
     self.Initialized = true
 end
@@ -350,7 +351,7 @@ end
 
 function StaffWielder:Stop()
     Player:ResetAnimationModule()
-    PlayerController.Modules[self] = nil
+    PlayerController.Modules[self.Name] = nil
     self.Initialized = false
 end
 

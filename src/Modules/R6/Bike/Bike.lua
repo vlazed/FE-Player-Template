@@ -22,6 +22,7 @@ local Animation = require(Project.Controllers.Animations.Animation)
 local Bike = {}
 Bike.Name = "Bike"
 Bike.Type = "Movement"
+Bike.Icon = ""
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
@@ -209,7 +210,7 @@ function Bike:DetachBike()
     onBike = false
 
     PlayerController:ResetLocomotionScalars()
-    SendNotification("Bike Detached", "", "Close", 1)
+    SendNotification("Bike Detached", "", "Close", 1, self.Icon)
 end
 
 function Bike:AttachBike(bike)
@@ -241,7 +242,7 @@ function Bike:AttachBike(bike)
 
     Bike:SetLocomotionScalars()
     onBike = true
-    SendNotification("Bike Attached", "", "Close", 1)
+    SendNotification("Bike Attached", "", "Close", 1, self.Icon)
 end
 
 
@@ -250,7 +251,7 @@ function Bike:Mount(bike)
     isMounting = true
     --MountBike:Stop()
     --MountBike:Play()
-    SendNotification("Mounting Bike", "", "Close", 1)
+    SendNotification("Mounting Bike", "", "Close", 1, self.Icon)
     task.delay(1, function() self:AttachBike(bike) end)
 end
 
@@ -260,7 +261,7 @@ function Bike:Dismount(bike)
     isMounting = false
     --DismountBike:Stop()
     --DismountBike:Play()
-    SendNotification("Dismounting Bike", "", "Close", 1)
+    SendNotification("Dismounting Bike", "", "Close", 1, self.Icon)
     task.delay(1, function() self:DetachBike(bike) end)
 end
 
@@ -272,7 +273,7 @@ end
 
 function Bike:Init()
     if self.Initialized then return end
-    PlayerController.Modules[self] = self
+    PlayerController.Modules[self.Name] = self
     PlayerController:Init()
     Bike.Initialized = true
 end
@@ -283,7 +284,7 @@ function Bike:Stop()
     onBike = false
     isMounting = false
     isDismounting = false
-    PlayerController.Modules[self] = nil
+    PlayerController.Modules[self.Name] = nil
     PlayerController:ResetLocomotionScalars()
     self.Initialized = false
 end

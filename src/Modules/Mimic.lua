@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local Project
 if getgenv then
 	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
@@ -15,6 +16,7 @@ local Player = require(Project.Player)
 local Mimic = {}
 Mimic.Name = "Mimic"
 Mimic.Type = "Core"
+Mimic.Icon = ""
 
 local Mouse = Player.getMouse()
 
@@ -67,6 +69,15 @@ local function goUpHierarchy(input, targetClass)
 end
 
 
+local function getHeadshotOf(playerName)
+    local player = Players:GetPlayerFromCharacter(workspace[playerName])
+    if not player then return "", true end
+    local playerId = player.UserId
+
+    return Players:GetUserThumbnailAsync(playerId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+end
+
+
 local function getUserFromClick()
 	local part = Mouse.Target
 	if not part then return end
@@ -77,12 +88,18 @@ local function getUserFromClick()
 	if potentialModel then
 		if potentialModel:FindFirstChildOfClass("Humanoid") then
             targetName = targetCharacter.Name
-			SendNotification("Found character", targetCharacter.Name, "Close", 1)
+
+            local headshot, isReady = getHeadshotOf(targetName) 
+            if isReady then
+                SendNotification("Found character", targetCharacter.Name, "Close", 1, headshot)
+            else
+                SendNotification("Found character", targetCharacter.Name, "Close", 1, "")                
+            end
 		else
-			SendNotification(part.Name .. " is a parent of " .. potentialModel.Name)
+			SendNotification(part.Name .. " is a parent of " .. potentialModel.Name, "")
 		end
 	else
-		SendNotification("Did not find a guy", "", "Close", 1)
+		SendNotification("Did not find a guy", "", "Close", 1, "")
 	end
 end
 
@@ -254,17 +271,17 @@ function Mimic:CopyCharacterPose(character)
 end
 
 
-local function processInputs()
+function Mimic:ProcessInputs()
     if debounce or Player.Focusing or Player.Emoting:GetState() or Player.ChatEmoting:GetState() then return end
     if ActionHandler.IsKeyDownBool(CopyButton) then
         Copying = not Copying
         debounce = true
-        SendNotification("Mimic Enabled", tostring(Copying), "Close", 2)
+        SendNotification("Mimic Enabled", tostring(Copying), "Close", 2, self.Icon)
         task.delay(1, function() debounce = false end)
     elseif ActionHandler.IsKeyDownBool(ChangeSideButton) then
         sideIndex = (sideIndex + 1) % 3
         debounce = true
-        SendNotification("In Front:", tostring(sideIndex), "Close", 2)
+        SendNotification("In Front:", tostring(sideIndex), "Close", 2, self.Icon)
         task.delay(1, function() debounce = false end)
     end
 end
@@ -284,7 +301,7 @@ end
 function Mimic:Update()
     if Player:GetState("Respawning") or not Initialized then return end
 
-    processInputs()
+    self:ProcessInputs()
 
     local character = workspace:FindFirstChild(targetName)
     local myCharacter = Player.getCharacter()
@@ -314,17 +331,17 @@ function Mimic:Init()
     
     Initialized = true
     clickConnection = Mouse.Button1Down:Connect(getUserFromClick)
-    SendNotification("Mimic Loaded", "Press M to mimic a clicked humanoid", "Close", 2)
-    PlayerController.Modules[self] = self
+    SendNotification("Mimic Loaded", "Press M to mimic a clicked humanoid", "Close", 2, self.Icon)
+    PlayerController.Modules[self.Name] = self
 end
 
 
 function Mimic:Stop()
     if not Initialized then return end 
 
-    SendNotification("Mimic Stopped", "", "Close", 2)
+    SendNotification("Mimic Stopped", "", "Close", 2, self.Icon)
     clickConnection:Disconnect()
-    PlayerController.Modules[self] = nil
+    PlayerController.Modules[self.Name] = nil
     Initialized = false
 end
 

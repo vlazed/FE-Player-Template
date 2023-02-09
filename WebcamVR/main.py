@@ -17,7 +17,7 @@ authorization = "GAMESTOPFOREVER"
 upload_url = f"http://127.0.0.1:3000/upload_pose/" 
 
 # how long in seconds between each pose update (less seconds = more data uploaded to server = lag)
-cooldown = 0.2
+cooldown = 0.01
 # are we using the typing input feature (True/False case-sensitive)?
 typing_input = False
 

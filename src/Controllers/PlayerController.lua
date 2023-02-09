@@ -30,6 +30,9 @@ local Spring = require(Project.Util.Spring)
 local Player = require(Project.Player)
 
 local PlayerController = {}
+PlayerController.Icon = ""
+PlayerController.FlingIcon = ""
+PlayerController.RespawnIcon = ""
 
 local FALLEN_PARTS_THRESHOLD = 0.25
 local EPSILON = 1e-4
@@ -68,6 +71,7 @@ PlayerController.LerpEnabled = false
 
 local HRPFlingButton = Enum.KeyCode.Equals
 local LimbFlingButton = Enum.KeyCode.RightBracket
+local LookButton = Enum.KeyCode.LeftBracket
 
 local debounce = false
 
@@ -758,18 +762,23 @@ function PlayerController:ProcessInputs()
 	if not debounce then
 		if ActionHandler.IsKeyDownBool(HRPFlingButton) then
 			self.ToggleFling = not self.ToggleFling
-			SendNotification("ToggleFling", tostring(self.ToggleFling), "Close")
+			SendNotification("ToggleFling", tostring(self.ToggleFling), "Close", 1, self.FlingIcon)
 			debounce = true
 			task.delay(0.2, function() debounce = false end)
 		elseif ActionHandler.IsKeyDownBool(LimbFlingButton) then
 				self.LimbFling = not self.LimbFling
-				SendNotification("LimbFling", tostring(self.LimbFling), "Close")
+				SendNotification("LimbFling", tostring(self.LimbFling), "Close", 1, self.FlingIcon)
 				debounce = true
 				task.delay(0.2, function() debounce = false end)
 		elseif ActionHandler.IsKeyDownBool(Enum.KeyCode.BackSlash) then
 			self.LerpEnabled = not self.LerpEnabled
 			debounce = true
 			--print("LerpEnabled:", self.LerpEnabled)
+			task.delay(0.2, function() debounce = false end)
+		elseif ActionHandler.IsKeyDownBool(LookButton) then
+			Player.Looking = not Player.Looking
+			debounce = true
+			SendNotification("Looking", tostring(Player.Looking), "Close", 1, "")
 			task.delay(0.2, function() debounce = false end)
 		elseif ActionHandler.IsKeyDownBool(Settings.debugButton) then
 			self:ToggleDebug()
@@ -788,7 +797,9 @@ end
 
 function PlayerController:RunUpdateTable()
 	for i, module in pairs(self.Modules) do
-		module:Update()
+		if not module.Name:find("VR") then
+			module:Update()			
+		end
 	end
 end
 
@@ -806,9 +817,11 @@ function PlayerController:Animate()
 	self.LayerA:Animate()
 	self.DanceLayer:Animate()
 
-	self.LayerA.looking = Player.Looking
+	self.LayerA.Looking = Player.Looking
 
 	self.LayerB:Animate()
+
+	self.Modules.VRWebcam:Update()
 end
 
 
@@ -1090,7 +1103,7 @@ function PlayerController:Init(canClickFling)
 	self.LayerA = AnimationController.new(Player.AnimationModule)
 	self.LayerB = AnimationController.new()
 	self.DanceLayer = AnimationController.new(false)
-	self.VRLayer = VRController.new()
+	--self.VRLayer = VRController.new()
 	PlayerController.Initialized = false
 
 	self.RightArm = IKArmController.new(Player.getNexoCharacter(), "Right", "Arm")
@@ -1105,13 +1118,13 @@ function PlayerController:Init(canClickFling)
 
     connection = Thread.DelayRepeat(Settings.DT, self.Update, self)
 	animationConnection = RunService.Heartbeat:Connect(function() self:Animate() end)
-	vrConnection = Thread.DelayRepeat(0.1, self.VRLayer.Update, self.VRLayer)
+	--vrConnection = Thread.DelayRepeat(0.01, self.VRLayer.Update, self.VRLayer)
 	ActionHandler:Init()
 	EmoteController:Init()
 
 	self:_InitializeStates()
 
-	self.VRLayer:EnableVR()
+	--self.VRLayer:EnableVR()
 
 	self.Initialized = true
 end
@@ -1128,7 +1141,7 @@ function PlayerController:Respawn()
 
 	local oldCFrame = previousCFrame
 
-	SendNotification("Respawning")
+	SendNotification("Respawning", "", "", 1, self.RespawnIcon)
 
 	if connection then
 		connection:Disconnect()
@@ -1160,7 +1173,7 @@ function PlayerController:Respawn()
 	self.LayerA:Destroy()
 	self.LayerB:Destroy()
 	self.DanceLayer:Destroy()
-	self.VRLayer:Destroy()
+	--self.VRLayer:Destroy()
 
 	self:StopAllModules()
 	
