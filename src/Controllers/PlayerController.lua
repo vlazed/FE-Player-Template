@@ -821,6 +821,8 @@ function PlayerController:Animate()
 	self.DanceLayer:Animate()
 
 	self.LayerA.Looking = Player.Looking
+	self.LayerB.Looking = Player.Looking
+	self.DanceLayer.Looking = Player.Looking
 
 	self.LayerB:Animate()
 end
