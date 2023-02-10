@@ -51,7 +51,7 @@ StaffWielder.Initialized = false
 
 --[[
     If a module requires an accessory, make sure to provide a failsafe in case that the Player does not own
-    or somehow lose the accessory.
+    or somehow loses the accessory.
 --]]
 local Staff = "Giant Sword Catcher"
 

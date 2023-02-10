@@ -89,17 +89,13 @@ end
 
 function Player:GetAnimation(animation: string): Animation
 	if self.AnimationModule[animation] then
-		--print(self.AnimationModule[animation])
 		return self.AnimationModule[animation]
 	elseif self.AnimationModule.Emotes[animation:lower()] then
-		--print(self.AnimationModule.Emotes[animation])
 		return self.AnimationModule.Emotes[animation:lower()]
 	elseif self.DefaultModule.Emotes[animation:lower()] then
-		--print(PlayerAnimations.Emotes[animation:lower()])	
-		return PlayerAnimations.Emotes[animation:lower()]
+		return self.DefaultModule.Emotes[animation:lower()]
 	elseif self.DefaultModule[animation] then
-		--print(PlayerAnimations[animation])
-		return PlayerAnimations[animation]
+		return self.DefaultModule[animation]
 	else
 		return Animation.new()
 	end

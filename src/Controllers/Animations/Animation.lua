@@ -146,7 +146,7 @@ function Animation:AdjustWeight(weight, fadeTime)
         end
         self._weightThread = nil
         self.ReachedWeight:Fire()
-        print("Done fading")
+        --print("Done fading")
     end)
 end
 

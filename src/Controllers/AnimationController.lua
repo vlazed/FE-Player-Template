@@ -605,7 +605,7 @@ function AnimationController:_poseR6(keyframe, interp, animation)
 
 
         if animation.Reflected then
-            print("Reflect limb")
+            --print("Reflect limb")
             local x, y, z = cf:ToOrientation()
             cf = CFrame.new(-cf.Position.X, cf.Position.Y, cf.Position.Z) 
                 * CFrame.fromOrientation(x, -y, -z)
@@ -842,6 +842,13 @@ function AnimationController:Animate()
 end
 
 
+function AnimationController:UnloadAnimationModule(module)
+    for _,anim in pairs(module) do
+        self:UnloadAnimation(anim)
+    end
+end
+
+
 function AnimationController:UnloadAnimations()
     for priority,table in pairs(self.AnimationTable) do
         for _, anim in pairs(table) do
@@ -861,19 +868,36 @@ function AnimationController:LoadAnimation(animation: Animation)
 end
 
 
+function AnimationController:UpdateAnimations(animations)
+    for _,anim in pairs(animations) do
+        if anim.KeyframeSequence then
+            self:LoadAnimation(anim)             
+        end
+    end
+end
+
+
 function AnimationController:UpdateModule(animModule)
     if self.CurrentModule == animModule then return end
 
-    print("Updating module")
+    --print("Updating module")
     self.CurrentModule = animModule
 
+    self:UpdateAnimations(animModule)
+
+    if animModule.Emotes then
+        self:UpdateAnimations(animModule.Emotes)        
+    end
+
+    --[[
     for index,animationTable in pairs(self.AnimationTable) do
-        for i, animation in pairs(animModule) do
+        for _, animation in pairs(animModule) do
             if index == animation.Priority then
                 animationTable[animation.Name] = animation
             end
         end
     end
+    ]]
 end
 
 

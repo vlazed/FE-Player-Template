@@ -12,7 +12,6 @@ local Animation = require(Project.Controllers.Animations.Animation)
 local AnimationController = require(Project.Controllers.AnimationController)
 local ControllerSettings = require(Project.Controllers.ControllerSettings)
 local EmoteController = require(Project.Controllers.EmoteController)
-local VRController = require(Project.Controllers.VRController)
 
 local R6Reanim = require(Project.Controllers.Reanimation.R6Nexo)
 local R15Reanim = require(Project.Controllers.Reanimation.R15NexoKuraga)
@@ -50,6 +49,8 @@ local Mouse = Player.getMouse()
 
 local IKArmController
 local IKLegController
+
+local holdingTool = false
 
 if Player:GetRigType() == Enum.HumanoidRigType.R6 then
 	IKArmController = require(Project.Controllers.IKB.R6.Arm)
@@ -696,10 +697,12 @@ function PlayerController:ProcessStates(char, nexoChar)
 		self:Idle()
 	end
 
-	if tool then
+	if tool and not holdingTool then
 		Player:GetAnimation("ToolHold"):Play()
+		holdingTool = true
 		self:HoldTool(tool)
-	else
+	elseif not tool and holdingTool then
+		holdingTool = false
 		Player:GetAnimation("ToolHold"):Stop()
 	end
 
@@ -820,8 +823,6 @@ function PlayerController:Animate()
 	self.LayerA.Looking = Player.Looking
 
 	self.LayerB:Animate()
-
-	self.Modules.VRWebcam:Update()
 end
 
 

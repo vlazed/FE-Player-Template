@@ -65,7 +65,6 @@ local PlayerController = require(script.Controllers.PlayerController)
 
 local App = require(script.Components.App)
 local Mimic = require(script.Modules.Mimic)
-local VRController = require(script.Modules.VRController)
 
 if RunService:IsStudio() then
     if script.Parent.Name == "NexoPD" then
@@ -73,7 +72,7 @@ if RunService:IsStudio() then
     end    
 end
 
---local SelectedModule = require(script.Modules.R6.Bike.Bike)
+local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
 
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"
@@ -87,7 +86,6 @@ local success, err = pcall(function()
     PlayerController:Init()
     --SelectedModule:Init()
     Mimic:Init()
-    VRController:Init()
     App:Init()
 end)
 
@@ -101,5 +99,6 @@ if not success then
     if getgenv then
         getgenv().Running = false
     end
-    error("An error has occurred while running this module: \n" .. tostring(err))
+    PlayerController:Respawn()
+    error("An error has occurred while running this module: \n" .. tostring(err), 0)
 end
