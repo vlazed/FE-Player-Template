@@ -111,10 +111,7 @@ populateEmoteTable(Animations.Emotes:GetChildren(), Bike.Animations.Emotes)
 Bike.TrickIndex = 1
 
 
-function Bike:_InitializeAnimations()
-    --PlayerController.LayerA:LoadAnimation(MountBike)
-    --PlayerController.LayerA:LoadAnimation(DismountBike)
-    
+function Bike:_InitializeAnimations()    
     self.Animations["Roll"]:ConnectStop(self.OnStopAnimation)
 
     self.Animations["LandSoft"]:ConnectStop(self.OnStopAnimation)
@@ -166,6 +163,8 @@ function Bike:ProcessStates(char, Accessory)
     local hum = char.Humanoid
     local nexoHum = Player.getNexoHumanoid()
 
+    Accessory.Handle.RotVelocity = Vector3.new()
+
     if onBike then
         local groundSpeed = (char.Torso.AssemblyLinearVelocity * Vector3.new(1,0,1)).Magnitude
         if (groundSpeed < 0.1) then
@@ -190,7 +189,7 @@ function Bike:Update()
 
     self:ProcessInputs(char, accessory)
 
-    self:ProcessStates(char)
+    self:ProcessStates(char, accessory)
 end
 
 
@@ -273,6 +272,7 @@ end
 
 function Bike:Init()
     if self.Initialized then return end
+    self:_InitializeAnimations()
     PlayerController.Modules[self.Name] = self
     PlayerController:Init()
     Bike.Initialized = true

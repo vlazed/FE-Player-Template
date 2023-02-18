@@ -71,7 +71,13 @@ function EmoteController:ChooseChatAnim(message)
     local capitals = message:gsub("%l", "")
     local string_sum = message:len()
 
-    local index = math.random(1, 4)
+    local animCount = Player:CountAnimations("ChattedNormal")
+    local index = 0
+    if animCount > 0 then
+        index = math.random(1, animCount)
+    else
+        index = math.random(1, 4)
+    end
     local anim
 
     if capitals:len()/string_sum > 0.5 then
@@ -158,7 +164,7 @@ function EmoteController.OnStopAnimation(emote: Animation)
 end
 
 
-function EmoteController.OnEmote(state: State)
+function EmoteController.OnEmote(state)
     if state:GetName() == "StartChatting" then
         ChatEmote:Play()
         Emote:Stop()

@@ -1,6 +1,6 @@
 local rbxmSuite = loadstring(game:HttpGetAsync("https://github.com/richie0866/rbxm-suite/releases/latest/download/rbxm-suite.lua"))()
 
-local FILENAME = "TTD_R6_Animations.rbxm"
+local FILENAME = "R6_Animations.rbxm"
 
 local project = rbxmSuite.launch(FILENAME, {
     runscripts = false,

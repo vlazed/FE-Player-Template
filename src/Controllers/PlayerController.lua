@@ -547,30 +547,36 @@ end
 -- Flip Implementation: Use feFlip to rotate character latitudinally or longitudinally, then animate character twist motion
 function PlayerController:DodgeAir(char)
 	if Player.Dancing or Player.Swimming or Player.Flipping then return end
+
 	local torso = char.HumanoidRootPart
 
 	local flip
 
-	local rightVector = torso.CFrame.RightVector
-	local lookVector = torso.CFrame.lookVector
+	local rightVector = self.LayerA.MoveVector:Cross(self.TiltVector)
+	local lookVector = self.LayerA.MoveVector
 	local c0 = rightVector:Dot(self.MoveVector) + EPSILON / 2
 	local c1 = lookVector:Dot(self.MoveVector) + EPSILON / 2
 
 	if math.abs(c0) < EPSILON then
 		if c1 >= 0 then
 			flip = Player:GetAnimation("FrontFlip")
+			self.LayerA.Sign = -1
 		else
 			flip = Player:GetAnimation("BackFlip")
+			self.LayerA.Sign = 1
 		end
 	else
 		if c0 >= 0 then
 			flip = Player:GetAnimation("RightFlip")
+			self.LayerA.Sign = -1
 		else
 			flip = Player:GetAnimation("LeftFlip")
+			self.LayerA.Sign = 1
 		end
 	end
 
-	--print(flip)
+	print(flip)
+
 	currentFlipDelay = flip.Properties.DodgeTime or flip.TimeLength
 	self.LayerA:LoadAnimation(flip)
 	
@@ -578,12 +584,14 @@ function PlayerController:DodgeAir(char)
 		flip:Play()
 		Player.Flipping = true
 		Player.DodgeMoving = true
-		self.LayerA.XDirection = math.round(c1)
-		self.LayerA.ZDirection = math.round(c0)
+		self.LayerA.FlipTime = currentFlipDelay
+		self.LayerB.FlipTime = currentFlipDelay
 		self:Jump()
 		torso:ApplyImpulse(Player:GetWeight()*(Vector3.new(0,0.5,0) + self.MoveVector).Unit / 4)
-		task.delay(currentFlipDelay, function() 
+		task.delay(currentFlipDelay, function()
+			flip:Stop()
 			Player.DodgeMoving = false
+			Player.Dodging = false
 			Player.Flipping = false
 		end)
 	end
@@ -614,6 +622,7 @@ function PlayerController:LeanCharacter(char)
 
 	AnimationController.TiltVector = tilt
 	AnimationController.MoveVector = move
+	self.LayerA.InstantMoveVector = self.MoveVector
 	
 end
 
@@ -647,9 +656,13 @@ function PlayerController:ProcessStates(char, nexoChar)
 	end
 
 	local fallenPercent = math.abs((height - workspace.FallenPartsDestroyHeight) / workspace.FallenPartsDestroyHeight)
-	if fallenPercent < FALLEN_PARTS_THRESHOLD then
-		hrp.AssemblyLinearVelocity = Vector3.new()
-		hrp.CFrame = previousCFrame + Vector3.new(0, 5, 0)
+	if (fallenPercent < FALLEN_PARTS_THRESHOLD) and Player.SetCFrame then
+		Player.SetCFrame = false
+		task.delay(0.01, function() 
+			Player.getCharacter():PivotTo(previousCFrame + Vector3.yAxis * 5)
+			hrp.AssemblyLinearVelocity = Vector3.new() 
+		end)
+		task.delay(1, function() Player.SetCFrame = true end)
 	end
 
 	if Player.Dancing then
@@ -712,7 +725,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 	end
 
 	if Player.Dodging then
-		if Player:GetState("Falling") or Player:GetState("Jumping") then
+		if Player:GetState("Falling") or Player:GetState("Jumping") and not Player.Flipping then
 			nexoHum.PlatformStand = true
 			self:DodgeAir(nexoChar)
 		elseif Player.Running:GetState() or Player.Sprinting:GetState() then
@@ -755,6 +768,7 @@ function PlayerController:ProcessStates(char, nexoChar)
 		self.LayerA:UpdateModule(Player:GetAnimationModule())
 		moduleExecuteTime = tick() + 1 / updateModuleRate
 	end
+	
 	detectFling(threshold)
 end
 
@@ -934,11 +948,10 @@ function PlayerController:OnIdle()
 
 		if Player.FightMode:GetState() then
 			Player:GetAnimation("Idle"):Stop()
-			Player:GetAnimation("FightIdle"):Play()
+			Player:GetAnimation("FightIdle"):PlayForDuration(4)
 		else
 			Player:GetAnimation("Idle"):Play()
 			Player:GetAnimation("Idle"):AdjustWeight(1, 1)
-			Player:GetAnimation("FightIdle"):Stop()
 		end
 		
 		if Player:GetStateClass("Idling").PreviousState:GetName() == "Falling" then
@@ -958,7 +971,7 @@ end
 
 
 function PlayerController.OnStopAnimation(animation: Animation)
-	if animation.Name == "Roll" or animation.Name:find("Flip") or animation.Name == "Slide" then
+	if animation.Name == "Roll" or animation.Name == "Slide" then
 		--print("Flipped")
 		Player.Dodging = false
 		Player.Flipping = false
@@ -1025,7 +1038,7 @@ function PlayerController.StoppedState(state)
 		Player:GetAnimation("Idle"):Play()
 	elseif state:GetName() == "Attacking" then
 		if Player.FightMode:GetState() then
-			Player:GetAnimation("FightIdle"):Play()		
+			Player:GetAnimation("FightIdle"):PlayForDuration()
 			Player:GetAnimation("Idle"):Stop()
 		else
 			Player:GetAnimation("FightIdle"):Stop()
@@ -1100,8 +1113,6 @@ function PlayerController:Init(canClickFling)
 		nexoConnections = R15Reanim(canClickFling, self)
 	else
 		nexoConnections = R6Reanim(canClickFling, self)
-		--R6Legs, LeftLeg, RightLeg = R6IKController.givePlayerIK()
-		--AnimationController.R6Legs = R6Legs
 	end
 	self.LayerA = AnimationController.new(Player.AnimationModule)
 	self.LayerB = AnimationController.new()
@@ -1130,6 +1141,8 @@ function PlayerController:Init(canClickFling)
 	--self.VRLayer:EnableVR()
 
 	self.Initialized = true
+
+	task.wait()
 end
 
 
@@ -1152,17 +1165,22 @@ function PlayerController:Respawn()
 
 	if animationConnection then
 		animationConnection:Disconnect()
+		self.LayerA:Destroy()
+		self.LayerB:Destroy()
+		self.DanceLayer:Destroy()	
 	end
 
 	if vrConnection then
 		vrConnection:Disconnect()
 	end
 
-	for i, conn in pairs(nexoConnections)do 
-		conn:Disconnect()
-	end 
-
-	table.clear(nexoConnections)
+	if nexoConnections then
+		for i, conn in pairs(nexoConnections)do 
+			conn:Disconnect()
+		end 
+	
+		table.clear(nexoConnections)	
+	end
 
 	Network:RemoveParts()
 	coroutine.resume(Network["PartOwnership"]["Disable"])
@@ -1173,9 +1191,6 @@ function PlayerController:Respawn()
 
 	ActionHandler:Stop()
 	EmoteController:Stop()
-	self.LayerA:Destroy()
-	self.LayerB:Destroy()
-	self.DanceLayer:Destroy()
 	--self.VRLayer:Destroy()
 
 	self:StopAllModules()

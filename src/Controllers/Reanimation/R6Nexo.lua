@@ -58,7 +58,7 @@ return function(canClickFling, controller)
 		if E:IsA('BasePart') or E:IsA('Decal') then 
 			E.Transparency=1 
 		end 
-	end 
+	end 	
 	local h=5.65 
 	a.Character=nil 
 	a.Character=b 
@@ -72,7 +72,7 @@ return function(canClickFling, controller)
 	b["Left Leg"].Anchored = true
 	b.Animate.Disabled = true
 	f('Nexo','Reanimating...\nPlease wait '..h..' seconds.')
-	wait(h)
+	task.wait(h)
 	b.Torso.Anchored=false
 	b["Right Arm"].Anchored = false
 	b["Left Arm"].Anchored = false
@@ -83,6 +83,8 @@ return function(canClickFling, controller)
 	y.Animate.Disabled=true 
 	y.Parent=g 
 	y.HumanoidRootPart.CFrame=b.HumanoidRootPart.CFrame*CFrame.new(0,5,0)
+	y.Humanoid.BreakJointsOnDeath = false
+	y.Humanoid.DisplayDistanceType = "None"
 
 	local function i(D,E,F,G)
 		Instance.new("Attachment",D)
@@ -128,7 +130,7 @@ return function(canClickFling, controller)
 	for D,E in next,b:GetDescendants()do 
 		if E:IsA('BasePart')then
 			--Network:RetainPart(E)
-			Network:FollowPart(E) 
+			--Network:FollowPart(E) 
 			d(c,x.RenderStepped:Connect(function()
 				E.CanCollide=false 
 			end))
@@ -157,6 +159,10 @@ return function(canClickFling, controller)
 	end 
 	for D,E in next,b:GetDescendants()do 
 		if E:IsA('Accessory')then 
+			--E.Handle:BreakJoints()
+			if not x:IsStudio() then 
+				sethiddenproperty(E,"BackendAccoutrementState",0) 
+			end
 			i(E.Handle,y[E.Name].Handle)
 		end 
 	end 
@@ -193,6 +199,11 @@ return function(canClickFling, controller)
 			b.MaxTorque = 2147483646
 			b.Attachment0 = D["RootAttachment"]
 			b.Parent = D	
+		else
+			b.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
+			b.MaxTorque = 2147483646
+			b.Attachment0 = D:FindFirstChildOfClass("Attachment")
+			b.Parent = D
 		end
         r.Parent = D
 	end 
@@ -207,13 +218,17 @@ return function(canClickFling, controller)
 	local s=Instance.new('BodyPosition')
 	s.P=9e9 
     s.D=9e9 
-    s.MaxForce=Vector3.new(99999,99999,99999)
+    s.MaxForce=Vector3.new(9e9, 9e9, 9e9)
 	s.Position = b.HumanoidRootPart.Position
     s.Parent = b.HumanoidRootPart
 	
-	local A 
-	d(c,x.Heartbeat:Connect(function()
+	local A
+	
+	local function controlFling(angularVelocity)
 		if not b:FindFirstChild("HumanoidRootPart") then return end
+
+		local noVelocity = Vector3.new()
+
 		local hrp = b:FindFirstChild("HumanoidRootPart")
 		local rightarm = b:FindFirstChild("Right Arm")
 		local leftarm = b:FindFirstChild("Left Arm")
@@ -238,30 +253,55 @@ return function(canClickFling, controller)
 			--b.HumanoidRootPart.CanCollide = not toggleFling
 			if Player:GetFramerate() > 25 then
 				if controller.ToggleFling or Player.Attacking:GetState() then
-					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(2147483646,2147483646,2147483646)
-					torso.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
-					rightarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
-					leftarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
-					rightleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
-					leftleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and Vector3.new(2147483646,2147483646,2147483646) or Vector3.new()
+			
+					hrp.BodyAngularVelocity.AngularVelocity = angularVelocity
+					hrp.RotVelocity = angularVelocity
+	
+					torso.BodyAngularVelocity.AngularVelocity = controller.LimbFling and angularVelocity or noVelocity
+					rightarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and angularVelocity or noVelocity
+					leftarm.BodyAngularVelocity.AngularVelocity = controller.LimbFling and angularVelocity or noVelocity
+					rightleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and angularVelocity or noVelocity
+					leftleg.BodyAngularVelocity.AngularVelocity = controller.LimbFling and angularVelocity or noVelocity
+
+					torso.RotVelocity = controller.LimbFling and angularVelocity or noVelocity
+					rightarm.RotVelocity = controller.LimbFling and angularVelocity or noVelocity
+					leftarm.RotVelocity = controller.LimbFling and angularVelocity or noVelocity
+					rightleg.RotVelocity = controller.LimbFling and angularVelocity or noVelocity
+					leftleg.RotVelocity = controller.LimbFling and angularVelocity or noVelocity
+
+
 				else
+					
 					hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
-					torso.BodyAngularVelocity.AngularVelocity = Vector3.new()
-					rightarm.BodyAngularVelocity.AngularVelocity = Vector3.new()
-					leftarm.BodyAngularVelocity.AngularVelocity = Vector3.new()
-					leftleg.BodyAngularVelocity.AngularVelocity = Vector3.new()
-					rightleg.BodyAngularVelocity.AngularVelocity = Vector3.new()
+					hrp.RotVelocity = Vector3.new(5, 5, 5)
+
+					torso.BodyAngularVelocity.AngularVelocity = noVelocity
+					rightarm.BodyAngularVelocity.AngularVelocity = noVelocity
+					leftarm.BodyAngularVelocity.AngularVelocity = noVelocity
+					leftleg.BodyAngularVelocity.AngularVelocity = noVelocity
+					rightleg.BodyAngularVelocity.AngularVelocity = noVelocity
+
+					torso.RotVelocity = noVelocity
+					rightarm.RotVelocity = noVelocity
+					leftarm.RotVelocity = noVelocity
+					rightleg.RotVelocity =  noVelocity
+					leftleg.RotVelocity = noVelocity
+
 				end
 				hrp.AngularVelocity.Enabled = controller.ToggleFling
 			else
 				s.Position=y.Torso.Position
 				hrp.Position=y.Torso.Position
-				hrp.AngularVelocity.Enabled = false
+				hrp.AngularVelocity.Enabled = true
 				hrp.BodyAngularVelocity.AngularVelocity = Vector3.new(5, 5, 5)
 			end
 		end 
-	end))
+	end
 
+	d(c,x.Stepped:Connect(function() controlFling(Vector3.new(100, 100, 100)) end))
+	d(c,x.RenderStepped:Connect(function() controlFling(Vector3.new(100, 100, 100)) end))
+	d(c,x.Heartbeat:Connect(function() controlFling(Vector3.new(2000000000000000000, 2000000000000000000, 2000000000000000000)) end))
+	
 	local B=Instance.new("SelectionBox")
 	B.Adornee=b.HumanoidRootPart 
     B.LineThickness=0.02 

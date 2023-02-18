@@ -78,6 +78,14 @@ local function getHeadshotOf(playerName)
 end
 
 
+local function getDisplayNameOf(playerName)
+    local player = Players:GetPlayerFromCharacter(workspace[playerName])
+    if not player then return "", true end
+
+    return player.DisplayName
+end
+
+
 local function getUserFromClick()
 	local part = Mouse.Target
 	if not part then return end
@@ -91,9 +99,9 @@ local function getUserFromClick()
 
             local headshot, isReady = getHeadshotOf(targetName) 
             if isReady then
-                SendNotification("Found character", targetCharacter.Name, "Close", 1, headshot)
+                SendNotification(targetName, getDisplayNameOf(targetName), "Close", 1, headshot)
             else
-                SendNotification("Found character", targetCharacter.Name, "Close", 1, "")                
+                SendNotification(targetName, getDisplayNameOf(targetName), "Close", 1, "")                
             end
 		else
 			SendNotification(part.Name .. " is a parent of " .. potentialModel.Name, "")

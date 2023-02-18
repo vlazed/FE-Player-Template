@@ -72,7 +72,7 @@ if RunService:IsStudio() then
     end    
 end
 
-local SelectedModule = require(script.Modules.R6.StaffWielder.StaffWielder)
+--local SelectedModule = require(script.Modules.R6.GozeSpear.GozeSpear)
 
 if getgenv then
     getgenv().PROJECT_NAME = "FE-Player-Template"

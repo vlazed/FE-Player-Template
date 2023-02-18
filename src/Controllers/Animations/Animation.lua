@@ -171,6 +171,16 @@ function Animation:IsPlaying()
 end
 
 
+function Animation:PlayForDuration(duration, reversed: boolean)
+    duration = duration or 4
+    
+    self:Play(reversed)
+    task.delay(duration, function()
+        self:Stop()
+    end)
+end
+
+
 function Animation:Play(reversed: boolean)
     self._playing = true
     self.Increment = reversed and -1 or 1

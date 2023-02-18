@@ -87,7 +87,53 @@ function Player.getNexoCharacter()
 end
 
 
+function Player:CountAnimations(animation: string)
+	local count = 0
+	local animationName
+
+	for _, anim in pairs(self.AnimationModule) do
+		if not anim.KeyframeSequence then continue end
+
+		animationName = anim.Name:gsub("%d", "")
+		if animationName == animation then
+			count += 1
+		end
+	end
+	return count
+end
+
+
+function Player:CountEmotes(animation: string)
+	local count = 0
+	local animationName
+
+	for _, anim in pairs(self.AnimationModule.Emotes) do
+		animationName = anim.Name:gsub("%d", "")
+		if animationName == animation then
+			count += 1
+		end
+	end
+
+	return count
+end
+
+
 function Player:GetAnimation(animation: string): Animation
+	local animCount = self:CountAnimations(animation)
+	local emoteCount = self:CountEmotes(animation)
+	
+	local animIndex = 0
+	if animCount > 1 then
+		animIndex = math.random(1, animCount)
+		animation = animation .. tostring(animIndex)
+	end
+
+	if emoteCount > 1 then
+		animIndex = math.random(1, animCount)
+		animation = animation .. tostring(animIndex)
+	end
+
+	
 	if self.AnimationModule[animation] then
 		return self.AnimationModule[animation]
 	elseif self.AnimationModule.Emotes[animation:lower()] then

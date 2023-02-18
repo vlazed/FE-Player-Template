@@ -1,3 +1,4 @@
+local RunService = game:GetService("RunService")
 local Project
 if getgenv then
 	Project = script:FindFirstAncestor(getgenv().PROJECT_NAME)
@@ -19,9 +20,6 @@ AnimationController.R6Legs = {}
 AnimationController.TiltVector = Vector3.new(0,1,0)
 AnimationController.MoveVector = Vector3.new(0,0,-1)
 AnimationController.LookVector = Vector3.new(0,0,-1)
-
-AnimationController.XDirection = 0
-AnimationController.ZDirection = 0
 
 local lookSpring = Spring.new(2, AnimationController.MoveVector)
 local angleSpringY = Spring.new(16, 0)
@@ -149,7 +147,8 @@ function AnimationController:_parseToolMappingR6(kf, toolMapping, weight)
 
     for limb, tool in pairs(toolMapping) do
         local limb = self.Character:FindFirstChild(limb)
-        
+        if not tool[1] then continue end
+
         if limb.Name == "Torso" then
             if kf[tool[1].Name] then    
                 animateTool(tool[1], limb, kf[tool[1].Name], tool[2], tool[3])
@@ -254,12 +253,12 @@ function AnimationController:_poseR15(keyframe, interp, animation)
 
         local lookAt = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
         if Player.Flipping then
-            self:Flip(self.XDirection, self.ZDirection)
+            self:Flip()
         else
             FastTween(hrp, {0.1}, {CFrame = lookAt})
         end
 
-		self.Character.LowerTorso.CFrame = hrp.CFrame * (C0 * cfLerp * C1:Inverse())
+		self.Character.LowerTorso.CFrame = hrp.CFrame * (C0 * lowerTorso.Root.Transform * C1:Inverse())
 
         if 
         not (
@@ -512,13 +511,29 @@ function AnimationController:_poseR15(keyframe, interp, animation)
 end
 
 
+local function roundVector(v)
+    return Vector3.new(math.round(v.x), math.round(v.y), math.round(v.z))
+end
+
+
 -- FIXME: Buggy behavior
-function AnimationController:Flip(xDir, zDir, dt)
-    dt = dt or 10
+function AnimationController:Flip()
+    local camera = workspace.CurrentCamera
 	local hrp = Player.getNexoHumanoidRootPart()
 
-    local dtheta = CFrame.Angles(-dt * math.deg(xDir), 0, dt * math.deg(zDir))
-    FastTween(hrp, {0.1}, {CFrame = hrp.CFrame*dtheta})
+    local dtheta = 360 * self.FlipTime / 2
+
+    local axis = self.InstantMoveVector.Unit:Cross(self.TiltVector)
+    local rotation = CFrame.fromAxisAngle(axis, math.rad(self.Sign*dtheta))
+    print("Axis: " .. tostring(roundVector(axis)))
+    print("Rotation: " .. tostring(roundVector(rotation.RightVector)))
+    print("Transform: " .. tostring(roundVector((hrp.CFrame * rotation).RightVector)))
+
+    if RunService:IsStudio() then
+        self.DebugPart.CFrame = CFrame.lookAt(hrp.Position, hrp.Position+axis*10)        
+    end
+
+    FastTween(hrp, {0.1}, {CFrame = hrp.CFrame * rotation})
 end
 
 
@@ -527,7 +542,7 @@ function AnimationController:_poseAccessoryR6(keyframe, toolMapping, weight)
     
     weight = math.clamp(weight, 0, 1)
     
-    if kf then
+    if kf and toolMapping then
         self:_parseToolMappingR6(kf, toolMapping, weight)
     end
 end
@@ -560,7 +575,7 @@ function AnimationController:_poseR6(keyframe, interp, animation)
 
         local lookAt = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
         if Player.Flipping then
-            self:Flip(self.XDirection, self.ZDirection)
+            self:Flip()
         else
             FastTween(hrp, {0.1}, {CFrame = lookAt})
             --hrp.CFrame = CFrame.lookAt(hrp.CFrame.Position, hrp.CFrame.Position+self.MoveVector)
@@ -570,9 +585,6 @@ function AnimationController:_poseR6(keyframe, interp, animation)
         local nexoTorso = self.NexoCharacter:FindFirstChild("Torso")
         if not torso then return end
         if not nexoTorso then return end
-
-		torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
-        nexoTorso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
 
         if 
             not (
@@ -584,7 +596,8 @@ function AnimationController:_poseR6(keyframe, interp, animation)
                 Player.FightMode:GetState() or
                 Player.Slowing or
                 Player:GetState("Idling") or
-                Player.Climbing:GetState()
+                Player.Climbing:GetState() or
+                Player.Flipping
             ) and
             Player.Leaning
         then
@@ -594,6 +607,9 @@ function AnimationController:_poseR6(keyframe, interp, animation)
                 self.TiltVector)
             torso.CFrame = tiltFrame 
             nexoTorso.CFrame = tiltFrame
+        else
+            torso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())
+            nexoTorso.CFrame = hrp.CFrame *  (C0 * hrp["RootJoint"].Transform * C1:Inverse())    
         end
 	end
 
@@ -798,6 +814,8 @@ function AnimationController:_animateStep(animation: Animation)
 
     local interp = math.clamp((animation.IsInterpolating and animation.Time/animation.TimeDiff or 1), 0, 1)
 
+    if Player.Invisible then return end
+
     if self.Character.Humanoid.RigType == Enum.HumanoidRigType.R6 then
         self:_poseR6(
             animation.KeyframeSequence[animation:GetIndex()], 
@@ -870,6 +888,7 @@ end
 
 function AnimationController:UpdateAnimations(animations)
     for _,anim in pairs(animations) do
+        --print(anim)
         if anim.KeyframeSequence then
             self:LoadAnimation(anim)             
         end
@@ -880,7 +899,6 @@ end
 function AnimationController:UpdateModule(animModule)
     if self.CurrentModule == animModule then return end
 
-    --print("Updating module")
     self.CurrentModule = animModule
 
     self:UpdateAnimations(animModule)
@@ -889,15 +907,6 @@ function AnimationController:UpdateModule(animModule)
         self:UpdateAnimations(animModule.Emotes)        
     end
 
-    --[[
-    for index,animationTable in pairs(self.AnimationTable) do
-        for _, animation in pairs(animModule) do
-            if index == animation.Priority then
-                animationTable[animation.Name] = animation
-            end
-        end
-    end
-    ]]
 end
 
 
@@ -933,6 +942,18 @@ function AnimationController.new(animationModule)
     self.CurrentModule = animationModule
     self.Character = Player.getCharacter()
     self.NexoCharacter = Player.getNexoCharacter()
+
+    if RunService:IsStudio() then
+        self.DebugPart = Instance.new("Part")
+        self.DebugPart.Color = Color3.new(1,0,0)
+        self.DebugPart.Anchored = true
+        self.DebugPart.Size = Vector3.new(0.1, 0.1, 10)
+        self.DebugPart.Parent = workspace     
+    end
+
+    self.FlipTime = 1
+    self.InstantMoveVector = self.MoveVector
+    self.Sign = 1
 
     self.Playing = true
 
